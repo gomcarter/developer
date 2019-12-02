@@ -29,7 +29,11 @@ public class CodeGenerator {
     //子目录，填你想填
     public final static String subPackage = "";
 
+<<<<<<< HEAD:developer/src/main/java/com/gomcarter/developer/tools/CodeGenerator.java
     public final static String dbUrl = "jdbc:mysql://127.0.0.1:3306/developer";
+=======
+    public final static String dbUrl = "jdbc:mysql://127.0.0.1:3306/ordercenter";
+>>>>>>> a87696eb1506448fc8d3d56682fc4be662ca50ef:develpoer/src/main/java/com/yiayo/developer/tools/CodeGenerator.java
     /* 数据库用户 */
     public final static String dbUsername = "root";
     /* 数据库密码 */
