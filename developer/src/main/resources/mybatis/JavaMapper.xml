@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomcarter.developer.dao.JavaMapper">
+    <resultMap type="com.gomcarter.developer.entity.Java" id="javaMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="dev_domain" property="devDomain"/>
+        <result column="test_domain" property="testDomain"/>
+        <result column="prev_domain" property="prevDomain"/>
+        <result column="online_domain" property="onlineDomain"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.gomcarter.developer.entity.Java" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        java
+        (name,dev_domain,test_domain,prev_domain,online_domain)
+        VALUES
+        (#{name},#{devDomain},#{testDomain},#{prevDomain},#{onlineDomain})
+    </insert>
+
+    <update id="update" parameterType="com.gomcarter.developer.entity.Java">
+        UPDATE
+        java
+        SET
+            name=#{name},
+            dev_domain=#{devDomain},
+            test_domain=#{testDomain},
+            prev_domain=#{prevDomain},
+            online_domain=#{onlineDomain}
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="getById" parameterType="Long" resultMap="javaMap">
+        SELECT * FROM java WHERE id = #{id}
+    </select>
+
+    <select id="getByIdList" resultMap="javaMap">
+        SELECT * FROM java
+        WHERE
+        id in (
+        <foreach collection="idList" item="_id_" index="index" separator=",">
+        #{_id_}
+        </foreach>
+        )
+    </select>
+
+    <select id="query" resultMap="javaMap">
+        SELECT
+        *
+        <include refid="querySql"/>
+        order by ${pager.orderColumn} ${pager.orderType}
+        LIMIT #{pager.startNum},#{pager.pageCount}
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        <include refid="querySql"/>
+    </select>
+
+    <sql id="querySql">
+        FROM
+        java
+        <where>
+            <if test="params.id != null">
+                id = #{params.id}
+            </if>
+            <if test="params.name != null">
+                and `name` like concat('%', #{params.name}, '%')
+            </if>
+        </where>
+    </sql>
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomcarter.developer.dao.EndMapper">
+    <resultMap type="com.gomcarter.developer.entity.End" id="endMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="prefix" property="prefix"/>
+        <result column="jar_url" property="jarUrl"/>
+        <result column="kls" property="kls"/>
+        <result column="method" property="method"/>
+        <result column="args" property="args"/>
+        <result column="header" property="header"/>
+        <result column="mark" property="mark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.gomcarter.developer.entity.End" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        `end`
+        (`name`,prefix,header,jar_url,kls,method,args,mark)
+        VALUES
+        (#{name},#{prefix},#{header},#{jarUrl},#{kls},#{method},#{args},#{mark})
+    </insert>
+
+    <update id="update" parameterType="com.gomcarter.developer.entity.End">
+        UPDATE
+        `end`
+        SET
+            `name`=#{name},
+            prefix=#{prefix},
+            header=#{header},
+            jar_url=#{jarUrl},
+            kls=#{kls},
+            method=#{method},
+            args=#{args},
+            mark=#{mark}
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="getById" parameterType="Long" resultMap="endMap">
+        SELECT * FROM `end` WHERE id = #{id}
+    </select>
+
+    <select id="getByIdList" resultMap="endMap">
+        SELECT * FROM `end`
+        WHERE
+        id in (
+        <foreach collection="idList" item="_id_" index="index" separator=",">
+        #{_id_}
+        </foreach>
+        )
+    </select>
+
+    <select id="getByPrefix" resultMap="endMap">
+        SELECT * FROM `end` WHERE prefix = #{prefix}
+    </select>
+
+    <select id="query" resultMap="endMap">
+        SELECT
+        *
+        <include refid="querySql"/>
+        order by ${pager.orderColumn} ${pager.orderType}
+        LIMIT #{pager.startNum},#{pager.pageCount}
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        <include refid="querySql"/>
+    </select>
+
+    <sql id="querySql">
+        FROM
+        end
+        <where>
+            <if test="params.id != null">
+                id = #{params.id}
+            </if>
+            <if test="params.name != null">
+                and `name` like concat('%', #{params.name}, '%')
+            </if>
+        </where>
+    </sql>
+</mapper>

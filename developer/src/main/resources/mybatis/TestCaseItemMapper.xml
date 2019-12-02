@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomcarter.developer.dao.TestCaseItemMapper">
+    <resultMap type="com.gomcarter.developer.entity.TestCaseItem" id="testCaseItemMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="result_handler" property="resultHandler"/>
+        <result column="hash" property="hash"/>
+        <result column="config" property="config"/>
+        <result column="fk_interfaces_id" property="fkInterfacesId"/>
+        <result column="fk_test_case_id" property="fkTestCaseId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.gomcarter.developer.entity.TestCaseItem" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        test_case_item
+        (name,result_handler,hash,config,fk_interfaces_id,fk_test_case_id,create_time,modify_time)
+        VALUES
+        (#{name},#{resultHandler},#{hash},#{config},#{fkInterfacesId},#{fkTestCaseId},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="update" parameterType="com.gomcarter.developer.entity.TestCaseItem">
+        UPDATE
+        test_case_item
+        SET
+            name=#{name},
+            result_handler=#{resultHandler},
+            hash=#{hash},
+            config=#{config},
+            fk_interfaces_id=#{fkInterfacesId},
+            fk_test_case_id=#{fkTestCaseId},
+            create_time=#{createTime},
+            modify_time=#{modifyTime}
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="getById" parameterType="Long" resultMap="testCaseItemMap">
+        SELECT * FROM test_case_item WHERE id = #{id}
+    </select>
+
+    <select id="getByIdList" parameterType="Long" resultMap="testCaseItemMap">
+        SELECT * FROM test_case_item
+        WHERE
+        id in (
+        <foreach collection="idList" item="_id_" index="index" separator=",">
+        #{_id_}
+        </foreach>
+        )
+    </select>
+
+    <select id="query" resultMap="testCaseItemMap">
+        SELECT
+        *
+        <include refid="querySql"/>
+        order by ${pager.orderColumn} ${pager.orderType}
+        LIMIT #{pager.startNum},#{pager.pageCount}
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        <include refid="querySql"/>
+    </select>
+
+    <sql id="querySql">
+        FROM
+        test_case_item
+        <where>
+            <if test="params.id != null">
+                id = #{params.id}
+            </if>
+            <if test="params.name != null">
+                and name = #{params.name}
+            </if>
+            <if test="params.resultHandler != null">
+                and result_handler = #{params.resultHandler}
+            </if>
+            <if test="params.hash != null">
+                and hash = #{params.hash}
+            </if>
+            <if test="params.config != null">
+                and config = #{params.config}
+            </if>
+            <if test="params.fkInterfacesId != null">
+                and fk_interfaces_id = #{params.fkInterfacesId}
+            </if>
+            <if test="params.fkTestCaseId != null">
+                and fk_test_case_id = #{params.fkTestCaseId}
+            </if>
+            <if test="params.createTime != null">
+                and create_time = #{params.createTime}
+            </if>
+            <if test="params.modifyTime != null">
+                and modify_time = #{params.modifyTime}
+            </if>
+        </where>
+    </sql>
+</mapper>

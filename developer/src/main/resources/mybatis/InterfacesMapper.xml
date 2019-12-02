@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomcarter.developer.dao.InterfacesMapper">
+    <resultMap type="com.gomcarter.developer.entity.Interfaces" id="interfacesMap">
+        <id column="id" property="id"/>
+        <result column="hash" property="hash"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="method" property="method"/>
+        <result column="deprecated" property="deprecated"/>
+        <result column="mark" property="mark"/>
+        <result column="returns" property="returns"/>
+        <result column="parameters" property="parameters"/>
+        <result column="fk_java_id" property="fkJavaId"/>
+        <result column="fk_end_id" property="fkEndId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.gomcarter.developer.entity.Interfaces" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        interfaces
+        (hash,name,url,method,deprecated,mark,returns,parameters,fk_java_id,fk_end_id)
+        VALUES
+        (#{hash},#{name},#{url},#{method},#{deprecated},#{mark},#{returns},#{parameters},#{fkJavaId},#{fkEndId})
+    </insert>
+
+    <update id="update" parameterType="com.gomcarter.developer.entity.Interfaces">
+        UPDATE
+        interfaces
+        SET
+            hash=#{hash},
+            name=#{name},
+            url=#{url},
+            method=#{method},
+            deprecated=#{deprecated},
+            mark=#{mark},
+            returns=#{returns},
+            parameters=#{parameters},
+            fk_java_id=#{fkJavaId},
+            fk_end_id=#{fkEndId}
+        WHERE
+        id = #{id}
+    </update>
+
+    <update id="setDeprecatedByJavaId">
+        UPDATE
+        interfaces
+        SET
+            deprecated=true
+        WHERE
+            fk_java_id=#{javaId}
+    </update>
+
+    <delete id="delete">
+        delete  from interfaces where id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="interfacesMap">
+        SELECT * FROM interfaces WHERE id = #{id}
+    </select>
+
+    <select id="getByIdList" parameterType="Long" resultMap="interfacesMap">
+        SELECT * FROM interfaces
+        WHERE
+        id in (
+        <foreach collection="idList" item="_id_" index="index" separator=",">
+        #{_id_}
+        </foreach>
+        )
+    </select>
+
+    <select id="query" resultMap="interfacesMap">
+        SELECT
+        *
+        <include refid="querySql"/>
+        order by ${pager.orderColumn} ${pager.orderType}
+        LIMIT #{pager.startNum},#{pager.pageCount}
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        <include refid="querySql"/>
+    </select>
+
+    <select id="getByHash" resultMap="interfacesMap">
+      select * from interfaces where hash = #{hash} order by id desc limit 1
+    </select>
+
+    <select id="getByUrl" resultMap="interfacesMap">
+      select * from interfaces where url = #{url} and method = #{method} order by id desc limit 1
+    </select>
+
+    <sql id="querySql">
+        FROM
+        interfaces
+        <where>
+            <if test="params.id != null">
+                id = #{params.id}
+            </if>
+            <if test="params.name != null">
+                and name like  concat('%', #{params.name}, '%')
+            </if>
+            <if test="params.url != null">
+                and url like concat('%', #{params.url}, '%')
+            </if>
+            <if test="params.method != null">
+                and method = #{params.method}
+            </if>
+            <if test="params.deprecated != null">
+                and deprecated = #{params.deprecated}
+            </if>
+            <if test="params.mark != null">
+                and mark like concat('%', #{params.mark}, '%')
+            </if>
+            <if test="params.javaId != null">
+                and fk_java_id = #{params.javaId}
+            </if>
+            <if test="params.endId != null">
+                and fk_end_id = #{params.endId}
+            </if>
+        </where>
+    </sql>
+</mapper>
