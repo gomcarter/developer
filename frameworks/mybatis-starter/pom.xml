@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.yiayoframework.mybatis</groupId>
+    <groupId>it.gomcarter.frameworks</groupId>
     <artifactId>mybatis-starter</artifactId>
     <version>1.0.0${project.environment}</version>
     <packaging>jar</packaging>
@@ -34,7 +34,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.yiayoframework.base</groupId>
+            <groupId>it.gomcarter.frameworks</groupId>
             <artifactId>base</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>provided</scope>
@@ -72,16 +72,16 @@
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>rdc-releases</id>
-            <url>https://repo.rdc.aliyun.com/repository/109262-release-GmAhjN/</url>
-        </repository>
-        <snapshotRepository>
-            <id>rdc-snapshots</id>
-            <url>https://repo.rdc.aliyun.com/repository/109262-snapshot-5YL6Wb/</url>
-        </snapshotRepository>
-    </distributionManagement>
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>rdc-releases</id>-->
+<!--            <url>https://repo.rdc.aliyun.com/repository/109262-release-GmAhjN/</url>-->
+<!--        </repository>-->
+<!--        <snapshotRepository>-->
+<!--            <id>rdc-snapshots</id>-->
+<!--            <url>https://repo.rdc.aliyun.com/repository/109262-snapshot-5YL6Wb/</url>-->
+<!--        </snapshotRepository>-->
+<!--    </distributionManagement>-->
 
     <build>
         <plugins>

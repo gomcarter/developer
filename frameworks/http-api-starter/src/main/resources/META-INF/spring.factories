@@ -1,3 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  com.yiayoframework.httpbaseapi.configuration.Interceptors,\
-#  com.yiayoframework.httpbaseapi.HttpApiRegistrar
+#  it.gomcarter.frameworks.httpapi.aop.CheckTokenInterceptor

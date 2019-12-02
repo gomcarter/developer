@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  it.gomcarter.frameworks.interfaces.controller.PrivatesInterfacesController,\
+  it.gomcarter.frameworks.interfaces.utils.InterfacesRegister

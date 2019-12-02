@@ -1,2 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  com.yiayoframework.redis.DiamondRedisConfiguration
+#  it.gomcarter.frameworks.redis.RedisConfiguration

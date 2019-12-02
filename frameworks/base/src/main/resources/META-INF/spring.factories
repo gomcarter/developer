@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.yiayoframework.base.CommonConfiguration
+  it.gomcarter.frameworks.base.CommonConfiguration,\
+  it.gomcarter.frameworks.base.controller.BaseController

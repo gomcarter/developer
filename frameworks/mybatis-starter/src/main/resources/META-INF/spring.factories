@@ -1,2 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  com.yiayoframework.mybatis.DiamondMybatisConfiguration
+#  it.gomcarter.frameworks.mybatis.NacosMybatisRegistrar

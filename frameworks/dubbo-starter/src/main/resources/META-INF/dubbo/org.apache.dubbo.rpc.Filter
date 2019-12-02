@@ -1,1 +1,1 @@
-logFilter=com.yiayoframework.dubbo.filter.LogFilter
+logFilter=it.gomcarter.frameworks.dubbo.filter.LogFilter
