@@ -1,0 +1,93 @@
+<template>
+  <div class="detail">
+    <h4 class="title">接口详情</h4>
+    <hr/>
+    <el-form v-if="data" label-width="9em">
+      <el-form-item label="接口名称:">{{data.name}}<b v-if="data.deprecated" style="color:red">（已废弃）</b></el-form-item>
+      <el-form-item label="访问类型:">{{data.method}}</el-form-item>
+      <el-form-item label="所属项目:">{{data.end.name}}</el-form-item>
+      <el-form-item label="header参数说明:"><i style="color:red;">header名:{{data.end.header}}<br>{{data.end.mark}}</i></el-form-item>
+      <el-form-item label="所属模块:">{{data.java.name}}</el-form-item>
+      <!--<el-form-item label="开发环境地址:"><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></el-form-item>-->
+      <el-form-item label="测试环境地址:"><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></el-form-item>
+      <!--<el-form-item label="预发环境地址:"><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></el-form-item>-->
+      <el-form-item label="线上环境地址:"><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></el-form-item>
+      <el-form-item label="创建时间:">{{formatDate(data.createTime)}}</el-form-item>
+      <el-form-item label="更新时间:">{{formatDate(data.modifyTime)}}</el-form-item>
+      <el-form-item label="接口参数:"><v-parameter :json="parameters || []"></v-parameter></el-form-item>
+      <el-form-item label="接口说明:">
+        <div v-html="(data.mark || '无')"></div>
+      </el-form-item>
+      <el-form-item label="返回值:">
+        <v-jsonformatter v-if="generatedReturns" :json="generatedReturns"></v-jsonformatter>
+      </el-form-item>
+      <!--<el-form-item label="返回值数据结构:">-->
+        <!--<v-jsonformatter :json="returns"></v-jsonformatter>-->
+      <!--</el-form-item>-->
+    </el-form>
+  </div>
+</template>
+
+<script>
+import { getInterfacesApi } from '@/config/api/inserv-api'
+import { formatDate } from '@/config/utils'
+
+export default {
+  name: 'interfacesDetail',
+  data () {
+    return {
+      data: null,
+      formatDate,
+      returns: null,
+      parameters: null,
+      generatedReturns: null
+    }
+  },
+  computed: {
+  },
+  methods: {
+    init () {
+      getInterfacesApi(this.$route.params.id).then((res) => {
+        this.data = res
+        this.returns = JSON.parse(this.data.returns)
+        this.generatedReturns = this.generateReturns(this.returns)
+        this.parameters = JSON.parse(this.data.parameters)
+      })
+    },
+    linkTo (data, env) {
+      this.$router.push(`/test/${data.id}/${env}`)
+    },
+    generateReturns (node) {
+      if (node.type === 'List') {
+        return [this.generateReturns(node.children[0])]
+      } else if (node.type === 'Object') {
+        const o = {}
+        node.children = node.children || []
+        node.children.forEach(s => {
+          o[s.key] = this.generateReturns(s)
+        })
+        return o
+      } else if (node.type === undefined) {
+        return '...'
+      } else if (node.type === 'void') {
+        return '无'
+      } else {
+        return `${node.comment ? node.comment + '； ' : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
+      }
+    }
+  },
+  components: {
+    'v-datagrid': () => import('@/components/datagrid'),
+    'v-jsonformatter': () => import('@/components/jsonformatter'),
+    'v-parameter': () => import('@/components/parameter')
+  },
+  mounted () {
+    this.init()
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style type="text/css" lang="scss" scoped>
+  @import 'index.scss';
+</style>

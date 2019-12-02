@@ -1,0 +1,219 @@
+@charset "utf-8";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333;
+  background: #f6f7fb;
+  /*font-family: "微软雅黑", "宋体";*/
+  @include wh(100%, 100%)
+}
+
+body::-webkit-scrollbar {
+  width: 0 !important
+}
+
+body {
+  -ms-overflow-style: none;
+}
+
+// body { overflow: -moz-scrollbars-none; }
+#app {
+  @include wh(100%, 100%)
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+fieldset,
+img {
+  border: 0;
+}
+
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+var {
+  font-style: normal;
+  font-weight: normal;
+}
+
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #eee;
+  height: 0;
+  box-sizing: content-box;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+caption,
+th {
+  text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+
+q:before,
+q:after {
+  content: '';
+}
+
+abbr,
+acronym {
+  border: 0;
+}
+
+a,
+a:link,
+a:hover {
+  text-decoration: none;
+  outline: none;
+  cursor: pointer;
+}
+a {
+  color: #409EFF;
+}
+
+li {
+  list-style: none;
+}
+
+input,
+img {
+  border: none;
+}
+
+.relative {
+  position: relative
+}
+
+.h1,
+.h2,
+.h3,
+h1,
+h2,
+h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.h2,
+h2 {
+  font-size: 30px;
+}
+
+.h3,
+h3 {
+  font-size: 24px;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.index_more {
+  overflow: hidden;
+  width: 100%;
+  .index_chunk {
+    margin: 60px 0;
+    background: #fff;
+    padding: 40px 60px 55px;
+    .title {
+      position: relative;
+      border-left: #4786ff solid 3px;
+      text-indent: 2em;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+}
+
+.filters {
+  padding: 20px 0;
+  border-radius: 0 0 4px 4px;
+  margin-bottom: 20px;
+}
+
+.el-input__inner {
+  height: 40px;
+  line-height: 40px;
+}
+
+.el-form-item__label {
+  font-weight: bold;
+  white-space: pre;
+}
+
+.el-select {
+  width: 100%;
+}
+
+.el-dialog__body {
+  padding: 10px 50px;
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+.el-date-editor .el-range-separator{
+  width: 6%;
+}
+.min_width .el-input{
+  width: 500px;
+}
+.el-col-6{
+  padding-right: 10px;
+  >.el-input{
+    width: 100%;
+  }
+}

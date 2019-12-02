@@ -1,0 +1,25 @@
+@charset "utf-8";
+table, tr{
+  border: 1px solid #ddd;
+}
+th, td{
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+.el-input__inner{
+  padding: 0;
+  text-indent: 10px;
+}
+.el-input--suffix .el-input__inner{
+  padding: 0;
+}
+.add{
+  cursor: pointer;
+  &:hover{
+    background: #f1f1f3;
+  }
+}
+.datagrid-header th{
+  text-align: left;
+}

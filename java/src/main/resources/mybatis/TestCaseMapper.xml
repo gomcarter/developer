@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yiayo.developer.dao.TestCaseMapper">
+    <resultMap type="com.yiayo.developer.entity.TestCase" id="testCaseMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="fk_user_id" property="fkUserId"/>
+        <result column="user_name" property="userName"/>
+        <result column="mark" property="mark"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.yiayo.developer.entity.TestCase" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO
+        test_case
+        (name,fk_user_id,user_name,mark,create_time,modify_time)
+        VALUES
+        (#{name},#{fkUserId},#{userName},#{mark},#{createTime},#{modifyTime})
+    </insert>
+
+    <update id="update" parameterType="com.yiayo.developer.entity.TestCase">
+        UPDATE
+        test_case
+        SET
+            name=#{name},
+            fk_user_id=#{fkUserId},
+            user_name=#{userName},
+            mark=#{mark},
+            create_time=#{createTime},
+            modify_time=#{modifyTime}
+        WHERE
+        id = #{id}
+    </update>
+
+    <select id="getById" parameterType="Long" resultMap="testCaseMap">
+        SELECT * FROM test_case WHERE id = #{id}
+    </select>
+
+    <select id="getByIdList" parameterType="Long" resultMap="testCaseMap">
+        SELECT * FROM test_case
+        WHERE
+        id in (
+        <foreach collection="idList" item="_id_" index="index" separator=",">
+        #{_id_}
+        </foreach>
+        )
+    </select>
+
+    <select id="query" resultMap="testCaseMap">
+        SELECT
+        *
+        <include refid="querySql"/>
+        order by ${pager.orderColumn} ${pager.orderType}
+        LIMIT #{pager.startNum},#{pager.pageCount}
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(id)
+        <include refid="querySql"/>
+    </select>
+
+    <sql id="querySql">
+        FROM
+        test_case
+        <where>
+            <if test="params.id != null">
+                id = #{params.id}
+            </if>
+            <if test="params.name != null">
+                and name = #{params.name}
+            </if>
+            <if test="params.fkUserId != null">
+                and fk_user_id = #{params.fkUserId}
+            </if>
+            <if test="params.userName != null">
+                and user_name = #{params.userName}
+            </if>
+            <if test="params.mark != null">
+                and mark = #{params.mark}
+            </if>
+            <if test="params.createTime != null">
+                and create_time = #{params.createTime}
+            </if>
+            <if test="params.modifyTime != null">
+                and modify_time = #{params.modifyTime}
+            </if>
+        </where>
+    </sql>
+</mapper>

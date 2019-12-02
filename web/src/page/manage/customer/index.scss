@@ -1,0 +1,65 @@
+@charset "utf-8";
+
+.customer .logs {
+  span {
+    color: #e76262;
+  }
+}
+
+.customer .json {
+  height: 475px;
+  overflow: auto;
+  padding: 20px;
+  border: 4px solid #ddd;
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+.customer .header {
+  position: fixed;
+  z-index: 100;
+  background: #4063ff;
+  background-size: 100% 100%;
+  width: 100%;
+  height: 60px;
+  & h3 {
+    display: inline-block;
+    margin: 0;
+    top: -20px;
+    position: relative;
+    color: white;
+  }
+}
+
+.customer .logo {
+  height: 100%;
+  padding: 12px;
+}
+
+.customer .menu {
+  display: inline-block;
+}
+
+@media only screen and (max-width: 640px) {
+  .customer .header {
+    height: 50px;
+    & h3 {
+      font-size: 20px;
+      top: -18px;
+    }
+  }
+
+  .customer .index_more .index_chunk {
+    margin: 50px 0;
+    padding: 10px 0px 0px;
+  }
+  .customer .el-form-item__label {
+    font-size: 17px;
+    margin-left: 1em;
+    float: none;
+  }
+  .customer .el-form-item__content {
+    margin-left: 1em !important;
+  }
+}
+

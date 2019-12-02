@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  it.summer.framework.api.controller.PrivatesInterfacesController,\
+  it.summer.framework.api.utils.InterfacesRegister

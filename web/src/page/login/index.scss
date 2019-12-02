@@ -1,0 +1,90 @@
+@charset "utf-8";
+.login {
+  @include bis('../../assets/img/ZHS.png');
+  @include wh(100%, 100%);
+  position: relative;
+  min-height: 650px;
+  .login-box {
+    @include wh(650px, 610px);
+    @include allcover;
+    margin: auto;
+    text-align: center;
+    animation: bounceIn 600ms linear;
+    min-height: 650px;
+    .logo {
+      width: 140px;
+      height: auto;
+    }
+    .form {
+      background: #fff;
+      border-radius: 10px;
+      padding: 30px 50px;
+      width: 85%;
+      margin: 20px auto 0;
+      .el-form-item:last-child {
+        margin: 0;
+        .validate {
+          height: 40px;
+          text-align: right;
+          .code-pic {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+    .el-row {
+      margin: 20px 0 15px;
+      a {
+        color: #409EFF;
+      }
+    }
+    .el-button {
+      width: 100%;
+    }
+  }
+}
+
+.logo_title {
+  font-size: 28px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.mask {
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: absolute;
+  background: #000000aa;
+  .mask-text {
+    color: white;
+    padding: 30% 10%;
+    line-height: 3em;
+  }
+}
+
+.qrcode-login-container {
+  height: 220px;
+  width: 220px;
+  position: relative;
+  margin: auto;
+}

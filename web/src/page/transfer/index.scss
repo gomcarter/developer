@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+.container {
+  width: 100%;
+  text-align: center;
+  padding: 14% 0;
+}
+
+.result-container {
+  display: inline-block;
+  .success {
+    line-height: 45px;
+    font-size: 80px;
+    color: #01c853;
+  }
+  .failed {
+    line-height: 45px;
+    font-size: 80px;
+    color: red;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-family: "黑体", serif;
+}
+
+.subtitle {
+  font-size: 16px;
+  margin: 25px 0 50px 0;
+}

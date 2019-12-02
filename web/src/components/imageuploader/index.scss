@@ -1,0 +1,164 @@
+@charset "utf-8";
+
+.imageuploader-container {
+  width: auto;
+  text-align: center;
+}
+
+.imageuploader-viewer-container {
+  /*overflow: hidden;*/
+  float: left;
+}
+
+.imageuploader-viewer-cell {
+  position: relative;
+  width: 200px;
+  margin: 0 30px 10px 0;
+  float: left;
+  display: table-cell;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid #e6e3e3;
+  border-radius: 4px;
+}
+
+.imageuploader-viewer-delete-btn {
+  position: absolute;
+  top: -7px;
+  right: -6px;
+  font-size: 20px;
+  color: #303133AA;
+  &:hover {
+    color: #303133;
+  }
+}
+
+.imageuploader-viewer-show-big {
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  color: #fff;
+  text-align: center;
+  /*z-index: 999;*/
+}
+
+.imageuploader-loading {
+  margin-top: 43%;
+}
+
+.imageuploader-viewer-cell img {
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.multiple-title {
+  line-height: 75px;
+}
+
+.imageuploader-file-input {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.imageuploader-background-container {
+  display: inline;
+  float: left;
+}
+
+.imageuploader-background-shower {
+  border: 1px solid #e6e3e3;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #d0cbcb;
+  position: relative;
+}
+
+.imageuploader-background-container img {
+  margin-top: 40px;
+}
+
+.upload {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  width: 650px;
+  box-shadow: 0px 1px 0px #ccc;
+  border-radius: 4px;
+}
+// 裁剪
+.cropper-box{ 
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2002;
+  background: rgba(0,0,0,0.33);
+  .cropper-box_container{
+    width: 900px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    border-radius: 6px;
+    >.cropper-title{
+      font-size: 14px;
+      color: #333;
+      font-weight: 400;
+      line-height: 1;
+    }
+    >.header{
+      padding: 10px 20px;
+      background: #f3f3f3;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      text-align: right;
+      font-size: 18px;
+      span{
+        float: left;
+        font-size: 18px;
+      }
+      i{
+        cursor: pointer;
+      }
+    }
+    >.cropper{
+      height: 360px;
+      width: auto;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px 0;
+    }
+    >.option{
+      display: flex;
+      width: 300px;
+      margin: auto;
+      overflow: hidden;
+      li{
+        flex: 1;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        cursor: pointer;
+        img{
+          border: 1px solid transparent;
+          &:hover{
+            border-color: #333;
+          }
+        }
+      }
+    }
+    >.footer{
+      padding: 10px;
+      text-align: right;
+    }
+  }
+}
