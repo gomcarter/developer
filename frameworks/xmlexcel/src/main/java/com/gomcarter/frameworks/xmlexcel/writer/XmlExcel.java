@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author liyin on 2016年4月6日 13:20:55
+ * @author gomcarter on 2016年4月6日 13:20:55
  */
 public class XmlExcel implements Closeable {
 

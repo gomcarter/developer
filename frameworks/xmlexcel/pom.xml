@@ -1,41 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.gomcarter.frameworks</groupId>
+        <artifactId>all</artifactId>
+        <version>${frameworks.version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <groupId>com.gomcarter.frameworks</groupId>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>xmlexcel</artifactId>
-    <version>1.0.0${project.environment}</version>
+    <version>${frameworks.version}</version>
     <packaging>jar</packaging>
+    <description>the xml excel tool</description>
 
     <name>xmlexcel</name>
-    <url>http://maven.apache.org</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.environment>-SNAPSHOT</project.environment>
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <project.environment></project.environment>
-            </properties>
-        </profile>
-    </profiles>
+    <url>https://github.com/gomcarter/developer/tree/master/frameworks/xmlexcel</url>
 
     <dependencies>
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>base</artifactId>
-            <version>1.0.0${project.environment}</version>
+            <version>${frameworks.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>redis-starter</artifactId>
-            <version>1.0.0${project.environment}</version>
+            <version>${frameworks.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -52,42 +44,4 @@
         </dependency>
     </dependencies>
 
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>rdc-releases</id>-->
-<!--            <url>https://repo.rdc.aliyun.com/repository/109262-release-GmAhjN/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>rdc-snapshots</id>-->
-<!--            <url>https://repo.rdc.aliyun.com/repository/109262-snapshot-5YL6Wb/</url>-->
-<!--        </snapshotRepository>-->
-<!--    </distributionManagement>-->
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerVersion>1.8</compilerVersion>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

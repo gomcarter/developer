@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * create by liyin on 2016年4月6日 13:20:55
+ * @author gomcarter on 2016年4月6日 13:20:55
  */
 public class Appender {
 

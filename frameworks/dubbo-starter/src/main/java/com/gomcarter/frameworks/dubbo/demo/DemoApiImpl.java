@@ -1,7 +1,7 @@
 package com.gomcarter.frameworks.dubbo.demo;
 
 /**
- * @author liyin
+ * @author gomcarter
  */
 public class DemoApiImpl implements DemoApi {
 

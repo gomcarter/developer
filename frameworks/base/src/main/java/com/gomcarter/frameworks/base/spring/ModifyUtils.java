@@ -27,6 +27,7 @@ public abstract class ModifyUtils {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS, true);
         mapper.configure(Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+        // mapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS, true);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }
 

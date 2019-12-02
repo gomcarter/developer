@@ -7,7 +7,7 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
- * @author liyin on 2019-09-05 16:00:46
+ * @author gomcarter on 2019-09-05 16:00:46
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

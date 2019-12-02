@@ -1,14 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.gomcarter.frameworks</groupId>
+        <artifactId>all</artifactId>
+        <version>${frameworks.version}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-    <groupId>com.gomcarter.frameworks</groupId>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>base</artifactId>
-    <version>1.0.0${project.environment}</version>
+    <version>${frameworks.version}</version>
     <packaging>jar</packaging>
 
     <name>base</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/gomcarter/developer/tree/master/frameworks/base</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -51,44 +56,33 @@
 
         <zxing.version>3.4.0</zxing.version>
 
-        <project.environment>-SNAPSHOT</project.environment>
+        <spring.version>2.0.2.RELEASE</spring.version>
+
     </properties>
-
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <project.environment></project.environment>
-            </properties>
-        </profile>
-    </profiles>
-
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
@@ -235,45 +229,5 @@
             <artifactId>nacos-client</artifactId>
             <version>1.1.4</version>
         </dependency>
-
     </dependencies>
-
-<!--    <distributionManagement>-->
-<!--        <repository>-->
-<!--            <id>rdc-releases</id>-->
-<!--            <url>https://repo.rdc.aliyun.com/repository/109262-release-GmAhjN/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>rdc-snapshots</id>-->
-<!--            <url>https://repo.rdc.aliyun.com/repository/109262-snapshot-5YL6Wb/</url>-->
-<!--        </snapshotRepository>-->
-<!--    </distributionManagement>-->
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerVersion>1.8</compilerVersion>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1</version>
-                <configuration>
-                    <attach>true</attach>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>

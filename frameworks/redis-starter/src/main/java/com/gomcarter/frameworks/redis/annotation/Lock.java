@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 /**
  * 分布式锁，基于redis的setnx实现，在需要锁定的入口函数上@Lock即可
  *
- * @author liyin on 2019-09-05 16:00:46
+ * @author gomcarter on 2019-09-05 16:00:46
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

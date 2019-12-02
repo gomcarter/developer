@@ -3,7 +3,7 @@ package com.gomcarter.frameworks.dubbo.demo;
 import java.io.Serializable;
 
 /**
- * @author liyin
+ * @author gomcarter
  */
 public class DemoDto implements Serializable {
     private Integer id;
