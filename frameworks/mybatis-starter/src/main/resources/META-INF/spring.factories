@@ -1,2 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  io.github.gomcarter.frameworks.mybatis.NacosMybatisRegistrar
+#  com.gomcarter.frameworks.mybatis.NacosMybatisRegistrar
