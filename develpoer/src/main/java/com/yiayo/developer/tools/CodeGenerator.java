@@ -29,11 +29,11 @@ public class CodeGenerator {
     //子目录，填你想填
     public final static String subPackage = "";
 
-    public final static String dbUrl = "jdbc:mysql://39.108.147.10:3306/ordercenter";
+    public final static String dbUrl = "jdbc:mysql://127.0.0.1:3306/ordercenter";
     /* 数据库用户 */
-    public final static String dbUsername = "java";
+    public final static String dbUsername = "root";
     /* 数据库密码 */
-    public final static String dbPassword = "h6IGZQ7IOf82DCa1CtSYmalOfi2ymBOB";
+    public final static String dbPassword = "123";
     /* 表名 */
     //为""会则更新整个数据库
     public final static String generateTable = "fsm_log";
