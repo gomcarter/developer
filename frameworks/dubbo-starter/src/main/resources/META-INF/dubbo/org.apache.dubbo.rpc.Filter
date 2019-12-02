@@ -1,1 +1,1 @@
-logFilter=it.gomcarter.frameworks.dubbo.filter.LogFilter
+logFilter=io.github.gomcarter.frameworks.dubbo.filter.LogFilter

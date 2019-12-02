@@ -1,2 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  it.gomcarter.frameworks.httpapi.aop.CheckTokenInterceptor
+#  io.github.gomcarter.frameworks.httpapi.aop.CheckTokenInterceptor

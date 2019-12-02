@@ -1,2 +1,2 @@
 #org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-#  it.gomcarter.frameworks.redis.RedisConfiguration
+#  io.github.gomcarter.frameworks.redis.RedisConfiguration
