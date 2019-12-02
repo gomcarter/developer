@@ -39,7 +39,7 @@
 
         <commons.lang3.version>3.9</commons.lang3.version>
 
-        <fastxml.jackson.core.version>2.9.2</fastxml.jackson.core.version>
+        <fastxml.jackson.core.version>2.9.10.1</fastxml.jackson.core.version>
 
         <servlet.version>4.0.0</servlet.version>
 
