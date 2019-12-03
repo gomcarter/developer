@@ -16,6 +16,10 @@ import java.util.List;
 @RequestMapping("privates/interfaces")
 @Order
 public class PrivatesInterfacesController {
+    /**
+     * @return ApiInterface
+     * @throws Exception e
+     */
     @GetMapping
     List<ApiInterface> interfaces() throws Exception {
         return InterfacesRegister.register();

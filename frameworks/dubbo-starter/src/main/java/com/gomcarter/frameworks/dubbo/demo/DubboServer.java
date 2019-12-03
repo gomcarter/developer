@@ -8,6 +8,9 @@ import org.apache.dubbo.config.ServiceConfig;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * @author gomcarter
+ */
 public class DubboServer {
     public static void main(String[] args) throws InterruptedException {
 //        System.setProperty("dubbo.application.logger", "slf4j");

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * @author cn40387 on 15/5/14.
+ * @author gomcarter
  */
 public class SSLUnsafeHttpClientManager extends DefaultHttpClientManager {
 

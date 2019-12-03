@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 /**
- * @Author： gomcarter
+ * @author gomcarter
  */
 public class Groupable<KEY, VAL> {
     private Map<KEY, VAL> map;

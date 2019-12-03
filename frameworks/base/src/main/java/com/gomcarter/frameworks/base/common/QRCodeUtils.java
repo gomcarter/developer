@@ -4,7 +4,6 @@ package com.gomcarter.frameworks.base.common;
 import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
@@ -12,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Objects;
 
 /**
  * 二维码工具类
@@ -23,22 +23,30 @@ public class QRCodeUtils {
     public static final String CHARSET = "UTF-8";
 
     private static QRCodeWriter writer = new QRCodeWriter();
-    private static QRCodeReader reader = new QRCodeReader();
+    // private static QRCodeReader reader = new QRCodeReader();
 
+    /**
+     * @param content content
+     * @param size    size
+     * @return image
+     * @throws Exception for failed
+     */
     public static BufferedImage createImage(String content,
-                                            Integer qrcodeSize) throws Exception {
+                                            Integer size) throws Exception {
 
-        return createImage(content, qrcodeSize, 0, ErrorCorrectionLevel.L);
+        return createImage(content, size, 0, ErrorCorrectionLevel.L);
     }
 
     /**
-     * @param content
-     * @param qrcodeSize
-     * @return
-     * @throws Exception
+     * @param content     content
+     * @param size        size
+     * @param level       level
+     * @param extraHeight extraHeight for extra empty area under qrcode
+     * @return image
+     * @throws Exception for failed
      */
     public static BufferedImage createImage(String content,
-                                            Integer qrcodeSize,
+                                            Integer size,
                                             Integer extraHeight,
                                             ErrorCorrectionLevel level) throws Exception {
 
@@ -49,7 +57,7 @@ public class QRCodeUtils {
         hints.put(EncodeHintType.ERROR_CORRECTION, level);
         hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
         hints.put(EncodeHintType.MARGIN, 1);
-        BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, qrcodeSize, qrcodeSize, hints);
+        BitMatrix bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, size, size, hints);
         int width = bitMatrix.getWidth();
         int height = bitMatrix.getHeight();
         BufferedImage image = new BufferedImage(width, height + extraHeight,
@@ -63,30 +71,36 @@ public class QRCodeUtils {
         return image;
     }
 
+    /**
+     * @param content content
+     * @param size    size
+     * @param level   level
+     * @return image
+     * @throws Exception for failed
+     */
     public static BufferedImage createImage(String content,
-                                            int qrcodeSize,
+                                            int size,
                                             ErrorCorrectionLevel level) throws Exception {
-        return createImage(content, qrcodeSize, 0, level);
+        return createImage(content, size, 0, level);
     }
 
     /**
      * 解析二维码
      *
      * @param file 二维码图片
-     * @return
-     * @throws Exception
+     * @return qrcode content
+     * @throws Exception Exception
      */
     public static String decode(File file) throws Exception {
-
-        return decodeCore(file).getText();
+        return Objects.requireNonNull(decodeCore(file)).getText();
     }
 
     /**
      * 二维码解析的核心类
      *
      * @param file 二维码图片
-     * @return
-     * @throws Exception
+     * @return qrcode result
+     * @throws Exception for read file
      */
     public static Result decodeCore(File file) throws Exception {
         BufferedImage image;
@@ -108,42 +122,11 @@ public class QRCodeUtils {
      * 解析二维码
      *
      * @param path 二维码图片地址
-     * @return
-     * @throws Exception
+     * @return qrcode content
+     * @throws Exception if failed
      */
     public static String decode(String path) throws Exception {
         return QRCodeUtils.decode(new File(path));
-    }
-
-    public static void main(String[] args) throws Exception {
-//        BufferedImage image = QRCodeUtils.createImage("XM_kjsdjkasdgjlkasgdlkj", 280);
-//        BufferedImage image = QRCodeUtils.createImage("http://dec.lh-xm.com/e/1", 280);
-//        BufferedImage image1 = QRCodeUtils.createImage("http://g.xx.com/c/ycxWcMi3qSY1WMxe2rn2M4", 280);
-//        BufferedImage image2 = QRCodeUtils.createImage("http://g.xx.com/c/ycxWcMi3qSY1WMxe2rn2M4", 280);
-//        BufferedImage image = QRCodeUtils.createImage("http://g.xx.com/c/ycxWcMi3qSY1WMxe2rn2M4", 280);
-
-//        File file = new File("/Users/liyin/Downloads/aa.jpg");
-//        boolean a = ImageIO.write(image, ImageUtils.FORMAT_NAME_JPG, file);
-//        System.out.println(a);
-//
-//
-//        System.out.println(new Md5Hash("https://g.xx.com/c/1HFNhzuNNi4v-NqF8lEREQ").toHex());
-//        ImageIO.write(QRCodeUtils.createImage("https://g.xx.com/c/1HFNhzuNNi4v-NqF8lEREQ", 112), ImageUtils.FORMAT_NAME_JPG,
-//          new File("D://b.png"));
-//        ImageIO.write(QRCodeUtils.createImage(new Md5Hash("https://g.xx.com/c/1HFNhzuNNi4v-NqF8lEREQ").toHex(), 280),
-//          ImageUtils.FORMAT_NAME_JPG, new File("D://b.png"));
-//
-//        InputStream in = new QRCodeUtils().getClass().getResourceAsStream("/template/letter.pdf");
-//        ImageIO.read(in);
-//        BufferedImage image = QRCodeUtils.createImage("http://g.xx.com/c/ycxWcMi3qSY1WMxe2rn2M4", 280);
-//        ImageUtils.writeToFile(image, "/Users/liyin/Downloads/3.png");
-
-        System.out.println(decode(new File("d://1234.png")));
-
-        System.out.println(decode("/Users/liyin/Downloads/aa.jpg"));
-//        System.out.println(decode("/Users/liyin/Downloads/1.png"));
-        System.out.println(decode("/Users/liyin/Downloads/3.jpg"));
-
     }
 }
 

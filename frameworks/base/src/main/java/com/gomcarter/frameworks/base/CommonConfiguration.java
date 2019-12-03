@@ -28,22 +28,33 @@ public class CommonConfiguration {
 
     /**
      * 设置允许可以跨域访问
+     *
+     * @return CrossAccessFilter
      */
     @Bean
     public CrossAccessFilter crossAccessFilter() {
         return new CrossAccessFilter();
     }
 
+    /**
+     * @return HttpPutFormContentFilter
+     */
     @Bean
     public HttpPutFormContentFilter httpPutFormContentFilter() {
         return new HttpPutFormContentFilter();
     }
 
+    /**
+     * @return SpringContextHolder
+     */
     @Bean
     public SpringContextHolder springContextHolder() {
         return new SpringContextHolder();
     }
 
+    /**
+     * @return jacksonObjectMapper
+     */
     @Bean
     @Primary
     @ConditionalOnMissingBean(ObjectMapper.class)
@@ -55,6 +66,8 @@ public class CommonConfiguration {
 
     /**
      * 文件上传配置
+     *
+     * @return multipartConfigElement
      */
     @Bean
     public MultipartConfigElement multipartConfigElement() {
@@ -66,6 +79,9 @@ public class CommonConfiguration {
         return factory.createMultipartConfig();
     }
 
+    /**
+     * @return responseBodyConverter
+     */
     @Bean
     public HttpMessageConverter<String> responseBodyConverter() {
         return new StringHttpMessageConverter(Charset.defaultCharset());

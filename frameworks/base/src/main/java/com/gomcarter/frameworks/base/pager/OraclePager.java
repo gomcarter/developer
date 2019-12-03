@@ -4,7 +4,7 @@ package com.gomcarter.frameworks.base.pager;
 /**
  * 提供oracle默认的翻页工具
  *
- * @authher gomcarter 2017年12月2日 08:10:35
+ * @author gomcarter 2017年12月2日 08:10:35
  */
 public class OraclePager implements Pageable {
 
@@ -35,6 +35,10 @@ public class OraclePager implements Pageable {
 
     }
 
+    /**
+     * @param pageNo pageNo
+     * @return Pageable
+     */
     @Override
     public Pageable turnPage(int pageNo) {
         this.startNum = pageNo * this.pageSize + 1;
@@ -42,6 +46,9 @@ public class OraclePager implements Pageable {
         return this;
     }
 
+    /**
+     * @return startNum
+     */
     @Override
     public int getStartNum() {
         return startNum;
@@ -88,16 +95,25 @@ public class OraclePager implements Pageable {
         return this;
     }
 
+    /**
+     * @return pageSize
+     */
     @Override
     public int getPageCount() {
         return pageSize;
     }
 
+    /**
+     * @return sort
+     */
     @Override
     public String getOrderColumn() {
         return this.sort;
     }
 
+    /**
+     * @return order
+     */
     @Override
     public String getOrderType() {
         return this.order;

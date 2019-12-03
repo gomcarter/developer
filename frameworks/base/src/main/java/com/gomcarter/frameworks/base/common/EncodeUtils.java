@@ -22,7 +22,7 @@ import java.net.URLEncoder;
  * 2.Commons-Lang的xml/html escape
  * 3.JDK提供的URLEncoder
  *
- * @author calvin
+ * @author gomcarter
  */
 public abstract class EncodeUtils {
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -30,21 +30,31 @@ public abstract class EncodeUtils {
     private static final String DEFAULT_URL_ENCODING = "UTF-8";
 
     /**
-     * Hex编码, byte[]->String.
+     * Hex编码, byte[]-&gt;String.
+     *
+     * @param input 需要编码的 byte
+     * @return 编码结果
      */
     public static String encodeHex(byte[] input) {
         return Hex.encodeHexString(input);
     }
 
     /**
-     * Hex解码, String->byte[].
+     * Hex解码, String-&gt;byte[].
+     *
+     * @param input 需要解码的字符串
+     * @return 解码结果
+     * @throws DecoderException for DecoderException
      */
     public static byte[] decodeHex(String input) throws DecoderException {
         return Hex.decodeHex(input.toCharArray());
     }
 
     /**
-     * Base64编码, byte[]->String.
+     * Base64编码, byte[]-&gt;String.
+     *
+     * @param input 需要编码的 byte
+     * @return 编码结果
      */
     public static String encodeBase64(byte[] input) {
         return Base64.encodeBase64String(input);
@@ -52,27 +62,39 @@ public abstract class EncodeUtils {
 
     /**
      * Base64编码, URL安全(将Base64中的URL非法字符'+'和'/'转为'-'和'_', 见RFC3548).
+     *
+     * @param input 需要编码的字符串
+     * @return 编码结果
      */
     public static String encodeUrlSafeBase64(byte[] input) {
         return Base64.encodeBase64URLSafeString(input);
     }
 
     /**
-     * Base64解码, String->byte[].
+     * Base64解码, String-&gt;byte[].
+     *
+     * @param input 需要解码的字符串
+     * @return 解码结果
      */
     public static byte[] decodeBase64(String input) {
         return Base64.decodeBase64(input);
     }
 
     /**
-     * Base62(0_9A_Za_z)编码数字, long->String.
+     * Base62(0_9A_Za_z)编码数字, long-&gt;String.
+     *
+     * @param num 需要编码的字符串
+     * @return 编码结果
      */
     public static String encodeBase62(long num) {
         return alphabetEncode(num, 62);
     }
 
     /**
-     * Base62(0_9A_Za_z)解码数字, String->long.
+     * Base62(0_9A_Za_z)解码数字, String -&gt; long.
+     *
+     * @param str 需要解码的字符串
+     * @return 解码结果
      */
     public static long decodeBase62(String str) {
         return alphabetDecode(str, 62);
@@ -101,6 +123,10 @@ public abstract class EncodeUtils {
 
     /**
      * URL 编码, Encode默认为UTF-8.
+     *
+     * @param part for input
+     * @return 编码结果
+     * @throws UnsupportedEncodingException for exception
      */
     public static String urlEncode(String part) throws UnsupportedEncodingException {
         return URLEncoder.encode(part, DEFAULT_URL_ENCODING);
@@ -108,6 +134,10 @@ public abstract class EncodeUtils {
 
     /**
      * URL 解码, Encode默认为UTF-8.
+     *
+     * @param part for input
+     * @return 解码结果
+     * @throws UnsupportedEncodingException for exception
      */
     public static String urlDecode(String part) throws UnsupportedEncodingException {
         return URLDecoder.decode(part, DEFAULT_URL_ENCODING);

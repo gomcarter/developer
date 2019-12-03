@@ -12,6 +12,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * @author gomcarter
+ */
 public class CheckTokenInterceptor extends HandlerInterceptorAdapter {
 
     @Override
@@ -34,9 +37,6 @@ public class CheckTokenInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
-    /**
-     * This implementation is empty.
-     */
     @Override
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response, Object handler,
@@ -44,9 +44,6 @@ public class CheckTokenInterceptor extends HandlerInterceptorAdapter {
 
     }
 
-    /**
-     * This implementation is empty.
-     */
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception ex)

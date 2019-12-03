@@ -78,8 +78,8 @@ public class XmlExcel implements Closeable {
     /**
      * 直接写入数据
      *
-     * @param dataList Collection < map< header,  value  > >
-     * @throws IOException
+     * @param dataList Collection&lt;map&lt;header, value&gt;&gt;
+     * @throws IOException IOException
      */
     public XmlExcel write(Collection<Object> dataList) throws IOException {
         return write(null, dataList);
@@ -88,9 +88,9 @@ public class XmlExcel implements Closeable {
     /**
      * 直接写入数据
      *
-     * @param sheetName    sheet名称
-     * @param dataList list < map< header,  value  > >
-     * @throws IOException
+     * @param sheetName sheet名称
+     * @param dataList  list&lt;map&lt;header, value&gt;&gt;
+     * @throws IOException IOException
      */
     public XmlExcel write(String sheetName, Collection<Object> dataList) throws IOException {
         //写头
@@ -129,14 +129,15 @@ public class XmlExcel implements Closeable {
 
     /**
      * 开始
-     * @throws IOException
+     *
+     * @throws IOException IOException
      */
     public XmlExcel start() throws IOException {
         return this.start(null);
     }
 
     public XmlExcel appendBody(Collection<? extends Object> dataList) throws IOException {
-        if(dataList == null || dataList.isEmpty()) {
+        if (dataList == null || dataList.isEmpty()) {
             return this;
         }
         //如果未设置头，则根据数据解析一个头出来

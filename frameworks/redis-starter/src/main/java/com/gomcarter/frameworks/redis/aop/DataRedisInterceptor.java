@@ -30,9 +30,9 @@ public class DataRedisInterceptor {
     /**
      * 缓存annotation标签
      *
-     * @param joinPoint
-     * @return
-     * @throws Throwable
+     * @param joinPoint joinPoint
+     * @return Object
+     * @throws Throwable Throwable
      */
     public Object cacheData(ProceedingJoinPoint joinPoint) throws Throwable {
         //如果未开启缓存 则直接关闭
@@ -90,7 +90,6 @@ public class DataRedisInterceptor {
             // 获得锁，查看是否有缓存，有就直接获取缓存数据
             String value = redisProxy.get(key);
             if (value != null) {
-                // logger.info(Thread.currentThread().getName() + "等到数据拉，出去咯");
                 return dataMapper.fromJson(value, TypeFactory.defaultInstance().constructType(m.getGenericReturnType()));
             } else {
                 Object object = joinPoint.proceed();
@@ -98,8 +97,15 @@ public class DataRedisInterceptor {
                 // JDATA Mapper谁都不许改！！！！ 因为Jmapper缓存会把jsonIgnore的给去掉
                 String jsonData = dataMapper.toJson(object);
                 if (caches.nullable() || !isEmptyJson(jsonData)) {
-                    if (!redisProxy.set(key, jsonData, Long.valueOf(caches.time()) * 60L)) {
-                        logger.error("{}取到数据，但是存入缓存失败", joinPoint.getClass().getName());
+                    long timeout = caches.time();
+                    if (timeout < 0) {
+                        if (!redisProxy.set(key, jsonData)) {
+                            logger.error("{}取到数据，但是存入缓存失败", joinPoint.getClass().getName());
+                        }
+                    } else {
+                        if (!redisProxy.set(key, jsonData, timeout)) {
+                            logger.error("{}取到数据，但是存入缓存失败", joinPoint.getClass().getName());
+                        }
                     }
                 }
                 return object;
@@ -113,8 +119,7 @@ public class DataRedisInterceptor {
     /**
      * 去除缓存方法
      *
-     * @param joinPoint
-     * @throws Throwable
+     * @param joinPoint joinPoint
      */
     public void dropCache(JoinPoint joinPoint) {
         // 如果未开启缓存 则直接返回
@@ -140,9 +145,9 @@ public class DataRedisInterceptor {
     /**
      * 执行分布式锁
      *
-     * @param joinPoint
-     * @return
-     * @throws Throwable
+     * @param joinPoint joinPoint
+     * @return Object
+     * @throws Throwable Throwable
      */
     public Object lock(ProceedingJoinPoint joinPoint) throws Throwable {
         // 获取到方法
@@ -222,8 +227,8 @@ public class DataRedisInterceptor {
     /**
      * Json字符串是否为空(对象或集合)
      *
-     * @param jsonData
-     * @return
+     * @param jsonData jsonData
+     * @return true for the empty
      */
     private boolean isEmptyJson(String jsonData) {
         return "null".equalsIgnoreCase(jsonData) || "[]".equals(jsonData);

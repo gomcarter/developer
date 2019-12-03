@@ -16,19 +16,25 @@ import java.lang.annotation.*;
 public @interface EnableNacosRedis {
 
     /**
-     * diamond data_id
+     * nacos data_id
+     *
+     * @return dataId
      */
     @AliasFor("value")
     String dataId() default "CONNECTION";
 
     /**
      * data_id
+     *
+     * @return dataId
      */
     @AliasFor("dataId")
     String value() default "CONNECTION";
 
     /**
-     * diamond group
+     * nacos group
+     *
+     * @return group
      */
     String group() default "REDIS";
 }

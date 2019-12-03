@@ -15,6 +15,12 @@ import java.lang.reflect.Method;
  */
 public abstract class BeanFieldAndMethodProcessor implements BeanPostProcessor, PriorityOrdered {
 
+    /**
+     * @param bean     bean
+     * @param beanName beanName
+     * @return the bean
+     * @throws BeansException for nothing
+     */
     @Override
     public final Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
@@ -28,6 +34,14 @@ public abstract class BeanFieldAndMethodProcessor implements BeanPostProcessor, 
         return bean;
     }
 
+    /**
+     * do nothing
+     *
+     * @param bean     bean
+     * @param beanName beanName
+     * @return the bean
+     * @throws BeansException for nothing
+     */
     @Override
     public final Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         return bean;
@@ -35,11 +49,19 @@ public abstract class BeanFieldAndMethodProcessor implements BeanPostProcessor, 
 
     /**
      * subclass should implement this method to process field
+     *
+     * @param bean     bean
+     * @param beanName beanName
+     * @param field    some one field of bean
      */
     protected abstract void processField(Object bean, String beanName, Field field);
 
     /**
      * subclass should implement this method to process method
+     *
+     * @param bean     bean
+     * @param beanName beanName
+     * @param method   some one method bean
      */
     protected abstract void processMethod(Object bean, String beanName, Method method);
 

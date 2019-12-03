@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+/**
+ * @author gomcarter on 2019-11-15 15:20:46
+ */
 public class PackageUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(PackageUtils.class);
@@ -22,8 +25,8 @@ public class PackageUtils {
     /**
      * 从包package中获取所有的Class
      *
-     * @param pack
-     * @return
+     * @param pack pack such as "com.gomcarter"
+     * @return Set of class
      */
     public static Set<Class<?>> getClasses(String pack) {
         // 第一个class类的集合
@@ -108,10 +111,10 @@ public class PackageUtils {
     /**
      * 以文件的形式来获取包下的所有Class
      *
-     * @param packageName
-     * @param packagePath
-     * @param recursive
-     * @param classes
+     * @param packageName packageName
+     * @param packagePath packagePath
+     * @param recursive   recursive
+     * @param classes     classes
      */
     public static void findAndAddClassesInPackageByFile(String packageName,
                                                         String packagePath,

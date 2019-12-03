@@ -14,7 +14,7 @@
 //
 //
 ///**
-// * @authher gomcarter 2017年12月2日 08:10:35
+// * @author gomcarter 2017年12月2日 08:10:35
 // */
 //public class DownloaderUtils {
 //

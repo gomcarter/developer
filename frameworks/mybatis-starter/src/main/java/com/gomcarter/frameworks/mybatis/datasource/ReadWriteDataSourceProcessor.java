@@ -24,13 +24,13 @@ import java.util.Set;
  *
  *
  * ★★读/写动态数据库选择处理器★★
- * 1、首先读取<tx:advice>事务属性配置
+ * 1、首先读取&lt;tx:advice&gt;事务属性配置
  *
  * 2、对于所有读方法设置 read-only="true" 表示读取操作（以此来判断是选择读还是写库），其他操作都是走写库
- *    如<tx:method name="×××" read-only="true"/>
+ *    如&lt;tx:method name="×××" read-only="true"/&gt;
  *
  * 3、 forceChoiceReadOnWrite用于确定在如果目前是写（即开启了事务），下一步如果是读，
- *    是直接参与到写库进行读，还是强制从读库读<br/>
+ *    是直接参与到写库进行读，还是强制从读库读<br>
  *      forceChoiceReadOnWrite:true 表示目前是写，下一步如果是读，强制参与到写事务（即从写库读）
  *                                  这样可以避免写的时候从读库读不到数据
  *
@@ -40,13 +40,11 @@ import java.util.Set;
  *                                  通过设置事务传播行为：NOT_SUPPORTS实现（连接是尽快释放）
  *                                  『此处借助了 NOT_SUPPORTS会挂起之前的事务进行操作 然后再恢复之前事务完成的』
  * 4、配置方式
- *  <bean id="readWriteDataSourceTransactionProcessor" class="cn.javass.common.datasource.ReadWriteDataSourceProcessor">
- *      <property name="forceChoiceReadWhenWrite" value="false"/>
- *  </bean>
+ *  &lt;bean id="readWriteDataSourceTransactionProcessor" class="cn.javass.common.datasource.ReadWriteDataSourceProcessor"&gt;
+ *      &lt;property name="forceChoiceReadWhenWrite" value="false"/&gt;
+ *  &lt;/bean&gt;
  *
- * 5、目前只适用于<tx:advice>情况 TODO 支持@Transactional注解事务
- *
- *
+ * 5、目前只适用于&lt;tx:advice&gt;情况
  *
  * ★★通过AOP切面实现读/写库选择★★
  *
@@ -60,9 +58,9 @@ import java.util.Set;
  * 3、如果不匹配，说明默认将使用写库进行操作
  *
  * 4、配置方式
- *      <aop:aspect order="-2147483648" ref="readWriteDataSourceTransactionProcessor">
- *          <aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB"/>
- *      </aop:aspect>
+ *      &lt;aop:aspect order="-2147483648" ref="readWriteDataSourceTransactionProcessor"&gt;
+ *          &lt;aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB"/&gt;
+ *      &lt;/aop:aspect&gt;
  *  4.1、此处order = Integer.MIN_VALUE 即最高的优先级（请参考http://jinnianshilongnian.iteye.com/blog/1423489）
  *  4.2、切入点：txPointcut 和 实施事务的切入点一样
  *  4.3、determineReadOrWriteDB方法用于决策是走读/写库的，请参考
@@ -72,28 +70,25 @@ import java.util.Set;
  * </pre>
  *
  * @author Zhang Kaitao
+ * @author gomcarter
  */
 public class ReadWriteDataSourceProcessor implements BeanPostProcessor {
     private boolean forceChoiceReadWhenWrite = false;
 
-    private Set<String> writeMethodSet = new HashSet<String>();
+    private Set<String> writeMethodSet = new HashSet<>();
 
     /**
      * 当之前操作是写的时候，是否强制从从库读
      * 默认（false） 当之前操作是写，默认强制从写库读
      *
-     * @param forceChoiceReadWhenWrite
+     * @param forceChoiceReadWhenWrite forceChoiceReadWhenWrite
      */
-
     public void setForceChoiceReadWhenWrite(boolean forceChoiceReadWhenWrite) {
-
         this.forceChoiceReadWhenWrite = forceChoiceReadWhenWrite;
     }
 
-
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
         if (!(bean instanceof NameMatchTransactionAttributeSource)) {
             return bean;
         }
@@ -129,6 +124,11 @@ public class ReadWriteDataSourceProcessor implements BeanPostProcessor {
         }
     }
 
+    /**
+     * @param pjp join point
+     * @return Object
+     * @throws Throwable Throwable
+     */
     public Object determineReadOrWriteDB(ProceedingJoinPoint pjp) throws Throwable {
         // 如果未标记才标记，如果标记过了就不就标记
         if (ReadWriteDataSourceDecision.unmarked()) {
@@ -150,7 +150,6 @@ public class ReadWriteDataSourceProcessor implements BeanPostProcessor {
     }
 
     private boolean isChoiceReadDB(String methodName) {
-
         String bestNameMatch = null;
         for (String mappedName : this.writeMethodSet) {
             if (isMatch(methodName, mappedName)) {
@@ -165,7 +164,6 @@ public class ReadWriteDataSourceProcessor implements BeanPostProcessor {
 
         return false;
     }
-
 
     protected boolean isMatch(String methodName, String mappedName) {
         return PatternMatchUtils.simpleMatch(mappedName, methodName);

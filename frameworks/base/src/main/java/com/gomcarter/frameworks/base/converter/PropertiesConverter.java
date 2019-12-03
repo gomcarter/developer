@@ -12,6 +12,11 @@ import java.util.Properties;
  */
 public class PropertiesConverter implements Convertable {
 
+    /**
+     * @param sourceValue sourceValue
+     * @param ignore        ignore
+     * @return Properties result
+     */
     @Override
     public Properties convert(Object sourceValue, Type ignore) {
         if (sourceValue == null) {

@@ -11,7 +11,7 @@ import org.apache.http.protocol.HttpContext;
 import java.util.Map;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public class BasicConnectionKeepAliveStrategy extends DefaultConnectionKeepAliveStrategy {
 

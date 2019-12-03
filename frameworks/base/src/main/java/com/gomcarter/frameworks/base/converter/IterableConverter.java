@@ -12,6 +12,12 @@ import java.lang.reflect.Type;
  */
 public class IterableConverter implements Convertable {
 
+    /**
+     * @param sourceValue sourceValue
+     * @param type        type
+     * @param <T>         T
+     * @return Iterable result
+     */
     @Override
     public <T> T convert(Object sourceValue, Type type) {
         ParameterizedType parameterizedType = (ParameterizedType) type;

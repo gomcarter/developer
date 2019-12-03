@@ -1,7 +1,7 @@
 package com.gomcarter.frameworks.httpapi.message;
 
 /**
- * @author cn40387 on 15/5/11.
+ * @author gomcarter
  */
 public class MessageConfig {
 

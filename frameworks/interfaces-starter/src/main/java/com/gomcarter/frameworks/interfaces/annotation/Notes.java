@@ -17,11 +17,15 @@ public @interface Notes {
 
     /**
      * content
+     *
+     * @return content
      */
     String value() default "";
 
     /**
      * null or not
+     *
+     * @return true then not null
      */
     boolean notNull() default false;
 }

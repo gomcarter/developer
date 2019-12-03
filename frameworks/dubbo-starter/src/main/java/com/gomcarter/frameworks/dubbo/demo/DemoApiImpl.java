@@ -5,6 +5,10 @@ package com.gomcarter.frameworks.dubbo.demo;
  */
 public class DemoApiImpl implements DemoApi {
 
+    /**
+     * @param id id
+     * @return DemoDto
+     */
     @Override
     public DemoDto getById(Integer id) {
         return new DemoDto()

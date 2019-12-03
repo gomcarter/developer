@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * @author cn40387 on 15/5/11.
+ * @author gomcarter
  */
 public class DefaultResponseHandler implements ResponseHandler<String> {
 

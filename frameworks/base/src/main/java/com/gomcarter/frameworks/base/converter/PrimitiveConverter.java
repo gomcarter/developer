@@ -12,6 +12,12 @@ import java.lang.reflect.Type;
  */
 public class PrimitiveConverter implements Convertable {
 
+    /**
+     * @param sourceValue sourceValue
+     * @param type        type
+     * @param <T>         T
+     * @return Primitive result
+     */
     @Override
     public <T> T convert(Object sourceValue, Type type) {
         // SimpleTypeConverter线程不安全，只能每次转换每次new

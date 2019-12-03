@@ -13,6 +13,9 @@ public enum StorageType {
             return NacosClientUtils.getConfigAsString("nfs", "STORAGE_TYPE") + fileName;
         }
     },
+    /**
+     * 放到 oss
+     */
     oss {
         @Override
         public String getDownloadUrl(Downloader downloader, String fileName) {

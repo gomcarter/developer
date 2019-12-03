@@ -17,14 +17,32 @@ import java.util.stream.Stream;
  */
 public class Appender {
 
-    static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
+    private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
     public enum DefaultStyle {
+        /**
+         * DEFAULT
+         */
         DEFAULT(Style.of("Default")),
+        /**
+         * TABLE
+         */
         TABLE(Style.of("t01")),
+        /**
+         * HEADER
+         */
         HEADER(Style.of("s01", null, true, "#00B050", Format.defaults)),
+        /**
+         * TEXT
+         */
         TEXT(Style.of("s02", null, false, null, Format.defaults)),
+        /**
+         * FLOAT
+         */
         FLOAT(Style.of("s03", null, false, null, Format.number)),
+        /**
+         * INTEGER
+         */
         INTEGER(Style.of("s04", null, false, null, Format.integer));
 
         public Style style;
@@ -39,8 +57,8 @@ public class Appender {
         }
     }
 
-    static Function defaultCellStyle = value -> {
-        if (value instanceof Number && value != null) {
+    private static Function defaultCellStyle = value -> {
+        if (value != null && value instanceof Number) {
             if (((Number) value).longValue() == ((Number) value).floatValue()) {
                 return DefaultStyle.INTEGER.style.getKey();
             }
@@ -75,8 +93,8 @@ public class Appender {
     /**
      * 预定义样式, 后期将样式写到cell上即可
      *
-     * @param styles
-     * @return
+     * @param styles styles
+     * @return byte
      */
     public static byte[] styles(Collection<Style> styles) {
         String g = Stream.concat(DefaultStyle.getStyles().stream(), styles == null ? Stream.empty() : styles.stream())
@@ -122,7 +140,7 @@ public class Appender {
 
     /**
      * @param sheetName ： 外部控制sheetName不重复
-     * @return
+     * @return byte
      */
     public static byte[] nextSheet(String sheetName) {
         return ("</Table></Worksheet>" +
@@ -133,6 +151,10 @@ public class Appender {
                 "ss:ExpandedRowCount=\"120000\">").getBytes(DEFAULT_CHARSET);
     }
 
+    /**
+     * @param headers headers
+     * @return byte
+     */
     public static byte[] header(List<Header> headers) {
         StringBuilder define = new StringBuilder();
 //        StringBuffer row  = new StringBuffer(" <Row ss:AutoFitHeight=\"0\" ss:Height=\"63\">");
@@ -179,11 +201,10 @@ public class Appender {
     }
 
     /**
-     * @param headers
-     * @param elements List< map< headerkey, data > >
-     * @return
+     * @param headers  headers
+     * @param elements List&lt;map&lt;headerkey, data&gt;&gt;
+     * @return byte
      */
-
     public static byte[] rows(List<Header> headers, Collection<? extends Object> elements) {
         if (elements == null || elements.size() <= 0) {
             return new byte[0];

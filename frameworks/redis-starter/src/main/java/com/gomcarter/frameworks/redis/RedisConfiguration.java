@@ -17,6 +17,10 @@ public class RedisConfiguration {
 
     private DataRedisInterceptor dataRedisInterceptor;
 
+    /**
+     * @param redisProxy redisProxy
+     * @return DataRedisInterceptor
+     */
     @Bean
     public DataRedisInterceptor dataRedisInterceptor(RedisProxy redisProxy) {
         dataRedisInterceptor = new DataRedisInterceptor()

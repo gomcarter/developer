@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author cn40387 on 15/5/11.
+ * @author gomcarter
  */
 public class PostRequestMessage extends RequestMessage {
 

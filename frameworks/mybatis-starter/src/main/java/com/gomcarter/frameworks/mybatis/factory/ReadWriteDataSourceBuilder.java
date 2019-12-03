@@ -1,9 +1,9 @@
 package com.gomcarter.frameworks.mybatis.factory;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.gomcarter.frameworks.base.common.CustomStringUtils;
 import com.gomcarter.frameworks.mybatis.datasource.ReadWriteDataSource;
 import com.google.common.collect.Lists;
-import com.gomcarter.frameworks.base.common.CustomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
@@ -13,13 +13,16 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * 完成从diamond读取mysql配置
- * 以及读库，主库故障转移
- * 基于druid实现，如果以后用别的数据库连接，需要重新实现
- *
  * @author gomcarter on 2018年2月28日 11:26:07
  */
 public class ReadWriteDataSourceBuilder {
+
+    /**
+     * @param readWriteDataSource readWriteDataSource
+     * @param properties          properties
+     * @return ReadWriteDataSource
+     * @throws Exception Exception
+     */
     public static ReadWriteDataSource createDataSource(ReadWriteDataSource readWriteDataSource, Properties properties) throws Exception {
 
         //初始化主库
@@ -81,6 +84,10 @@ public class ReadWriteDataSourceBuilder {
         return dataSource;
     }
 
+    /**
+     * @param dataSource dataSource
+     * @throws Exception Exception
+     */
     public static void destroy(ReadWriteDataSource dataSource) throws Exception {
         if (dataSource != null) {
             DataSource write = dataSource.getWriteDataSource();

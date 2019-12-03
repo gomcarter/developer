@@ -13,7 +13,14 @@ package com.gomcarter.frameworks.mybatis.datasource;
 public class ReadWriteDataSourceDecision {
 
     public enum DataSourceType {
-        write, read;
+        /**
+         * write to be the write database
+         */
+        write,
+        /**
+         * read to be the read database
+         */
+        read
     }
 
 

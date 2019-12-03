@@ -12,11 +12,28 @@ import java.util.Objects;
  */
 public class BeanRegistrationUtils {
 
+    /**
+     * 注册bean
+     *
+     * @param registry  spring registry
+     * @param beanName  beanName
+     * @param beanClass beanClass
+     * @return true if register success
+     */
     public static boolean registerBeanDefinitionIfNotExists(BeanDefinitionRegistry registry, String beanName,
                                                             Class<?> beanClass) {
         return registerBeanDefinitionIfNotExists(registry, beanName, beanClass, null);
     }
 
+    /**
+     * 注册bean
+     *
+     * @param registry            spring registry
+     * @param beanName            beanName
+     * @param beanClass           beanClass
+     * @param extraPropertyValues the field values for bean construct
+     * @return true if register success
+     */
     public static boolean registerBeanDefinitionIfNotExists(BeanDefinitionRegistry registry, String beanName,
                                                             Class<?> beanClass, Map<String, Object> extraPropertyValues) {
         if (registry.containsBeanDefinition(beanName)) {

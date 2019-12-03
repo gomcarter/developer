@@ -46,7 +46,7 @@ public class SqlHelper implements ApplicationContextAware {
      * 反射对象，增加对低版本Mybatis的支持
      *
      * @param object 反射对象
-     * @return
+     * @return MetaObject
      */
     public static MetaObject forObject(Object object) {
         return MetaObject.forObject(object, DEFAULT_OBJECT_FACTORY, DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
@@ -55,12 +55,11 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 通过接口获取sql
      *
-     * @param mapper
-     * @param methodName
-     * @param args
-     * @return
+     * @param mapper     mapper
+     * @param methodName methodName
+     * @param args       args
+     * @return String
      */
-
     public static String getMapperSql(Object mapper, String methodName,
                                       Object... args) {
         MetaObject metaObject = forObject(mapper);
@@ -79,10 +78,10 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 通过Mapper方法名获取sql
      *
-     * @param session
-     * @param fullMapperMethodName
-     * @param args
-     * @return
+     * @param session              session
+     * @param fullMapperMethodName fullMapperMethodName
+     * @param args                 args
+     * @return sql String
      */
     public static String getMapperSql(SqlSessionFactory session, String fullMapperMethodName, Object... args) {
         if (args == null || args.length == 0) {
@@ -100,9 +99,9 @@ public class SqlHelper implements ApplicationContextAware {
 
     /**
      * @param sfb                  sessionFactoryBean ID
-     * @param fullMapperMethodName
-     * @param args
-     * @return
+     * @param fullMapperMethodName fullMapperMethodName
+     * @param args                 args
+     * @return sql
      */
     public static String getMapperSql(String sfb, String fullMapperMethodName, Object... args) {
 
@@ -114,11 +113,11 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 通过Mapper接口和方法名
      *
-     * @param session
-     * @param mapperInterface
-     * @param methodName
-     * @param args
-     * @return
+     * @param session         session
+     * @param mapperInterface mapperInterface
+     * @param methodName      methodName
+     * @param args            args
+     * @return sql
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static String getMapperSql(SqlSessionFactory session, Class<?> mapperInterface, String methodName, Object... args) {
@@ -148,11 +147,11 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 通过Mapper接口和方法名
      *
-     * @param sfb
-     * @param mapperInterface
-     * @param methodName
-     * @param args
-     * @return
+     * @param sfb             sfb
+     * @param mapperInterface mapperInterface
+     * @param methodName      methodName
+     * @param args            args
+     * @return sql
      */
     public static String getMapperSql(String sfb, Class<?> mapperInterface, String methodName, Object... args) {
 
@@ -161,17 +160,22 @@ public class SqlHelper implements ApplicationContextAware {
         return getMapperSql(dssf, mapperInterface, methodName, args);
     }
 
+    /**
+     * @param mapperInterface mapperInterface
+     * @param methodName      methodName
+     * @param args            args
+     * @return sql
+     */
     public static String getMapperSql(Class<?> mapperInterface, String methodName, Object... args) {
-
         return getMapperSql("sqlSessionFactory", mapperInterface, methodName, args);
     }
 
     /**
      * 通过命名空间方式获取sql
      *
-     * @param session
-     * @param namespace
-     * @return
+     * @param session   session
+     * @param namespace namespace
+     * @return sql
      */
     public static String getNamespaceSql(SqlSessionFactory session, String namespace) {
         return getNamespaceSql(session, namespace, null);
@@ -180,10 +184,10 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 通过命名空间方式获取sql
      *
-     * @param session
-     * @param namespace
-     * @param params
-     * @return
+     * @param session   session
+     * @param namespace namespace
+     * @param params    params
+     * @return sql
      */
     public static String getNamespaceSql(SqlSessionFactory session, String namespace, Object params) {
         params = wrapCollection(params);
@@ -223,11 +227,11 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 根据类型替换参数 仅作为数字和字符串两种类型进行处理，需要特殊处理的可以继续完善这里
      *
-     * @param sql
-     * @param value
-     * @param jdbcType
-     * @param javaType
-     * @return
+     * @param sql      sql
+     * @param value    value
+     * @param jdbcType jdbcType
+     * @param javaType javaType
+     * @return sql
      */
     private static String replaceParameter(String sql, Object value, JdbcType jdbcType, Class<?> javaType) {
         String strValue = String.valueOf(value);
@@ -265,9 +269,9 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 获取指定的方法
      *
-     * @param clazz
-     * @param methodName
-     * @return
+     * @param clazz      clazz
+     * @param methodName methodName
+     * @return sql
      */
     private static Method getDeclaredMethods(Class<?> clazz, String methodName) {
         Method[] methods = clazz.getDeclaredMethods();
@@ -282,10 +286,10 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 获取参数注解名
      *
-     * @param method
-     * @param i
-     * @param paramName
-     * @return
+     * @param method    method
+     * @param i         v
+     * @param paramName paramName
+     * @return sql
      */
     private static String getParamNameFromAnnotation(Method method, int i, String paramName) {
         final Annotation[] paramAnnos = method.getParameterAnnotations()[i];
@@ -300,8 +304,8 @@ public class SqlHelper implements ApplicationContextAware {
     /**
      * 简单包装参数
      *
-     * @param object
-     * @return
+     * @param object object
+     * @return object
      */
     private static Object wrapCollection(final Object object) {
         if (object instanceof List) {

@@ -103,7 +103,7 @@ public class InterfacesRegister implements ApplicationContextAware {
      *
      * </p>
      *
-     * @return
+     * @return list of ApiInterface
      */
     @Notes("interface of register the interfaces to the interfaces center")
     public static List<ApiInterface> register() throws Exception {

@@ -12,11 +12,6 @@ import java.util.*;
  */
 public class Demo {
 
-    /**
-     * 示例
-     *
-     * @param args
-     */
     public static void main(String[] args) throws Exception {
 //        writeMap();
 

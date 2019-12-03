@@ -2,12 +2,9 @@ package com.gomcarter.frameworks.base.common;
 
 import com.google.zxing.LuminanceSource;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author : gomcarter 2017年12月3日 15:26:14
@@ -35,7 +32,8 @@ public class QrCodeLuminanceSource extends LuminanceSource {
         for (int y = top; y < top + height; y++) {
             for (int x = left; x < left + width; x++) {
                 if ((image.getRGB(x, y) & 0xFF000000) == 0) {
-                    image.setRGB(x, y, 0xFFFFFFFF); // = white
+                    // = white
+                    image.setRGB(x, y, 0xFFFFFFFF);
                 }
             }
         }
@@ -93,21 +91,13 @@ public class QrCodeLuminanceSource extends LuminanceSource {
         int sourceHeight = image.getHeight();
         AffineTransform transform = new AffineTransform(0.0, -1.0, 1.0,
                 0.0, 0.0, sourceWidth);
-        BufferedImage rotatedImage = new BufferedImage(sourceHeight,
-                sourceWidth, BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage rotatedImage = new BufferedImage(sourceWidth,
+                sourceHeight, BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g = rotatedImage.createGraphics();
         g.drawImage(image, transform, null);
         g.dispose();
         int width = getWidth();
         return new QrCodeLuminanceSource(rotatedImage, top,
                 sourceWidth - (left + width), getHeight(), width);
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedImage image;
-        image = ImageIO.read(new File("/Users/liyin/Downloads/1.png"));
-        QrCodeLuminanceSource source = new QrCodeLuminanceSource(image);
-
-        ImageUtils.writeToFile(source.image, "/Users/liyin/Downloads/2.png");
     }
 }

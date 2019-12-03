@@ -4,43 +4,43 @@ package com.gomcarter.frameworks.base.pager;
 import java.io.Serializable;
 
 /**
- * @authher gomcarter 2017年12月2日 08:10:35
+ * @author gomcarter 2017年12月2日 08:10:35
  */
 public interface Pageable extends Serializable {
 
     /**
      * 翻页到 pageNo 页
      *
-     * @param pageNo
-     * @return
+     * @param pageNo pageNo
+     * @return Pageable
      */
     Pageable turnPage(int pageNo);
 
     /**
      * 获取翻页起始项
      *
-     * @return
+     * @return startNum
      */
     int getStartNum();
 
     /**
      * 获取每页大小
      *
-     * @return
+     * @return pageCount
      */
     int getPageCount();
 
     /**
      * 获取排序字段名
      *
-     * @return
+     * @return orderColumn
      */
     String getOrderColumn();
 
     /**
      * 获取排序类型，一般为desc，或者asc
      *
-     * @return
+     * @return orderType
      */
     String getOrderType();
 }

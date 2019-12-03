@@ -1,6 +1,9 @@
 package com.gomcarter.frameworks.base.exception;
 
 @SuppressWarnings("serial")
+/**
+ * @author gomcarter
+ */
 public class MissingParameterException extends RuntimeException {
 
     private final String parameterName;
@@ -19,20 +22,23 @@ public class MissingParameterException extends RuntimeException {
         this.parameterType = parameterType;
     }
 
+    /**
+     * @return error message
+     */
     @Override
     public String getMessage() {
         return "Required " + this.parameterType + " parameter '" + this.parameterName + "' is not present";
     }
 
     /**
-     * Return the name of the offending parameter.
+     * @return the name of the offending parameter.
      */
     public final String getParameterName() {
         return this.parameterName;
     }
 
     /**
-     * Return the expected type of the offending parameter.
+     * @return the expected type of the offending parameter.
      */
     public final String getParameterType() {
         return this.parameterType;

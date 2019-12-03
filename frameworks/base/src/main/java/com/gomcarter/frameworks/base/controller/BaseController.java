@@ -34,6 +34,11 @@ import java.util.Map;
 public class BaseController {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * @param request   HttpServletRequest
+     * @param exception what exception happened in your code
+     * @return result for our user as some friendly notice
+     */
     @ExceptionHandler(Throwable.class)
     @ResponseBody
     public JsonObject exceptionHandler(HttpServletRequest request, Exception exception) {
@@ -97,7 +102,13 @@ public class BaseController {
         return null;
     }
 
-    protected String getIp(HttpServletRequest request) {
+    /**
+     * get visitor's ip
+     *
+     * @param request HttpServletRequest
+     * @return ip such as "119.22.11.2"
+     */
+    public String getIp(HttpServletRequest request) {
         String ip = request.getRemoteAddr();
         if (request.getHeader("X-Forwarded-For") != null) {
             ip = request.getHeader("X-Forwarded-For");
@@ -107,12 +118,24 @@ public class BaseController {
         return ip;
     }
 
+    /**
+     * spring InitBinder
+     *
+     * @param binder binder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         // binder.registerCustomEditor(String.class, new StringEscapeEditor());
         binder.registerCustomEditor(Date.class, new DateEditor());
     }
 
+    /**
+     * read request body
+     *
+     * @param request HttpServletRequest
+     * @return body content
+     * @throws IOException for read failed
+     */
     public static String readBody(HttpServletRequest request) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(), StandardCharsets.UTF_8));
         StringBuilder buffer = new StringBuilder();

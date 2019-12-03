@@ -3,7 +3,7 @@ package com.gomcarter.frameworks.httpapi.config;
 import org.apache.http.Consts;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public class ConnectionConfig {
 

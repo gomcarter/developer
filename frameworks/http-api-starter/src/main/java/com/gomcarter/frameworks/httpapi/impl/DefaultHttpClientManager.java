@@ -39,7 +39,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public class DefaultHttpClientManager implements HttpClientManager {
 

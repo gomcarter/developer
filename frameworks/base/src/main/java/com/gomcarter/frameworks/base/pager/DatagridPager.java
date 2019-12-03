@@ -4,7 +4,7 @@ package com.gomcarter.frameworks.base.pager;
 /**
  * 提供默认的翻页工具（支持mysql）
  *
- * @authher gomcarter 2017年12月2日 08:10:35
+ * @author gomcarter 2017年12月2日 08:10:35
  */
 public class DatagridPager implements Pageable {
     protected int rows = 20;
@@ -28,6 +28,10 @@ public class DatagridPager implements Pageable {
 
     }
 
+    /**
+     * @param pageNo pageNo
+     * @return Pageable
+     */
     @Override
     public Pageable turnPage(int pageNo) {
         this.page = pageNo;
@@ -70,21 +74,33 @@ public class DatagridPager implements Pageable {
         return this;
     }
 
+    /**
+     * @return startNum
+     */
     @Override
     public int getStartNum() {
         return this.rows * (this.page - 1);
     }
 
+    /**
+     * @return rows
+     */
     @Override
     public int getPageCount() {
         return this.rows;
     }
 
+    /**
+     * @return sort
+     */
     @Override
     public String getOrderColumn() {
         return sort;
     }
 
+    /**
+     * @return order
+     */
     @Override
     public String getOrderType() {
         return order;

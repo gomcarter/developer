@@ -6,10 +6,16 @@ import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public interface HttpClientManager {
 
+    /**
+     * @param httpClientConfig            httpClientConfig
+     * @param httpRequestRetryHandler     httpRequestRetryHandler
+     * @param connectionKeepAliveStrategy connectionKeepAliveStrategy
+     * @return CloseableHttpClient
+     */
     CloseableHttpClient getHttpClient(HttpClientConfig httpClientConfig,
                                       HttpRequestRetryHandler httpRequestRetryHandler,
                                       ConnectionKeepAliveStrategy connectionKeepAliveStrategy);

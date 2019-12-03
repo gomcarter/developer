@@ -14,7 +14,7 @@ public class ZipUtils {
         long start = System.currentTimeMillis();
 
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream("D://c.zip"));
-             /*BufferedOutputStream bo = new BufferedOutputStream(out)*/) {
+                /*BufferedOutputStream bo = new BufferedOutputStream(out)*/) {
             File f = new File("d://b");
 //            zip(out, f, f.getName(), bo);
             for (int i = 0; i < 100; ++i) {
@@ -62,6 +62,11 @@ public class ZipUtils {
         System.out.println("压缩完毕，耗时：" + (end - start) / 1000 + "s");
     }
 
+    /**
+     * @param zipFileName zipFileName
+     * @param inputFile   inputFile
+     * @throws Exception for failed
+     */
     private static void zip(String zipFileName, File inputFile) throws Exception {
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
              BufferedOutputStream bo = new BufferedOutputStream(out)) {
@@ -69,28 +74,44 @@ public class ZipUtils {
         }
     }
 
+    /**
+     * @param out       ZipOutputStream out
+     * @param inputFile inputFile
+     * @throws Exception for failed
+     */
     private static void zip(ZipOutputStream out, File inputFile) throws Exception {
         try (BufferedOutputStream bo = new BufferedOutputStream(out)) {
             zip(out, inputFile, inputFile.getName(), bo);
         }
     }
 
-    private static void zip(ZipOutputStream out, File fff, String base,
-                            BufferedOutputStream bo) throws Exception { // 方法重载
-        if (fff.isDirectory()) {
-            File[] fl = fff.listFiles();
-            if (fl.length == 0) {
-                // 创建zip压缩进入点base
-                out.putNextEntry(new ZipEntry(base + "/"));
-            }
-            for (int i = 0; i < fl.length; i++) {
-                // 递归遍历子文件夹
-                zip(out, fl[i], base + "/" + fl[i].getName(), bo);
+    /**
+     * 方法重载
+     *
+     * @param out  out
+     * @param file file
+     * @param base base
+     * @param bo   bo
+     * @throws Exception for failed
+     */
+    private static void zip(ZipOutputStream out, File file, String base,
+                            BufferedOutputStream bo) throws Exception {
+        if (file.isDirectory()) {
+            File[] fl = file.listFiles();
+            if (fl != null) {
+                if (fl.length == 0) {
+                    // 创建zip压缩进入点base
+                    out.putNextEntry(new ZipEntry(base + "/"));
+                }
+                for (File value : fl) {
+                    // 递归遍历子文件夹
+                    zip(out, value, base + "/" + value.getName(), bo);
+                }
             }
         } else {
             // 创建zip压缩进入点base
             out.putNextEntry(new ZipEntry(base));
-            try (FileInputStream in = new FileInputStream(fff);
+            try (FileInputStream in = new FileInputStream(file);
                  BufferedInputStream bi = new BufferedInputStream(in)) {
                 int b;
                 while ((b = bi.read()) != -1) {

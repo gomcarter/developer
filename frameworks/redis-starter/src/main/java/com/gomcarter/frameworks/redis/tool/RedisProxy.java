@@ -38,7 +38,7 @@ public class RedisProxy {
     }
 
     /**
-     * @param key
+     * @param key key
      * @return 返回剩余的毫秒数
      */
     public Long pttl(final String key) {
@@ -52,7 +52,7 @@ public class RedisProxy {
     }
 
     /**
-     * @param key
+     * @param key key
      * @return 返回剩余的秒数
      */
     public Long ttl(final String key) {
@@ -289,9 +289,9 @@ public class RedisProxy {
     /**
      * 移除某个用户
      *
-     * @param key
-     * @param member
-     * @return
+     * @param key    key
+     * @param member member
+     * @return success nums
      */
     public Long zrem(final String key, String member) {
         if (jedisCluster != null) {
@@ -309,9 +309,9 @@ public class RedisProxy {
     /**
      * 获取某个用户的排名情况，降序
      *
-     * @param key
-     * @param member
-     * @return
+     * @param key    key
+     * @param member member
+     * @return success nums
      */
     public Long zrevrank(final String key, String member) {
         if (jedisCluster != null) {
@@ -329,9 +329,9 @@ public class RedisProxy {
     /**
      * 获取某个用户的分数
      *
-     * @param key
-     * @param member
-     * @return
+     * @param key    key
+     * @param member member
+     * @return sore of member
      */
     public Double zscore(final String key, String member) {
         if (jedisCluster != null) {
@@ -349,9 +349,9 @@ public class RedisProxy {
     /**
      * 获取某个用户的排名情况，升序
      *
-     * @param key
-     * @param member
-     * @return
+     * @param key    key
+     * @param member member
+     * @return sort of member
      */
     public Long zrank(final String key, String member) {
         if (jedisCluster != null) {
@@ -528,7 +528,6 @@ public class RedisProxy {
         }
         return 0L;
     }
-
 
     public RedisProxy setJedisCluster(JedisCluster jedisCluster) {
         this.jedisCluster = jedisCluster;

@@ -10,9 +10,11 @@ import java.lang.reflect.Modifier;
 public class BeanUtils extends org.springframework.beans.BeanUtils {
 
     /**
+     * 从 source 拷贝属性到 target
+     *
      * @param source : 不能为空
      * @param target ： 不能为空
-     * @throws BeansException
+     * @throws BeansException for failed
      */
     public static void copyProperties(Object source, Object target) throws BeansException {
         Assert.notNull(source, "Source must not be null");
@@ -36,7 +38,6 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
                     Object sonFiled = _invokeGetterMethod(target, targetPd.getName());
                     if (null == sonFiled) {
                         Class<?>[] params = writeMethod.getParameterTypes();
-//                        sonFiled = ReflectionUtils.newInstance(params[0]);
                         try {
                             copyProperties(value, sonFiled);
                             writeMethod.invoke(target, sonFiled);
@@ -53,6 +54,15 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
         }
     }
 
+    /**
+     * 从 source 拷贝属性到 target
+     *
+     * @param source : 不能为空
+     * @param target ： 不能为空
+     * @param <T>    some class
+     * @return T for input object
+     * @throws BeansException for failed
+     */
     public static <T> T copyObject(Object source, T target) throws BeansException {
         Assert.notNull(source, "Source must not be null");
         Assert.notNull(target, "Target must not be null");
@@ -90,8 +100,7 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
     }
 
     private static Object _invokeGetterMethod(Object source, String filedName) {
-        PropertyDescriptor sourcePd = getPropertyDescriptor(source.getClass(),
-                filedName);// targetPd.getName());
+        PropertyDescriptor sourcePd = getPropertyDescriptor(source.getClass(), filedName);
         if (sourcePd != null) {
             try {
                 if (sourcePd.getReadMethod() != null) {

@@ -5,7 +5,7 @@ import org.apache.http.conn.HttpClientConnectionManager;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public class IdleConnectionMonitorTask implements Runnable {
 

@@ -15,6 +15,11 @@ import java.util.Properties;
  */
 public class NacosFieldValueProcessor extends BeanFieldAndMethodProcessor {
 
+    /**
+     * @param bean     bean
+     * @param beanName beanName
+     * @param field    some one field of bean
+     */
     @Override
     protected final void processField(Object bean, String beanName, Field field) {
 
@@ -59,6 +64,11 @@ public class NacosFieldValueProcessor extends BeanFieldAndMethodProcessor {
         ReflectionUtils.setFieldIfNotMatchConvertIt(bean, field, value);
     }
 
+    /**
+     * @param bean     bean
+     * @param beanName beanName
+     * @param method   some one method bean
+     */
     @Override
     protected final void processMethod(Object bean, String beanName, Method method) {
         // do nothing

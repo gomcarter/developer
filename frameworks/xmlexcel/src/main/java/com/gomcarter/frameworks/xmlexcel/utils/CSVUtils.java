@@ -27,6 +27,12 @@ public class CSVUtils {
         BOMTAG = new String(new byte[]{(byte) -17, (byte) -69, (byte) -65}, defaultCharset);
     }
 
+    /**
+     * @param savePath savePath
+     * @param headers  headers
+     * @param cells    cells
+     * @throws IOException IOException
+     */
     public static void appendCSV(String savePath, List<Header> headers, List<Map<String, Object>> cells) throws IOException {
         File file = new File(savePath);
 
@@ -34,11 +40,11 @@ public class CSVUtils {
     }
 
     private static String _generateBody(List<Header> headers, List<Map<String, Object>> dataList) {
-        /**如果没有headers， 那么直接在excel里面写每行数据*/
+        /*如果没有headers， 那么直接在excel里面写每行数据*/
         if (headers == null || headers.size() == 0) {
             return _generateBodyWithoutHeaders(dataList);
         }
-        /**存在headers，那么在每行数据里面找到对应header的内容 写入*/
+        /*存在headers，那么在每行数据里面找到对应header的内容 写入*/
         StringBuilder sb = new StringBuilder();
         for (Map<String, Object> data : dataList) {
             for (Header header : headers) {
@@ -83,7 +89,11 @@ public class CSVUtils {
         return data;
     }
 
-
+    /**
+     * @param savePath savePath
+     * @param headers  headers
+     * @throws IOException IOException
+     */
     public static void createCSV(String savePath, List<Header> headers) throws IOException {
         File file = new File(savePath);
         StringBuilder sb = new StringBuilder();

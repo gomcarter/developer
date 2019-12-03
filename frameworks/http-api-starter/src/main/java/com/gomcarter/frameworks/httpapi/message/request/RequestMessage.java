@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author cn40387 on 15/5/11.
+ * @author gomcarter
  */
 public class RequestMessage extends RestfulRequestMessage {
 

@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2005-2009 springside.org.cn
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
- *
+ * <p>
  * $Id: SpringContextHolder.java 969 2010-03-01 14:50:35Z calvinxiu $
  */
 package com.gomcarter.frameworks.base.spring;
@@ -21,6 +21,8 @@ public class SpringContextHolder implements ApplicationContextAware {
 
     /**
      * 实现ApplicationContextAware接口的context注入函数, 将其存入静态变量.
+     *
+     * @param applicationContext applicationContext
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
@@ -29,6 +31,8 @@ public class SpringContextHolder implements ApplicationContextAware {
 
     /**
      * 取得存储在静态变量中的ApplicationContext.
+     *
+     * @return ApplicationContext
      */
     public static ApplicationContext getApplicationContext() {
         checkApplicationContext();
@@ -37,6 +41,10 @@ public class SpringContextHolder implements ApplicationContextAware {
 
     /**
      * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
+     *
+     * @param name bean name
+     * @param <T>  T
+     * @return bean
      */
     @SuppressWarnings("unchecked")
     public static <T> T getBean(String name) {
@@ -46,6 +54,10 @@ public class SpringContextHolder implements ApplicationContextAware {
 
     /**
      * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型. 如果有多个Bean符合Class, 取出第一个.
+     *
+     * @param requiredType bean type
+     * @param <T> T
+     * @return bean
      */
     public static <T> T getBean(Class<T> requiredType) {
         checkApplicationContext();

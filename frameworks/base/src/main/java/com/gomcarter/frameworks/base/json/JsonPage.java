@@ -27,9 +27,6 @@ public class JsonPage {
         this.pageCount = Math.max(pageCount, 0);
     }
 
-    /**
-     * 设置每页的记录数量, 低于1时自动调整为1.
-     */
     public void setStartNum(final int startNum) {
         this.startNum = Math.max(startNum, 0);
     }

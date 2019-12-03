@@ -1,8 +1,6 @@
 package com.gomcarter.frameworks.base.common;
 
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import sun.misc.BASE64Decoder;
 
@@ -10,7 +8,10 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
@@ -35,6 +36,12 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * get image  size
+     *
+     * @param target target image input stream
+     * @return size
+     */
     public static Size getSize(InputStream target) {
         try {
             return getSize(ImageIO.read(target));
@@ -43,6 +50,12 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * get image  size
+     *
+     * @param target target image file
+     * @return size
+     */
     public static Size getSize(File target) {
         try {
             return getSize(ImageIO.read(target));
@@ -51,10 +64,27 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * get image  size
+     *
+     * @param target target image BufferedImage
+     * @return size
+     */
     public static Size getSize(BufferedImage target) {
         return new Size(target.getWidth(null), target.getHeight(null));
     }
 
+    /**
+     * insert a text into target image
+     *
+     * @param target target image BufferedImage
+     * @param title  text
+     * @param color  color
+     * @param font   font
+     * @param startX position of x
+     * @param startY position of y
+     * @return result BufferedImage
+     */
     public static BufferedImage insertTitle(BufferedImage target, String title, Color color, Font font, int startX, int startY) {
         if (StringUtils.isBlank(title)) {
             return target;
@@ -65,7 +95,6 @@ public class ImageUtils {
             g.setColor(Color.black);
         }
         g.setColor(color);
-//        g.setBackground(Color.white);
 
         AttributedString ats = new AttributedString(title);
 
@@ -78,6 +107,16 @@ public class ImageUtils {
         return target;
     }
 
+    /**
+     * insert a text into target image
+     *
+     * @param target target image BufferedImage
+     * @param title  text
+     * @param color  color
+     * @param startX position of x
+     * @param startY position of y
+     * @return result BufferedImage
+     */
     public static BufferedImage insertTitle(BufferedImage target, String title, Color color, int startX, int startY) {
         return insertTitle(target, title, color, new Font("Serif", Font.BOLD, 13), startX, startY);
     }
@@ -86,10 +125,11 @@ public class ImageUtils {
      * 插入 图片
      *
      * @param target   源图片
-     * @param inserted 插入图片
+     * @param inserted 插入图片file
      * @param startX   开始X坐标
      * @param startY   开始Y坐标
-     * @throws Exception
+     * @return result BufferedImage
+     * @throws Exception IOException for read inserted
      */
     public static BufferedImage insertImage(BufferedImage target,
                                             File inserted,
@@ -99,10 +139,19 @@ public class ImageUtils {
         return insertImage(target, ImageIO.read(inserted), startX, startY);
     }
 
+    /**
+     * 插入 图片
+     *
+     * @param target   源图片
+     * @param inserted 插入图片
+     * @param startX   开始X坐标
+     * @param startY   开始Y坐标
+     * @return result BufferedImage
+     */
     public static BufferedImage insertImage(BufferedImage target,
                                             Image inserted,
                                             int startX,
-                                            int startY) throws Exception {
+                                            int startY) {
 
         int width = inserted.getWidth(null),
                 height = inserted.getHeight(null);
@@ -115,6 +164,16 @@ public class ImageUtils {
         return target;
     }
 
+    /**
+     * 插入 图片
+     *
+     * @param target      源图片
+     * @param inserted    插入图片
+     * @param rate        插入等比收放比率
+     * @param transparent 透明度
+     * @return result BufferedImage
+     * @throws Exception for failed
+     */
     public static BufferedImage insertImage(BufferedImage target, Image inserted, double rate, float transparent) throws Exception {
         int targetWidth = target.getWidth(),
                 targetHight = target.getHeight();
@@ -134,10 +193,27 @@ public class ImageUtils {
         return target;
     }
 
+    /**
+     * 插入 图片
+     *
+     * @param target   源图片
+     * @param inserted 插入图片
+     * @param rate     插入等比收放比率
+     * @return result BufferedImage
+     * @throws Exception for failed
+     */
     public static BufferedImage insertImage(BufferedImage target, Image inserted, double rate) throws Exception {
         return insertImage(target, inserted, rate, 0);
     }
 
+    /**
+     * 插入 图片
+     *
+     * @param target   源图片
+     * @param inserted 插入图片
+     * @return result BufferedImage
+     * @throws Exception for failed
+     */
     public static BufferedImage insertImage(BufferedImage target, Image inserted) throws Exception {
         return insertImage(target, inserted, 0, 0);
     }
@@ -145,8 +221,10 @@ public class ImageUtils {
     /**
      * 按高度等比压缩
      *
-     * @param target
-     * @param height
+     * @param target 源图片
+     * @param height 压缩后高度
+     * @return result BufferedImage
+     * @throws Exception for failed
      */
     public static BufferedImage compressImageByHeight(BufferedImage target,
                                                       int height) throws Exception {
@@ -154,6 +232,7 @@ public class ImageUtils {
                 h = target.getHeight(null);
         // 为等比缩放计算输出的图片宽度及高度
         double rate = ((double) h) / (double) height + 0.1;
+
         // 根据缩放比率大的进行缩放控制
         int newWidth = (int) (((double) w) / rate),
                 newHeight = (int) (((double) h) / rate);
@@ -163,8 +242,10 @@ public class ImageUtils {
     /**
      * 按宽度等比压缩
      *
-     * @param target
-     * @param width
+     * @param target 源图片
+     * @param width  压缩后宽度
+     * @return result BufferedImage
+     * @throws Exception for failed
      */
     public static BufferedImage compressImageByWidth(BufferedImage target,
                                                      int width) throws Exception {
@@ -172,12 +253,20 @@ public class ImageUtils {
                 h = target.getHeight(null);
         // 为等比缩放计算输出的图片宽度及高度
         double rate = ((double) w) / (double) width + 0.1;
+
         // 根据缩放比率大的进行缩放控制
-        int newWidth = (int) (((double) w) / rate),
-                newHeight = (int) (((double) h) / rate);
-        return compressImage(target, newWidth, newHeight);
+        return compressImage(target, (int) (((double) w) / rate), (int) (((double) h) / rate));
     }
 
+    /**
+     * 按宽度等比压缩
+     *
+     * @param target 源图片
+     * @param width  压缩后宽度
+     * @param height 压缩后宽度
+     * @return result BufferedImage
+     * @throws Exception for failed
+     */
     public static BufferedImage compressImage(BufferedImage target,
                                               int width,
                                               int height) throws Exception {
@@ -195,6 +284,13 @@ public class ImageUtils {
         return tag;
     }
 
+    /**
+     * resize image from
+     *
+     * @param from 源图片
+     * @param size resize后宽度
+     * @return result BufferedImage
+     */
     public static BufferedImage resizePng(Image from, int size) {
         // 判断是否是等比缩放
         int width = from.getWidth(null),
@@ -207,10 +303,25 @@ public class ImageUtils {
         return resizePng(from, rate);
     }
 
+    /**
+     * resize image from
+     *
+     * @param from 源图片
+     * @param rate resize的比率
+     * @return result BufferedImage
+     */
     public static BufferedImage resizePng(Image from, double rate) {
         return resizePng(from, (int) ((double) from.getWidth(null) * rate), (int) ((double) from.getHeight(null) * rate));
     }
 
+    /**
+     * resize image from
+     *
+     * @param from         源图片
+     * @param outputWidth  resize后的宽度
+     * @param outputHeight resize后的高度
+     * @return result BufferedImage
+     */
     public static BufferedImage resizePng(Image from, int outputWidth, int outputHeight) {
         BufferedImage to = new BufferedImage(outputWidth, outputHeight, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = to.createGraphics();
@@ -222,6 +333,13 @@ public class ImageUtils {
         return to;
     }
 
+    /**
+     * base64 string to image
+     *
+     * @param base64 base64 string
+     * @return result BufferedImage InputStream
+     * @throws Exception for failed
+     */
     public static InputStream base64ToInputStream(String base64) throws Exception {
         BASE64Decoder decoder = new BASE64Decoder();
         // Base64解码
@@ -242,37 +360,17 @@ public class ImageUtils {
         return new ByteArrayInputStream(b);
     }
 
+    /**
+     * persist image to disk
+     *
+     * @param image 源图片
+     * @param path  disk path
+     * @return file on disk if success
+     * @throws IOException if write failed
+     */
     public static File writeToFile(BufferedImage image, String path) throws IOException {
         File file = new File(path);
         ImageIO.write(image, ImageUtils.FORMAT_NAME_PNG, file);
         return file;
-    }
-
-    public static void main(String[] args) throws Exception {
-//        BufferedImage to = resizePng(ImageIO.read(new File("D://1.png")), 200);
-//        BufferedImage source = QRCodeUtils.createImage("https://g.xx.com/c/ouiqwoujklfasjkfsajasd", 290, ErrorCorrectionLevel.L);
-//        BufferedImage target = insertImage(ImageIO.read(new File("d://style4.png")), source, 75, 50);
-//        boolean a = ImageIO.write(to, ImageUtils.FORMAT_NAME_PNG, new File("D://t.png"));
-//
-//        System.out.println(a);
-
-//        BufferedImage source = ImageIO.read(new File("/template/a.pdf"));
-//        BufferedImage mark = ImageIO.read(new File("D://mark.png"));
-//        BufferedImage out = insertImage(source, mark, 0.666667D, 0.5f),
-//        source = insertTitle(source, "中国商品诚信数据库", new Color(63,59,58), new Font("Serif",Font.BOLD, 12),  50, 60);
-//        ImageIO.write(source, ImageUtils.FORMAT_NAME_PNG, new File("D://out.png"));
-
-        File f = new File("D://mark.png");
-        FileInputStream inputStream = new FileInputStream(f);
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        IOUtils.copy(inputStream, outputStream);
-        byte[] buffer = outputStream.toByteArray();
-
-        ImageIO.write(ImageIO.read(new ByteArrayInputStream(buffer)), ImageUtils.FORMAT_NAME_PNG, new File("D://out1.png"));
-
-        ImageIO.write(ImageIO.read(new ByteArrayInputStream(buffer)), ImageUtils.FORMAT_NAME_PNG, new File("D://out2.png"));
-
-
     }
 }

@@ -12,14 +12,15 @@ import java.lang.annotation.*;
  * <p>
  * 配置时以dubbo.registry前缀开始：<a href="http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-registry.html">详情这里</a>，举例：
  * <p>
- * 注册中心地址，如不配置默认取nacos作为注册中心： 如：配置中心为http://10.10.1.22:10000 => nacos://10.10.1.22:10000
+ * 注册中心地址，如不配置默认取nacos作为注册中心： 如：配置中心为http://10.10.1.22:10000 =&gt; nacos://10.10.1.22:10000
  * <p>
  * dubbo.registry.address=nacos://xx.xx.xx.xx:xxx
  * <p>
  * dubbo.registry.username=username
  * <p>
  * dubbo.registry.password=password
- * <p></p>
+ * <p>
+ * <p>
  * <b style="color:red">应用配置</b>
  * <p>
  * 配置时以dubbo.application前缀开始: <a href="http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-application.html">详情这里</a>
@@ -28,7 +29,8 @@ import java.lang.annotation.*;
  * <p>
  * dubbo.application.name=appName
  * dubbo.application.qosEnable=false
- * <p></p>
+ * <p>
+ * <p>
  * <b style="color:red">协议相关配置</b>
  * <p>
  * 配置时以dubbo.protocol前缀开始：<a href="http://dubbo.apache.org/zh-cn/docs/user/references/xml/dubbo-protocol.html">详情这里</a>
@@ -47,25 +49,29 @@ public @interface EnableNacosDubbo {
 
     /**
      * nacos data_id
+     *
+     * @return dataId
      */
     String dataId() default "REGISTRY";
 
     /**
      * nacos group
+     *
+     * @return group
      */
     String group() default "DUBBO";
 
     /**
      * service 提供的端口
      *
-     * @return
+     * @return port
      */
     int port();
 
     /**
      * 服务app 名称
      *
-     * @return
+     * @return appName
      */
     String appName() default "";
 }

@@ -22,6 +22,10 @@ public class RedisConnectionBuilder {
 
     static Pattern pattern = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
 
+    /**
+     * @param proxy      proxy
+     * @param properties properties
+     */
     public static void of(RedisProxy proxy, Properties properties) {
         GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
 

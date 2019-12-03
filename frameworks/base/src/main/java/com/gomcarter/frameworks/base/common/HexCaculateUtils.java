@@ -2,11 +2,11 @@ package com.gomcarter.frameworks.base.common;
 
 
 /**
- * @authher gomcarter 2017年12月2日 08:10:35
+ * @author gomcarter 2017年12月2日 08:10:35
  */
 public class HexCaculateUtils {
 
-    final static char[] digits = {
+    private final static char[] DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
@@ -18,7 +18,7 @@ public class HexCaculateUtils {
             '~', '@', '#', '$', '^', '*', '(', ')', '-', '+'
     };
 
-    public final static int HEX_NUMBER = digits.length;
+    private final static int HEX_NUMBER = DIGITS.length;
 
     /**
      * 将十进制的数字转换为指定进制的字符串。
@@ -37,10 +37,10 @@ public class HexCaculateUtils {
         char[] buf = new char[32];
         int charPos = 32;
         while ((num / system) > 0) {
-            buf[--charPos] = digits[(int) (num % system)];
+            buf[--charPos] = DIGITS[(int) (num % system)];
             num /= system;
         }
-        buf[--charPos] = digits[(int) (num % system)];
+        buf[--charPos] = DIGITS[(int) (num % system)];
         return new String(buf, charPos, (32 - charPos));
     }
 
@@ -56,8 +56,8 @@ public class HexCaculateUtils {
         s.getChars(0, s.length(), buf, 0);
         long num = 0;
         for (int i = 0; i < buf.length; i++) {
-            for (int j = 0; j < digits.length; j++) {
-                if (digits[j] == buf[i]) {
+            for (int j = 0; j < DIGITS.length; j++) {
+                if (DIGITS[j] == buf[i]) {
                     num += j * Math.pow(system, buf.length - i - 1);
                     break;
                 }
@@ -69,13 +69,20 @@ public class HexCaculateUtils {
     /**
      * 将s的值加一，返回，并保持于s的等长，不足前排插入0
      *
-     * @param s
-     * @return
+     * @param s target
+     * @return result
      */
     public static String CodePlus(String s) {
         return CodePlus(s, HEX_NUMBER);
     }
 
+    /**
+     * 将s的值加一，返回，并保持于s的等长，不足前排插入0
+     *
+     * @param s       target
+     * @param decimal decimal
+     * @return result
+     */
     public static String CodePlus(String s, int decimal) {
         if (decimal > HEX_NUMBER) {
             throw new RuntimeException("超出进制可计算范围");
@@ -96,13 +103,4 @@ public class HexCaculateUtils {
             }
         }
     }
-
-    public static void main(String[] args) {
-		System.out.println(HexCaculateUtils.CodePlus("1Z", 36));
-
-//        System.out.println(numericToString(1801298129512L, HEX_NUMBER));
-
-//        System.out.println(stringToNumeric("C^*#v0e", HEX_NUMBER));
-    }
-
 }

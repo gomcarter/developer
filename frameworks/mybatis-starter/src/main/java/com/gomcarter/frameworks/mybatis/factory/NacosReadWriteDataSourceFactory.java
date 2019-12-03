@@ -11,7 +11,7 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.Properties;
 
 /**
- * 完成从diamond读取mysql配置
+ * 完成从nacos读取mysql配置
  * 以及读库，主库故障转移
  * 基于druid实现，如果以后用别的数据库连接，需要重新实现
  *

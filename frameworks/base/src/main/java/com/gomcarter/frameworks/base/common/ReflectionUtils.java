@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * 反射工具类. 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
  *
- * @author calvin
+ * @author gomcarter
  */
 public abstract class ReflectionUtils {
 
@@ -26,6 +26,10 @@ public abstract class ReflectionUtils {
 
     /**
      * 调用Getter方法.
+     *
+     * @param obj          obj
+     * @param propertyName propertyName
+     * @return get result
      */
     public static Object invokeGetterMethod(Object obj, String propertyName) {
         String getterMethodName = "get" + StringUtils.capitalize(propertyName);
@@ -33,18 +37,31 @@ public abstract class ReflectionUtils {
                 new Object[]{});
     }
 
+    /**
+     * @param clazz clazz
+     * @return methods of clazz
+     */
     public static List<Method> findAllMethod(Class clazz) {
         final List<Method> res = new LinkedList<>();
         org.springframework.util.ReflectionUtils.doWithMethods(clazz, res::add);
         return res;
     }
 
+    /**
+     * @param clazz clazz
+     * @return fields of clazz
+     */
     public static List<Field> findAllField(Class clazz) {
         final List<Field> res = new LinkedList<>();
         org.springframework.util.ReflectionUtils.doWithFields(clazz, res::add);
         return res;
     }
 
+    /**
+     * @param target        target
+     * @param field         field
+     * @param originalValue originalValue
+     */
     public static void setFieldIfNotMatchConvertIt(Object target, Field field, Object originalValue) {
         // 获取转换器
         Convertable converter = Convertable.getConverter(field.getType());
@@ -53,6 +70,11 @@ public abstract class ReflectionUtils {
         setField(target, field, fieldValue);
     }
 
+    /**
+     * @param target     target
+     * @param field      field
+     * @param fieldValue fieldValue
+     */
     public static void setField(Object target, Field field, Object fieldValue) {
         // 设置变量
         boolean accessible = field.isAccessible();
@@ -63,6 +85,10 @@ public abstract class ReflectionUtils {
 
     /**
      * 调用Setter方法.使用value的Class来查找Setter方法.
+     *
+     * @param obj          obj
+     * @param propertyName propertyName
+     * @param value        value
      */
     public static void invokeSetterMethod(Object obj, String propertyName,
                                           Object value) {
@@ -72,6 +98,9 @@ public abstract class ReflectionUtils {
     /**
      * 调用Setter方法.
      *
+     * @param obj          obj
+     * @param propertyName propertyName
+     * @param value        value
      * @param propertyType 用于查找Setter方法,为空时使用value的Class替代.
      */
     public static void invokeSetterMethod(Object obj, String propertyName,
@@ -84,6 +113,10 @@ public abstract class ReflectionUtils {
 
     /**
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
+     *
+     * @param obj       obj
+     * @param fieldName fieldName
+     * @return Object
      */
     public static Object getFieldValue(final Object obj, final String fieldName) {
         Field field = getAccessibleField(obj, fieldName);
@@ -103,6 +136,10 @@ public abstract class ReflectionUtils {
 
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
+     *
+     * @param obj       obj
+     * @param fieldName fieldName
+     * @param value     value
      */
     public static void setFieldValue(final Object obj, final String fieldName,
                                      final Object value) {
@@ -121,6 +158,10 @@ public abstract class ReflectionUtils {
 
     /**
      * 循环向上转型, 获取对象的DeclaredField, 并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null.
+     *
+     * @param obj       obj
+     * @param fieldName fieldName
+     * @return Field
      */
     public static Field getAccessibleField(final Object obj,
                                            final String fieldName) {
@@ -140,6 +181,9 @@ public abstract class ReflectionUtils {
 
     /**
      * 对于被cglib AOP过的对象, 取得真实的Class类型.
+     *
+     * @param clazz clazz
+     * @return the real Class
      */
     public static Class<?> getUserClass(Class<?> clazz) {
         if (clazz != null && clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
@@ -153,6 +197,12 @@ public abstract class ReflectionUtils {
 
     /**
      * 直接调用对象方法, 无视private/protected修饰符. 用于一次性调用的情况.
+     *
+     * @param obj            obj
+     * @param methodName     methodName
+     * @param parameterTypes parameterTypes
+     * @param args           args
+     * @return Object
      */
     public static Object invokeMethod(final Object obj,
                                       final String methodName, final Class<?>[] parameterTypes,
@@ -174,6 +224,11 @@ public abstract class ReflectionUtils {
      * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问. 如向上转型到Object仍无法找到, 返回null.
      * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object...
      * args)
+     *
+     * @param obj            obj
+     * @param methodName     methodName
+     * @param parameterTypes parameterTypes
+     * @return Method
      */
     public static Method getAccessibleMethod(final Object obj,
                                              final String methodName, final Class<?>... parameterTypes) {
@@ -198,11 +253,11 @@ public abstract class ReflectionUtils {
 
     /**
      * 通过反射, 获得Class定义中声明的父类的泛型参数的类型. 如无法找到, 返回Object.class. eg. public UserDao
-     * extends HibernateDao<User>
+     * extends HibernateDao&lt;User&gt;
      *
      * @param clazz The class to introspect
-     * @return the first generic declaration, or Object.class if cannot be
-     * determined
+     * @param <T>   T
+     * @return the first generic declaration, or Object.class if cannot be determined
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> Class<T> getSuperClassGenricType(final Class clazz) {
@@ -211,7 +266,7 @@ public abstract class ReflectionUtils {
 
     /**
      * 通过反射, 获得Class定义中声明的父类的泛型参数的类型. 如无法找到, 返回Object.class. 如public UserDao
-     * extends HibernateDao<User,Long>
+     * extends HibernateDao&lt;User,Long&gt;
      *
      * @param clazz clazz The class to introspect
      * @param index the Index of the generic ddeclaration,start from 0.
@@ -242,6 +297,9 @@ public abstract class ReflectionUtils {
 
     /**
      * 将反射时的checked exception转换为unchecked exception.
+     *
+     * @param e e
+     * @return RuntimeException
      */
     public static RuntimeException convertReflectionExceptionToUnchecked(
             Exception e) {
@@ -258,6 +316,11 @@ public abstract class ReflectionUtils {
         return new RuntimeException("Unexpected Checked Exception.", e);
     }
 
+    /**
+     * @param cls cls
+     * @param <T> t
+     * @return instance of cls
+     */
     public static <T> T newInstance(Class<T> cls) {
         T r = null;
         try {
@@ -268,6 +331,14 @@ public abstract class ReflectionUtils {
         return r;
     }
 
+    /**
+     * @param collection        collection
+     * @param keyPropertyName   keyPropertyName
+     * @param valuePropertyName valuePropertyName
+     * @param <K>               k
+     * @param <V>               v
+     * @return Map
+     */
     @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> extractToMap(final Collection<?> collection, final String keyPropertyName, final String valuePropertyName) {
         Map<K, V> map = new HashMap<K, V>();
@@ -290,6 +361,13 @@ public abstract class ReflectionUtils {
         return map;
     }
 
+    /**
+     * @param collection      collection
+     * @param keyPropertyName keyPropertyName
+     * @param <K>             k
+     * @param <V>             v
+     * @return Map
+     */
     @SuppressWarnings("unchecked")
     public static <K, V> Map<K, V> tranToMap(final Collection<V> collection, final String keyPropertyName) {
         Map<K, V> map = new HashMap<K, V>();
@@ -311,18 +389,36 @@ public abstract class ReflectionUtils {
         return map;
     }
 
+    /**
+     * @param collection   collection
+     * @param propertyName propertyName
+     * @param <K>          K
+     * @return ArrayList
+     */
     public static <K> ArrayList<K> extractToList(final Collection<?> collection, final String propertyName) {
         ArrayList<K> list = new ArrayList<K>();
         fillCollection(list, collection, propertyName);
         return list;
     }
 
+    /**
+     * @param collection   collection
+     * @param propertyName propertyName
+     * @param <K>          K
+     * @return HashSet
+     */
     public static <K> HashSet<K> extractToSet(final Collection<?> collection, final String propertyName) {
         HashSet<K> set = new HashSet<K>();
         fillCollection(set, collection, propertyName);
         return set;
     }
 
+    /**
+     * @param result       result
+     * @param collection   collection
+     * @param propertyName propertyName
+     * @param <K>          k
+     */
     @SuppressWarnings("unchecked")
     private static <K> void fillCollection(final Collection<K> result, final Collection<?> collection, final String propertyName) {
         AssertUtils.notNull(result, "接收集合错误");
@@ -342,6 +438,11 @@ public abstract class ReflectionUtils {
         }
     }
 
+    /**
+     * @param value        value
+     * @param propertyName propertyName
+     * @return Field
+     */
     public static Field getExistAccessibleField(Object value, String propertyName) {
         Field propertyField = getAccessibleField(value, propertyName);
         if (propertyField == null) {
@@ -353,17 +454,16 @@ public abstract class ReflectionUtils {
     /**
      * 对比两个对象 不会显示list异常
      *
-     * @param obj1
-     * @param obj2
-     * @return
+     * @param obj1 obj1
+     * @param obj2 obj2
+     * @param <T>  T
+     * @return String
      */
     public static <T> String compare(T obj1, T obj2) {
-
         return compare(obj1, obj2, "");
     }
 
     private static <T> String compare(T t1, T t2, String baseName) {
-
         StringBuffer str = new StringBuffer();
         if (t1 == null) {
             return StringUtils.EMPTY;

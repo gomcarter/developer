@@ -46,7 +46,7 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     /**
      * 设置读库（name, DataSource）
      *
-     * @param readDataSourceMap
+     * @param readDataSourceMap readDataSourceMap
      */
     public void setReadDataSourceMap(Map<String, DataSource> readDataSourceMap) {
         this.readDataSourceMap = readDataSourceMap;

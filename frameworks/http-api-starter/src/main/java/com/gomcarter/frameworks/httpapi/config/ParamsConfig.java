@@ -5,7 +5,7 @@ import org.apache.http.config.SocketConfig;
 import java.util.Map;
 
 /**
- * @author cn40387 on 15/5/8.
+ * @author gomcarter
  */
 public class ParamsConfig {
 
@@ -15,9 +15,15 @@ public class ParamsConfig {
 
     public static final int DEFAULT_CONNECTION_MAX_PER_ROUTE = 256;
 
-    public static final long DEFAULT_KEEP_ALIVE_DURATION = -1; // 不keepalive
+    /**
+     * 不keepalive
+     */
+    public static final long DEFAULT_KEEP_ALIVE_DURATION = -1;
 
-    public static final int DEFAULT_CHECK_IDLE_CONNECTION_INTERVAL = 5 * 1000; // 10s
+    /**
+     * 10s
+     */
+    public static final int DEFAULT_CHECK_IDLE_CONNECTION_INTERVAL = 5 * 1000;
 
     public static final int DEFAULT_CONNECTION_IDLE_DURATION_TO_CLOSE = 5 * 1000;
 

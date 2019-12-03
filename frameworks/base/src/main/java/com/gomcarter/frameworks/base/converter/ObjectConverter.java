@@ -11,6 +11,12 @@ import java.lang.reflect.Type;
  */
 public class ObjectConverter implements Convertable {
 
+    /**
+     * @param sourceValue sourceValue
+     * @param type        type
+     * @param <T>         T
+     * @return Object result
+     */
     @Override
     public <T> T convert(Object sourceValue, Type type) {
         return JsonMapper.buildNonNullMapper().fromJson(sourceValue + "", (Class<T>) type);

@@ -37,7 +37,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 /**
- * @author cn40387 on 15/5/11.
+ * @author gomcarter
  */
 public class HttpClientTemplate {
 

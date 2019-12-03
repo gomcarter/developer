@@ -21,13 +21,19 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import java.util.Collections;
 
 /**
- * @Description: mybatis配置
- * @Author: gomcarter
+ * mybatis配置
+ *
+ * @author gomcarter
  */
 @Aspect
 @Component
 public class MybatisConfiguration {
 
+    /**
+     * @param source source
+     * @return SqlSessionFactoryBean
+     * @throws Exception Exception
+     */
     @Bean
     public SqlSessionFactoryBean sqlSessionFactoryBean(ReadWriteDataSource source) throws Exception {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
@@ -36,6 +42,9 @@ public class MybatisConfiguration {
         return factoryBean;
     }
 
+    /**
+     * @return MapperScannerConfigurer
+     */
     @Bean
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer configurer = new MapperScannerConfigurer();
@@ -44,6 +53,9 @@ public class MybatisConfiguration {
         return configurer;
     }
 
+    /**
+     * @return NameMatchTransactionAttributeSource
+     */
     @Bean
     public NameMatchTransactionAttributeSource nameMatchTransactionAttributeSource() {
         /*只读事务，不做更新操作*/
@@ -65,6 +77,10 @@ public class MybatisConfiguration {
         return attributeSource;
     }
 
+    /**
+     * @param attributeSource attributeSource above
+     * @return ReadWriteDataSourceProcessor
+     */
     @Bean
     public ReadWriteDataSourceProcessor readWriteDataSourceProcessor(NameMatchTransactionAttributeSource attributeSource) {
         ReadWriteDataSourceProcessor processor = new ReadWriteDataSourceProcessor();
@@ -75,6 +91,10 @@ public class MybatisConfiguration {
 
     /**
      * 事务拦截器
+     *
+     * @param dataSource      dataSource
+     * @param attributeSource attributeSource
+     * @return AspectJExpressionPointcutAdvisor
      */
     @Bean
     public AspectJExpressionPointcutAdvisor transactionAdvisor(ReadWriteDataSource dataSource, NameMatchTransactionAttributeSource attributeSource) {
@@ -92,6 +112,10 @@ public class MybatisConfiguration {
 
     /**
      * 主库、从库选择AOP
+     *
+     * @param readWriteDataSourceProcessor readWriteDataSourceProcessor
+     * @return AspectJExpressionPointcutAdvisor
+     * @throws NoSuchMethodException NoSuchMethodException
      */
     @Bean
     public AspectJExpressionPointcutAdvisor determineReadOrWriteDBAdvisor(ReadWriteDataSourceProcessor readWriteDataSourceProcessor) throws NoSuchMethodException {

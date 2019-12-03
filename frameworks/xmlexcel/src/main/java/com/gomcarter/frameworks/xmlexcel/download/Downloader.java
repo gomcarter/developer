@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
- * @authher gomcarter 2017年12月2日 08:10:35
+ * @author gomcarter 2017年12月2日 08:10:35
  */
 public class Downloader {
 

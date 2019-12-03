@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Lock {
     /**
-     * 需要锁定的key
+     * @return 需要锁定的key
      */
     String value() default "";
 
@@ -24,11 +24,15 @@ public @interface Lock {
      * 将方法的参数并入到key中（参数将作toString处理，为null则是null字符串）
      * argsIndex为方法本身参数的索引，如argsIndex={0,2}及取方法的第1个和第3个参数拼接到key中。
      * 如果不需要参数拼接到key中，则忽略此参数即可
+     *
+     * @return argsIndex
      */
     int[] argsIndex() default {};
 
     /**
      * 默认120秒之后自动释放
+     *
+     * @return timeout
      */
     long timeout() default 120L;
 
@@ -39,13 +43,12 @@ public @interface Lock {
      * <p>
      * 默认不等待，并发时直接讲后进入的熔断
      * </p>
-     * <p>
-     * <p>
-     * <p>
      * 小于0等于0：不等待（直接返回{@link NonConcurrencyException}）；
      * <p>
      * 大于0：表示最大等待时间，超时返回服务器繁忙
      * </p>
+     *
+     * @return await
      */
     short await() default 0;
 }

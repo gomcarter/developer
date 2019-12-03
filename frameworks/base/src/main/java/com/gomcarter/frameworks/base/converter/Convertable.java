@@ -16,8 +16,15 @@ import java.util.Properties;
 public interface Convertable {
     Logger logger = LoggerFactory.getLogger(Convertable.class);
 
+    /**
+     * convert sourceValue to target T, T should be one of Type
+     *
+     * @param sourceValue sourceValue
+     * @param type        type
+     * @param <T>         T convert to
+     * @return result
+     */
     <T> T convert(Object sourceValue, Type type);
-
 
 
     Convertable PRIMITIVE_CONVERTER = new PrimitiveConverter();
@@ -25,6 +32,12 @@ public interface Convertable {
     Convertable PROPERTIES_CONVERTER = new PropertiesConverter();
     Convertable OBJECT_CONVERTER = new ObjectConverter();
 
+    /**
+     * get kls's default converter
+     *
+     * @param kls kls
+     * @return Convertable
+     */
     static Convertable getConverter(Class kls) {
         if (BeanUtils.isSimpleProperty(kls) || kls == Object.class) {
             return PRIMITIVE_CONVERTER;

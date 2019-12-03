@@ -3,10 +3,8 @@ package com.gomcarter.frameworks.base.exception;
 import com.gomcarter.frameworks.base.json.ErrorCode;
 
 /**
- * @ClassName: CustomException
- * @Description: 自定义异常类
- * @author: liyin
- * @date: 2017年11月22日 21:18:07
+ * 自定义异常类
+ * @author gomcarter
  */
 public class CustomException extends RuntimeException {
 
