@@ -18,7 +18,7 @@ import com.gomcarter.developer.params.JInterfacesQueryParams;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.developer.service.JavaService;
-import com.gomcarter.frameworks.liyinapi.annotation.Notes;
+import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

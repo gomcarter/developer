@@ -1,6 +1,8 @@
 package com.gomcarter.developer.api;
 
 import com.gomcarter.developer.entity.Java;
+import com.gomcarter.frameworks.httpapi.api.BaseApi;
+import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -19,7 +21,6 @@ public class InterfacesGetterApi extends BaseApi {
         }
 
         this.urlRouter.put(java.getName(), testDomain + "privates/interfaces");
-//        appendUrlRequestRouter(java.getName(), testDomain + "interfaces");
 
         return this.getList(java.getName(), ApiInterface.class);
     }

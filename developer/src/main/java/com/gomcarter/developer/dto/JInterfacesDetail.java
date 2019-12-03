@@ -1,6 +1,6 @@
 package com.gomcarter.developer.dto;
 
-import com.gomcarter.frameworks.liyinapi.annotation.Notes;
+import com.gomcarter.frameworks.interfaces.annotation.Notes;
 
 import java.util.Date;
 
