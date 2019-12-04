@@ -166,6 +166,4 @@ d，接口详情
 
 e,接口测试
 ![image](https://upload-images.jianshu.io/upload_images/19189438-8430bb75c2d11121.png)
-![image]()
-
 
