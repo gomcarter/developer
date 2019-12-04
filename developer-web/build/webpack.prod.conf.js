@@ -112,10 +112,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     // copy custom static assets
     new CopyWebpackPlugin([
       {
-        from: './src/config/trace.js',
-        to: 'ma.js',
-        // from: path.resolve(__dirname, '../static'),
-        // to: config.build.assetsSubDirectory,
+        // from: './src/config/trace.js',
+        // to: 'ma.js',
+        from: path.resolve(__dirname, '../static'),
+        to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
     ]),
