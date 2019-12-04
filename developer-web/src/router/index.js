@@ -115,11 +115,6 @@ const router = new Router({
       component: r => require.ensure([], require => r(require('@/page/transfer')), 'transfer')
     },
     {
-      path: '/item/search',
-      name: 'itemsearch',
-      component: r => require.ensure([], require => r(require('@/page/item')), 'itemsearch')
-    },
-    {
       path: '/',
       redirect: '/index'
     }
