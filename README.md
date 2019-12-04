@@ -167,3 +167,8 @@ d，接口详情
 e,接口测试
 ![image](https://upload-images.jianshu.io/upload_images/19189438-8430bb75c2d11121.png)
 
+### 二、帮助
+
+如需帮助请联系：gomcarter@vip.qq.com
+
+或者 qq： 506598720
