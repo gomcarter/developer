@@ -136,14 +136,36 @@ read.jdbc.password=PASSWORD
 
 打开开发者中心：http://developer.server:port
 
+
 a，配置前端系统，需要根据接口的第一个目录开区分给哪个端提供的接口，如
+
 http://xserver.com/end1/xxx
+
 http://xserver.com/end2/yyy
+
 http://xserver.com/end3/zzz
 
-end1,end2,end3用来区分哪个端提供的接口，所以对接口的设计有要求。
+end1,end2,end3用来区分哪个端提供的接口，所以对接口的设计有要求， 如图：
+
+![image](https://upload-images.jianshu.io/upload_images/19189438-aeda91cbb1640585.png)
 
 b，配置模块
 
+模块的意思其实就是 java 项目，配置这个 java 项目的信息
+![image](https://upload-images.jianshu.io/upload_images/19189438-b14486081a8a3bcb.png)
+
 c，导入接口
+![image](https://upload-images.jianshu.io/upload_images/19189438-467c8a1b093bec82.png)
+
+选择上一步配置的 java 项目即可生成接口
+![image](https://upload-images.jianshu.io/upload_images/19189438-852be8a8a2fc375a.png)
+
+d，接口详情
+![image](https://upload-images.jianshu.io/upload_images/19189438-4dbdfa9749ea15e8.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-8d3fcf8bf096b014.png)
+
+e,接口测试
+![image](https://upload-images.jianshu.io/upload_images/19189438-8430bb75c2d11121.png)
+![image]()
+
 
