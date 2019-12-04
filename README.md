@@ -152,7 +152,7 @@ end1,end2,end3用来区分哪个端提供的接口，所以对接口的设计有
 b，配置模块
 
 模块的意思其实就是 java 项目，配置这个 java 项目的信息
-![image](https://upload-images.jianshu.io/upload_images/19189438-b14486081a8a3bcb.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-58f2e07a1a67112f.png)
 
 c，导入接口
 ![image](https://upload-images.jianshu.io/upload_images/19189438-467c8a1b093bec82.png)
@@ -161,11 +161,11 @@ c，导入接口
 ![image](https://upload-images.jianshu.io/upload_images/19189438-852be8a8a2fc375a.png)
 
 d，接口详情
-![image](https://upload-images.jianshu.io/upload_images/19189438-4dbdfa9749ea15e8.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-d53d8b03f5eedba4.png)
 ![image](https://upload-images.jianshu.io/upload_images/19189438-8d3fcf8bf096b014.png)
 
 e,接口测试
-![image](https://upload-images.jianshu.io/upload_images/19189438-8430bb75c2d11121.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-43d9d3c47fc2e755.png)
 
 ### 二、帮助
 
