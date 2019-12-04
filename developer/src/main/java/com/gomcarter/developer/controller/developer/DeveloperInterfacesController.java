@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("developer/interfaces")
-public class DeveloperInterfacesController extends BaseController {
+public class DeveloperInterfacesController {
 
     @Autowired
     private InterfacesService interfacesService;

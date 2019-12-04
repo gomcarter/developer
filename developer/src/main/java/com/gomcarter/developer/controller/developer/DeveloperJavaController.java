@@ -2,10 +2,9 @@ package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.JJava;
 import com.gomcarter.developer.entity.Java;
-import com.gomcarter.frameworks.base.controller.BaseController;
-import com.gomcarter.frameworks.base.pager.DatagridPager;
 import com.gomcarter.developer.params.JJavaQueryParams;
 import com.gomcarter.developer.service.JavaService;
+import com.gomcarter.frameworks.base.pager.DatagridPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("developer/java")
-public class DeveloperJavaController extends BaseController {
+public class DeveloperJavaController {
 
     @Autowired
     private JavaService javaService;

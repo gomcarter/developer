@@ -2,7 +2,6 @@ package com.gomcarter.developer;
 
 import com.gomcarter.frameworks.base.spring.RequestMappingHandlerAdapterModify;
 import com.gomcarter.frameworks.mybatis.annotation.EnableNacosMybatis;
-import com.gomcarter.frameworks.redis.annotation.EnableNacosRedis;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableNacosMybatis("DEVELOPER")
-@EnableNacosRedis
+//@EnableNacosRedis
 public class Application {
 
     @Bean
