@@ -1,8 +1,8 @@
-#核心功能#
+# 核心功能
 
 在你的项目中引入依赖: https://mvnrepository.com/artifact/com.gomcarter.frameworks/base
 
-###一、配置中心配置自动注入（目前仅支持 nacos 注册中心，<a href="https://github.com/gomcarter/developer/blob/master/README.md">注册中心配置参考</a>）
+### 一、配置中心配置自动注入（目前仅支持 nacos 注册中心，<a href="https://github.com/gomcarter/developer/blob/master/README.md">注册中心配置参考</a>）
 如：
 ```
 @SpringBootApplication
@@ -55,7 +55,7 @@ public class CategoryService {
     private Set<SomeClass> valueList;
 }
 ```
-###二、自动返回结果包装
+### 二、自动返回结果包装
 ```
 @SpringBootApplication
 @NacosAutoConfig
@@ -98,7 +98,7 @@ public class Test {
     text: "text1"
   }]
 }
-
-###三、流（Streamable）封装
-详见：https://github.com/gomcarter/developer/blob/master/frameworks/base/src/main/java/com/gomcarter/frameworks/base/streaming/Example.java
 ```
+### 三、流（Streamable）封装
+详见 https://github.com/gomcarter/developer/blob/master/frameworks/base/src/main/java/com/gomcarter/frameworks/base/streaming/Example.java
+
