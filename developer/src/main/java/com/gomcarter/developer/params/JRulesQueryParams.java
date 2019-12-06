@@ -3,37 +3,34 @@ package com.gomcarter.developer.params;
 import java.util.Date;
 
 /**
- * @ClassName JRules
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
 public class JRulesQueryParams {
-
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
 
     /**
-     * @Description 规则名称
+     * 规则名称
      */
     private String name;
     /**
-     * @Description 自动生成变量的javascript脚本
+     * 自动生成变量的javascript脚本
      */
     private String generator;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public JRulesQueryParams setId(Long id) {

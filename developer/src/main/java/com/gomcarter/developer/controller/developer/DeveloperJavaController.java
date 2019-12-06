@@ -4,8 +4,9 @@ import com.gomcarter.developer.dto.JJava;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.JJavaQueryParams;
 import com.gomcarter.developer.service.JavaService;
-import com.gomcarter.frameworks.base.pager.DatagridPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
+import com.gomcarter.frameworks.mybatis.pager.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,11 +58,11 @@ public class DeveloperJavaController {
 
     @GetMapping(value = "{id}", name = "获取java项目详情")
     public JJava get(@Notes("主键") @PathVariable("id") Long id) {
-        return this.list(new JJavaQueryParams().setId(id), new DatagridPager()).get(0);
+        return this.list(new JJavaQueryParams().setId(id), new DefaultPager()).get(0);
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JJava> list(@Notes("查询参数") JJavaQueryParams params, @Notes("分页器") DatagridPager pager) {
+    public List<JJava> list(@Notes("查询参数") JJavaQueryParams params, @Notes("分页器") Pageable pager) {
         return javaService.query(params, pager)
                 .stream()
                 .map(s -> new JJava()

@@ -1,19 +1,15 @@
 package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.ValidatorMapper;
-import com.gomcarter.frameworks.base.pager.Pageable;
+import com.gomcarter.developer.entity.Validator;
+import com.gomcarter.frameworks.mybatis.pager.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.gomcarter.developer.entity.Validator;
-import com.gomcarter.developer.params.JValidatorQueryParams;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- *
- * @ClassName ValidatorService
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
@@ -39,11 +35,11 @@ public class ValidatorService {
         return validatorMapper.getByIdList(idList);
     }
 
-    public List<Validator> query(JValidatorQueryParams params, Pageable pager) {
-        return  validatorMapper.query(params, pager);
+    public <R> List<Validator> query(R params, Pageable pager) {
+        return validatorMapper.query(params, pager);
     }
 
-    public Integer count(JValidatorQueryParams params) {
-        return  validatorMapper.count(params);
+    public <R> Integer count(R params) {
+        return validatorMapper.count(params);
     }
 }

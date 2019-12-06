@@ -1,11 +1,11 @@
 package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.JEnd;
-import com.gomcarter.frameworks.base.pager.DatagridPager;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.params.JEndQueryParams;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 /**
  * @author gomcarter
- * @ClassName PlatformEndController
- * @Description:
+ *  PlatformEndController
+ * :
  * @date: 2019-06-17 20:58:17
  */
 @RestController
@@ -35,8 +35,7 @@ public class DeveloperEndController {
                      @Notes("header值是什么") String header,
                      @Notes("备注") String mark) {
         endService.insert(
-                new End()
-                        .setName(name)
+                new End().setName(name)
                         .setPrefix(prefix)
                         .setJarUrl(jarUrl)
                         .setKls(kls)
@@ -58,8 +57,7 @@ public class DeveloperEndController {
                      @Notes("header值是什么") String header,
                      @Notes("备注") String mark) {
         endService.update(
-                new End()
-                        .setId(id)
+                new End().setId(id)
                         .setName(name)
                         .setPrefix(prefix)
                         .setJarUrl(jarUrl)
@@ -73,11 +71,11 @@ public class DeveloperEndController {
 
     @GetMapping(value = "{id}", name = "获取前端项目详情")
     public JEnd get(@Notes("主键") @PathVariable("id") Long id) {
-        return this.list(new JEndQueryParams().setId(id), new DatagridPager()).get(0);
+        return this.list(new JEndQueryParams().setId(id), new DefaultPager()).get(0);
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JEnd> list(@Notes("查询参数") JEndQueryParams params, @Notes("分页器") DatagridPager pager) {
+    public List<JEnd> list(@Notes("查询参数") JEndQueryParams params, @Notes("分页器") DefaultPager pager) {
         return endService.query(params, pager)
                 .stream()
                 .map(s -> new JEnd()

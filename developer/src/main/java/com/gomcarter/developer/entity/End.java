@@ -4,24 +4,24 @@ import java.util.Date;
 
 /**
  * @author gomcarter
- * @ClassName End
- * @Description
+ *  End
+ *
  * @date 2019-06-17 16:41:01
  */
 public class End {
 
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
 
 
     /**
-     * @Description 项目名称
+     * 项目名称
      */
     private String name;
     /**
-     * @Description 前缀
+     * 前缀
      */
     private String prefix;
 
@@ -34,18 +34,18 @@ public class End {
     private String args;
 
     /**
-     * @Description header
+     * header
      */
     private String header;
 
     private String mark;
 
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 

@@ -4,21 +4,20 @@ import com.gomcarter.developer.dto.JEnd;
 import com.gomcarter.developer.dto.JInterfaces;
 import com.gomcarter.developer.dto.JInterfacesDetail;
 import com.gomcarter.developer.dto.JJava;
-import com.gomcarter.developer.entity.Java;
-import com.gomcarter.frameworks.base.annotation.IgnoreLogin;
-import com.gomcarter.frameworks.base.common.CollectionUtils;
-import com.gomcarter.frameworks.base.controller.BaseController;
-import com.gomcarter.frameworks.base.mapper.JsonMapper;
-import com.gomcarter.frameworks.base.pager.DatagridPager;
-import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
+import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.JArgs;
 import com.gomcarter.developer.params.JInterfacesQueryParams;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.developer.service.JavaService;
+import com.gomcarter.frameworks.base.annotation.IgnoreLogin;
+import com.gomcarter.frameworks.base.common.CollectionUtils;
+import com.gomcarter.frameworks.base.mapper.JsonMapper;
+import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,13 @@ public class DeveloperInterfacesController {
     @Autowired
     private JavaService javaService;
 
+    /**
+     * 自动生成鉴权 token，配置好鉴权的 jar 包地址，通过反射调用 jar 包里面的生成鉴权的 token 返回到前台
+     *
+     * @param id interfaces id
+     * @return Pair
+     * @throws Exception Exception
+     */
     @GetMapping(value = "headers/{id}", name = "自动生成headers")
     public Pair headers(@PathVariable Long id) throws Exception {
         Interfaces interfaces = this.interfacesService.getById(id);
@@ -56,9 +62,8 @@ public class DeveloperInterfacesController {
             return null;
         }
         URL url = new URL(end.getJarUrl());
-        URLClassLoader myClassLoader1 = new URLClassLoader(new URL[]{url},
-                Thread.currentThread().getContextClassLoader());
-        Class kls = myClassLoader1.loadClass(end.getKls());
+        URLClassLoader myClassLoader1 = new URLClassLoader(new URL[]{url}, Thread.currentThread().getContextClassLoader());
+        Class<?> kls = myClassLoader1.loadClass(end.getKls());
         List<JArgs> argsList = JsonMapper.buildNonNullMapper().fromJsonToList(end.getArgs(), JArgs.class);
 
         Class[] classes = new Class[argsList.size()];
@@ -66,35 +71,9 @@ public class DeveloperInterfacesController {
         for (JArgs args : argsList) {
             classes[i++] = args.getKey();
         }
+
         Method method = kls.getMethod(end.getMethod(), classes);
-        return new Pair(end.getHeader(), method.invoke(null, argsList.stream().map(JArgs::getValue).toArray()));
-    }
-
-    public static void main(String[] args1) throws Exception {
-        End end = new End()
-                .setHeader("token")
-                .setMethod("getToken")
-                .setJarUrl("http://nexus.lh-xm.com:8081/repository/maven-releases/com/yiayo/base/base/1.0.5/base-1.0.5.jar")
-                .setKls("com.gomcarter.frameworks.base.common.ApiTokenUtils")
-                .setArgs("[]");
-        URL url1 = new URL(end.getJarUrl());
-        URLClassLoader myClassLoader1 = new URLClassLoader(new URL[]{url1},
-                Thread.currentThread().getContextClassLoader());
-        Class kls = myClassLoader1.loadClass(end.getKls());
-        List<JArgs> argsList = JsonMapper.buildNonNullMapper().fromJsonToList(end.getArgs(), JArgs.class);
-
-        Class[] classes = new Class[argsList.size()];
-        int i = 0;
-        for (JArgs args : argsList) {
-            classes[i++] = args.getKey();
-        }
-        Method method = kls.getMethod(end.getMethod(), classes);
-
-        System.out.println(
-                JsonMapper.buildNonNullMapper().toJson(
-                        new Pair(end.getHeader(), method.invoke(null, argsList.stream().map(JArgs::getValue).toArray()))
-                )
-        );
+        return new Pair<>(end.getHeader(), method.invoke(null, argsList.stream().map(JArgs::getValue).toArray()));
     }
 
     @PostMapping(value = "", name = "生成接口")
@@ -109,7 +88,7 @@ public class DeveloperInterfacesController {
 
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JInterfaces> list(@Notes("查询参数") JInterfacesQueryParams params, @Notes("分页器") DatagridPager pager) {
+    public List<JInterfaces> list(@Notes("查询参数") JInterfacesQueryParams params, @Notes("分页器") DefaultPager pager) {
         List<Interfaces> interfacesList = interfacesService.query(params, pager);
         if (CollectionUtils.isEmpty(interfacesList)) {
             return new ArrayList<>();

@@ -5,8 +5,6 @@ import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import java.util.Date;
 
 /**
- * @ClassName JInterfaces
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
@@ -46,7 +44,7 @@ public class JInterfaces {
     private Date modifyTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public JInterfaces setId(Long id) {

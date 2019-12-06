@@ -3,8 +3,6 @@ package com.gomcarter.developer.params;
 
 /**
  * @author gomcarter
- * @ClassName JArgs
- * @Description
  * @date 2019-06-17 16:41:01
  */
 public class JArgs {
@@ -29,7 +27,7 @@ public class JArgs {
     public JArgs setValue(Object value) {
         if (this.key == Long.class) {
             this.value = Long.valueOf(value.toString());
-        } else if (this.key == Integer.class){
+        } else if (this.key == Integer.class) {
             this.value = Integer.valueOf(value.toString());
         } else {
             this.value = value;

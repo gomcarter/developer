@@ -5,8 +5,6 @@ import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import java.util.Date;
 
 /**
- * @ClassName JJava
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
@@ -34,7 +32,7 @@ public class JJava {
     private Date createTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public JJava setId(Long id) {

@@ -1,12 +1,11 @@
 package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.annotation.Condition;
+import com.gomcarter.frameworks.mybatis.annotation.MatchType;
 
 /**
- * @author gomcarter
- * @ClassName JEnd
- * @Description
- * @date 2019-06-17 16:41:01
+ * @author gomcarter on 2019-06-17 16:41:01
  */
 public class JEndQueryParams {
 
@@ -14,6 +13,7 @@ public class JEndQueryParams {
     private Long id;
 
     @Notes("项目名称")
+    @Condition(type = MatchType.LIKE)
     private String name;
 
     public Long getId() {

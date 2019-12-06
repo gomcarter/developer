@@ -3,49 +3,49 @@ package com.gomcarter.developer.entity;
 import java.util.Date;
 
 /**
- * @ClassName TestCaseItem
- * @Description
+ *  TestCaseItem
+ *
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
 public class TestCaseItem {
 
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
 
 
     /**
-     * @Description 具体接口
+     * 具体接口
      */
     private String name;
     /**
-     * @Description 结果处理器，存储javascript脚本，此脚本应该return下一个接口的参数
+     * 结果处理器，存储javascript脚本，此脚本应该return下一个接口的参数
      */
     private String resultHandler;
     /**
-     * @Description 接口hash值
+     * 接口hash值
      */
     private String hash;
     /**
-     * @Description 配置
+     * 配置
      */
     private String config;
     /**
-     * @Description 接口外键
+     * 接口外键
      */
     private Long fkInterfacesId;
     /**
-     * @Description 接口用例外键
+     * 接口用例外键
      */
     private Long fkTestCaseId;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 

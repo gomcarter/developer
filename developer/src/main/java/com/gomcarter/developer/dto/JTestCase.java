@@ -3,45 +3,43 @@ package com.gomcarter.developer.dto;
 import java.util.Date;
 
 /**
- * @ClassName JTestCase
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
 public class JTestCase {
 
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
 
     /**
-     * @Description 用例名称
+     * 用例名称
      */
     private String name;
     /**
-     * @Description 用户id（谁建的）
+     * 用户id（谁建的）
      */
     private Long fkUserId;
     /**
-     * @Description 用户名称（谁建的）
+     * 用户名称（谁建的）
      */
     private String userName;
     /**
-     * @Description 备注
+     * 备注
      */
     private String mark;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public JTestCase setId(Long id) {

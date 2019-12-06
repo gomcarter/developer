@@ -6,8 +6,6 @@ import java.util.Date;
 
 /**
  * @author gomcarter
- * @ClassName JEnd
- * @Description
  * @date 2019-06-17 16:41:01
  */
 public class JEnd {

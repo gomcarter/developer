@@ -3,15 +3,14 @@ package com.gomcarter.developer.service;
 import com.alibaba.nacos.client.config.utils.MD5;
 import com.gomcarter.developer.api.InterfacesGetterApi;
 import com.gomcarter.developer.dao.InterfacesMapper;
+import com.gomcarter.developer.entity.End;
+import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
-import com.gomcarter.frameworks.base.pager.Pageable;
-import com.gomcarter.developer.entity.End;
-import com.gomcarter.developer.entity.Interfaces;
-import com.gomcarter.developer.params.JInterfacesQueryParams;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
+import com.gomcarter.frameworks.mybatis.pager.Pageable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +21,6 @@ import java.util.List;
 
 /**
  * @author gomcarter
- * @ClassName InterfacesService
- * @Description
  * @date 2019-06-17 16:41:01
  */
 @Service
@@ -39,7 +36,7 @@ public class InterfacesService {
     private EndService endService;
 
     @Autowired
-    private InterfacesGetterApi liyinApi;
+    private InterfacesGetterApi interfacesGetterApi;
 
     public void insert(Interfaces interfaces) {
         interfacesMapper.insert(interfaces);
@@ -57,11 +54,11 @@ public class InterfacesService {
         return interfacesMapper.getByIdList(idList);
     }
 
-    public List<Interfaces> query(JInterfacesQueryParams params, Pageable pager) {
+    public <R> List<Interfaces> query(R params, Pageable pager) {
         return interfacesMapper.query(params, pager);
     }
 
-    public Integer count(JInterfacesQueryParams params) {
+    public <R> Integer count(R params) {
         return interfacesMapper.count(params);
     }
 
@@ -69,7 +66,7 @@ public class InterfacesService {
         Java java = javaService.getById(javaId);
         AssertUtils.notNull(java, new CustomException("java项目不正确"));
 
-        List<ApiInterface> interfaceList = liyinApi.get(java);
+        List<ApiInterface> interfaceList = interfacesGetterApi.get(java);
 
         // 先把所有接口置为废弃。
         this.interfacesMapper.setDeprecatedByJavaId(javaId);
@@ -136,6 +133,6 @@ public class InterfacesService {
     }
 
     public void delete(Long id) {
-        this.interfacesMapper.delete(id);
+        this.interfacesMapper.deleteById(id);
     }
 }

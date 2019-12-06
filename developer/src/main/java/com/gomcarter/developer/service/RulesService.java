@@ -2,18 +2,14 @@ package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.RulesMapper;
 import com.gomcarter.developer.entity.Rules;
-import com.gomcarter.frameworks.base.pager.Pageable;
+import com.gomcarter.frameworks.mybatis.pager.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.gomcarter.developer.params.JRulesQueryParams;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- *
- * @ClassName RulesService
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
@@ -39,11 +35,11 @@ public class RulesService {
         return rulesMapper.getByIdList(idList);
     }
 
-    public List<Rules> query(JRulesQueryParams params, Pageable pager) {
-        return  rulesMapper.query(params, pager);
+    public <R> List<Rules> query(R params, Pageable pager) {
+        return rulesMapper.query(params, pager);
     }
 
-    public Integer count(JRulesQueryParams params) {
-        return  rulesMapper.count(params);
+    public <R> Integer count(R params) {
+        return rulesMapper.count(params);
     }
 }

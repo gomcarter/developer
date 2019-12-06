@@ -1,58 +1,60 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.util.Date;
 
 /**
- * @ClassName Java
- * @Description
- * @author gomcarter
- * @date 2019-06-17 16:41:01
+ * @author gomcarter on 2019-06-17 16:41:01
  */
 public class Java {
 
     /**
-     * @Description 主键
+     * 主键
      */
+
+    @TableId(type = IdType.AUTO)
     private Long id;
 
-
     /**
-     * @Description 模块名称
+     * 模块名称
      */
     private String name;
     /**
-     * @Description 开发环境域名
+     * 开发环境域名
      */
     private String devDomain;
     /**
-     * @Description 测试环境域名
+     * 测试环境域名
      */
     private String testDomain;
     /**
-     * @Description 预发环境域名
+     * 预发环境域名
      */
     private String prevDomain;
     /**
-     * @Description 线上环境域名
+     * 线上环境域名
      */
     private String onlineDomain;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public Java setId(Long id) {
         this.id = id;
         return this;
     }
+
     public String getName() {
         return name;
     }

@@ -10,9 +10,4 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Apis {
 
-//    @Bean
-//    public InterfacesGetterApi liyinApi() {
-//        return new InterfacesGetterApi();
-//    }
-
 }

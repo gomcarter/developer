@@ -1,11 +1,13 @@
 package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.annotation.Condition;
+import com.gomcarter.frameworks.mybatis.annotation.MatchType;
 
 /**
- * @ClassName JInterfaces
- * @Description
  * @author gomcarter
+ *  JInterfaces
+ *
  * @date 2019-06-17 16:41:01
  */
 public class JInterfacesQueryParams {
@@ -13,12 +15,15 @@ public class JInterfacesQueryParams {
     private Long id;
 
     @Notes("接口名称")
+    @Condition(type = MatchType.LIKE)
     private String name;
 
     @Notes("接口地址，域名后面的一截如：http://g.yiayo.com/platform/category中的platform/category")
+    @Condition(type = MatchType.LIKE)
     private String url;
 
     @Notes("GET, POST, PUT, PATCH, DELETE")
+    @Condition(type = MatchType.LIKE)
     private String method;
 
     @Notes("是否已经废弃")

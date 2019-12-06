@@ -3,37 +3,33 @@ package com.gomcarter.developer.params;
 import java.util.Date;
 
 /**
- * @ClassName JValidator
- * @Description
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
 public class JValidatorQueryParams {
-
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
-
     /**
-     * @Description 规则名称
+     * 规则名称
      */
     private String name;
     /**
-     * @Description 验证值的javascript脚本
+     * 验证值的javascript脚本
      */
     private String handler;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 
     public Long getId() {
-       	return id;
+        return id;
     }
 
     public JValidatorQueryParams setId(Long id) {

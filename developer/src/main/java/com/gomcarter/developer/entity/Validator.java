@@ -3,33 +3,33 @@ package com.gomcarter.developer.entity;
 import java.util.Date;
 
 /**
- * @ClassName Validator
- * @Description
+ *  Validator
+ *
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
 public class Validator {
 
     /**
-     * @Description 主键
+     * 主键
      */
     private Long id;
 
 
     /**
-     * @Description 规则名称
+     * 规则名称
      */
     private String name;
     /**
-     * @Description 验证值的javascript脚本
+     * 验证值的javascript脚本
      */
     private String handler;
     /**
-     * @Description
+     *
      */
     private Date createTime;
     /**
-     * @Description
+     *
      */
     private Date modifyTime;
 
