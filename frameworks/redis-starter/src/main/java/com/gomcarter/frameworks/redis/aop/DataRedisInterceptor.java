@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 /**
- * @author by 李银 2018年1月9日 16:45:42
+ * @author gomcarter 2018年1月9日 16:45:42
  */
 public class DataRedisInterceptor {
 

@@ -68,4 +68,9 @@ public @interface EnableNacosMybatis {
     String[] transactionRequiredNameMap() default {
             "add*", "edit*", "remove*", "insert*", "save*", "update*", "modify*", "delete*", "do*", "process*", "on*", "create*"
     };
+
+    /**
+     * @return 数据库类型
+     */
+    String dbType() default "mysql";
 }

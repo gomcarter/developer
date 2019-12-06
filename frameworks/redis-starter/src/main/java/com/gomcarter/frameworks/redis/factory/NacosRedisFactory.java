@@ -10,7 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.Properties;
 
 /**
- * @author 李银 on 2019-11-19 11:07:19
+ * @author gomcarter on 2019-11-19 11:07:19
  */
 public class NacosRedisFactory implements FactoryBean<RedisProxy>, InitializingBean {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());

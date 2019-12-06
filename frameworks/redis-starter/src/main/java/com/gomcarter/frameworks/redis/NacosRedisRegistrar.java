@@ -14,7 +14,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.HashMap;
 
 /**
- * @author 李银 on 2019-11-09 23:31:48
+ * @author  gomcarter on 2019-11-09 23:31:48
  */
 @Order
 public class NacosRedisRegistrar implements ImportBeanDefinitionRegistrar {

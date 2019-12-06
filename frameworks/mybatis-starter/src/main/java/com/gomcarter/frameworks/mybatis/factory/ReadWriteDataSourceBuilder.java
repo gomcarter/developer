@@ -1,13 +1,11 @@
 package com.gomcarter.frameworks.mybatis.factory;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.gomcarter.frameworks.base.common.CustomStringUtils;
 import com.gomcarter.frameworks.mybatis.datasource.ReadWriteDataSource;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -33,17 +31,13 @@ public class ReadWriteDataSourceBuilder {
                 properties.getProperty(writePrefix + ".jdbc.user"),
                 properties.getProperty(writePrefix + ".jdbc.password")
         );
-        String connectionInitSqls = properties.getProperty(writePrefix + ".jdbc.connectionInitSqls");
-        if (StringUtils.isNotBlank(connectionInitSqls)) {
-            write.setConnectionInitSqls(Lists.newArrayList(connectionInitSqls.split("\\|")));
-        }
 
         readWriteDataSource.setWriteDataSource(write);
 
-        String spitter = "|";
-        String[] readUrls = StringUtils.split(properties.getProperty(readPrefix + ".jdbc.url"), spitter),
-                users = StringUtils.split(properties.getProperty(readPrefix + ".jdbc.user"), spitter),
-                passwords = StringUtils.split(properties.getProperty(readPrefix + ".jdbc.password"), spitter);
+        String splitter = "\\|";
+        String[] readUrls = properties.getProperty(readPrefix + ".jdbc.url").split(splitter),
+                users = properties.getProperty(readPrefix + ".jdbc.user").split(splitter),
+                passwords = properties.getProperty(readPrefix + ".jdbc.password").split(splitter);
         Map<String, DataSource> readDataSourceMap = new HashMap<>();
         for (int i = 0; i < readUrls.length; ++i) {
             readDataSourceMap.put("readDataSource" + i, createDataSource(properties, readPrefix, readUrls[i], users[i], passwords[i]));
@@ -55,28 +49,36 @@ public class ReadWriteDataSourceBuilder {
         return readWriteDataSource;
     }
 
+    private static int valueOf(String value, int defaultValue) {
+        try {
+            return Integer.valueOf(value);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
     private static DruidDataSource createDataSource(Properties properties, String prefix, String url, String username, String password) throws SQLException {
         DruidDataSource dataSource = new DruidDataSource();
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
-        dataSource.setInitialSize(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.initialSize"), 1));
-        dataSource.setMaxActive(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.maxActive"), 80));
-        dataSource.setMinIdle(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.minIdle"), 10));
-        dataSource.setMaxWait(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.maxWait"), 60000));
+        dataSource.setInitialSize(valueOf(properties.getProperty(prefix + ".jdbc.initialSize"), 1));
+        dataSource.setMaxActive(valueOf(properties.getProperty(prefix + ".jdbc.maxActive"), 80));
+        dataSource.setMinIdle(valueOf(properties.getProperty(prefix + ".jdbc.minIdle"), 10));
+        dataSource.setMaxWait(valueOf(properties.getProperty(prefix + ".jdbc.maxWait"), 60000));
         dataSource.setTestOnBorrow(Boolean.valueOf(properties.getProperty(prefix + ".jdbc.testOnBorrow", "false")));
         dataSource.setTestOnReturn(Boolean.valueOf(properties.getProperty(prefix + ".jdbc.testOnReturn", "false")));
         dataSource.setTestWhileIdle(Boolean.valueOf(properties.getProperty(prefix + ".jdbc.testWhileIdle", "true")));
-        dataSource.setTimeBetweenEvictionRunsMillis(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.timeBetweenEvictionRunsMillis"), 60000));
-        dataSource.setMinEvictableIdleTimeMillis(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.minEvictableIdleTimeMillis"), 25200000));
+        dataSource.setTimeBetweenEvictionRunsMillis(valueOf(properties.getProperty(prefix + ".jdbc.timeBetweenEvictionRunsMillis"), 60000));
+        dataSource.setMinEvictableIdleTimeMillis(valueOf(properties.getProperty(prefix + ".jdbc.minEvictableIdleTimeMillis"), 25200000));
         dataSource.setRemoveAbandoned(Boolean.valueOf(properties.getProperty(prefix + ".jdbc.removeAbandoned", "true")));
-        dataSource.setRemoveAbandonedTimeout(CustomStringUtils.parseInt(properties.getProperty(prefix + ".jdbc.removeAbandonedTimeout"), 1800));
+        dataSource.setRemoveAbandonedTimeout(valueOf(properties.getProperty(prefix + ".jdbc.removeAbandonedTimeout"), 1800));
         dataSource.setLogAbandoned(Boolean.valueOf(properties.getProperty(prefix + ".jdbc.logAbandoned", "true")));
         dataSource.setFilters(properties.getProperty(prefix + ".jdbc.filters"));
 
         String connectionInitSqls = properties.getProperty(prefix + ".jdbc.connectionInitSqls");
-        if (StringUtils.isNotBlank(connectionInitSqls)) {
-            dataSource.setConnectionInitSqls(Lists.newArrayList(connectionInitSqls.split("\\|")));
+        if (connectionInitSqls != null) {
+            dataSource.setConnectionInitSqls(Arrays.asList(connectionInitSqls.split("\\|")));
         }
 
         dataSource.init();

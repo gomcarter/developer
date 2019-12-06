@@ -1,11 +1,12 @@
 package com.gomcarter.frameworks.mybatis;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import com.gomcarter.frameworks.mybatis.datasource.ReadWriteDataSource;
 import com.gomcarter.frameworks.mybatis.datasource.ReadWriteDataSourceProcessor;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
-import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.aop.aspectj.*;
 import org.springframework.context.annotation.Bean;
@@ -35,9 +36,16 @@ public class MybatisConfiguration {
      * @throws Exception Exception
      */
     @Bean
-    public SqlSessionFactoryBean sqlSessionFactoryBean(ReadWriteDataSource source) throws Exception {
-        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+    public MybatisSqlSessionFactoryBean sqlSessionFactoryBean(ReadWriteDataSource source) throws Exception {
+        MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(source);
+
+        // 分页插件
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        // 暂时不支持别的参数配置
+        paginationInterceptor.setDialectType(MybatisConfigHolder.DB_TYPE);
+        factoryBean.setPlugins(paginationInterceptor);
+
         factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MybatisConfigHolder.DAO_XML_PATH));
         return factoryBean;
     }
