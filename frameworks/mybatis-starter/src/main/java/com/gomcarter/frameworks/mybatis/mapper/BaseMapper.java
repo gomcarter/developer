@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gomcarter.frameworks.base.common.ReflectionUtils;
+import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import com.gomcarter.frameworks.mybatis.pager.Pageable;
 import com.gomcarter.frameworks.mybatis.utils.MapperUtils;
 
@@ -105,6 +106,22 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
                 new QueryWrapper<T>()
                         .in("id", idList)
         );
+    }
+
+    /**
+     * 复杂查询，只返回第一条数据
+     *
+     * @param params 查询参数
+     * @param <R>    参数类型
+     * @return the list of entity
+     */
+    default <R> T getUnique(R params) {
+        List<T> result = this.query(params, new DefaultPager(1, 1));
+        if (result == null || result.size() <= 0) {
+            return null;
+        }
+
+        return result.get(0);
     }
 
     /**
