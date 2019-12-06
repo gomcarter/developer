@@ -15,7 +15,7 @@ public class Application {
 }
 
 @Service
-public class CategoryService {
+public class FooService {
     
     /**
     * 配置如：
