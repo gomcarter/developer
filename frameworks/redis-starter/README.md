@@ -86,6 +86,7 @@ public class FooService {
 ```
 
 ### RedisProxy
+```
 @Service
 public class FooService {
 
@@ -101,5 +102,4 @@ public class FooService {
         
     }
 }
-
-
+```
