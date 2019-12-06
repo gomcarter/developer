@@ -2,7 +2,7 @@
 
 在你的项目中引入依赖: https://mvnrepository.com/artifact/com.gomcarter.frameworks/base
 
-### 一、配置中心配置自动注入（目前仅支持 nacos 注册中心，<a href="https://github.com/gomcarter/developer/blob/master/README.md">注册中心配置参考</a>）
+### 一、配置中心配置自动注入（目前仅支持 nacos 配置中心，<a href="https://github.com/gomcarter/developer/blob/master/README.md">注册中心配置参考</a>）
 如：
 ```
 @SpringBootApplication
