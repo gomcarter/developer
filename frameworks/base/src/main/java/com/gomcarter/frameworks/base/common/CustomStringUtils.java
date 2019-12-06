@@ -9,6 +9,53 @@ import java.math.BigDecimal;
  * @author gomcarter 2017年12月2日 08:10:35
  */
 public final class CustomStringUtils extends StringUtils {
+    private static final char UNDERLINE = '_';
+
+    /**
+     * 下划线 转 驼峰
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public static String underlineToCamel(String param) {
+        if (param == null || "".equals(param.trim())) {
+            return "";
+        }
+        int len = param.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = Character.toLowerCase(param.charAt(i));
+            if (c == UNDERLINE) {
+                if (++i < len) {
+                    sb.append(Character.toUpperCase(param.charAt(i)));
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 驼峰命名转为下划线命名
+     *
+     * @param param 参数
+     * @return 结果
+     */
+    public static String camelToUnderline(String param) {
+        StringBuilder sb = new StringBuilder(param);
+        //定位
+        int temp = 0;
+        if (!param.contains("_")) {
+            for (int i = 0; i < param.length(); i++) {
+                if (Character.isUpperCase(param.charAt(i))) {
+                    sb.insert(i + temp, "_");
+                    temp += 1;
+                }
+            }
+        }
+        return sb.toString().toLowerCase();
+    }
 
     /**
      * 骆驼命名法转下划线命名法

@@ -25,6 +25,23 @@ public abstract class ReflectionUtils {
     private static final String DATE_FORMAT_FULL = "yyyy-MM-dd HH:mm:ss";
 
     /**
+     * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
+     */
+    public static Object getFieldValue(final Object obj, final Field field) {
+        Object result = null;
+        if (field != null) {
+            try {
+                boolean accessible = field.isAccessible();
+                field.setAccessible(true);
+                result = field.get(obj);
+                field.setAccessible(accessible);
+            } catch (IllegalAccessException e) {
+            }
+        }
+        return result;
+    }
+
+    /**
      * 调用Getter方法.
      *
      * @param obj          obj
@@ -126,12 +143,7 @@ public abstract class ReflectionUtils {
                     + fieldName + "] on target [" + obj + "]");
         }
 
-        Object result = null;
-        try {
-            result = field.get(obj);
-        } catch (IllegalAccessException e) {
-        }
-        return result;
+        return getFieldValue(obj, field);
     }
 
     /**
