@@ -1,3 +1,9 @@
+在你的项目中引入依赖: https://mvnrepository.com/artifact/com.gomcarter.frameworks/redis-starter
+
+### 使用指南（目前仅支持 nacos 配置中心，<a href="https://github.com/gomcarter/developer/blob/master/README.md">配置中心配置参考</a>）
+
+
+
 # 核心功能
 
 ### 封装 rpc
