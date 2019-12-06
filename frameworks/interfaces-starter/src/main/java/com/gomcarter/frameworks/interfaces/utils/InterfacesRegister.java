@@ -48,8 +48,6 @@ public class InterfacesRegister implements ApplicationContextAware {
     public final static int RECURSION_DEPTH = 0;
 
     /**
-     * <p></p>
-     *
      * <b style="color:green">comment：</b>
      * <p>
      * 1、{@link org.springframework.web.bind.annotation.RequestMapping}，such as：
@@ -99,11 +97,9 @@ public class InterfacesRegister implements ApplicationContextAware {
      * <blockquote>
      * {@code }
      * </blockquote>
-     * <p>
-     *
-     * </p>
      *
      * @return list of ApiInterface
+     * @throws Exception Exception
      */
     @Notes("interface of register the interfaces to the interfaces center")
     public static List<ApiInterface> register() throws Exception {
