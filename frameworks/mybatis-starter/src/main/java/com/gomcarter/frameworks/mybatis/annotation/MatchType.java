@@ -148,6 +148,8 @@ public enum MatchType {
     },
     /**
      * where name in (...): nameINSQL是一个 sql 语句： select id from table where id &lt; 3
+     * <p>
+     * 尽量不要使用这个，有 sql注入 的风险
      */
     INSQL {
         @Override
@@ -157,6 +159,8 @@ public enum MatchType {
     },
     /**
      * where name not in (...): nameINSQL是一个 sql 语句： select name from table where id &lt; 3
+     * <p>
+     * 尽量不要使用这个，有 sql注入 的风险
      */
     NOTINSQL {
         @Override

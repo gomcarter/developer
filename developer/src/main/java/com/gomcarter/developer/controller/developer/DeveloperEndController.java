@@ -14,9 +14,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author gomcarter
- *  PlatformEndController
- * :
- * @date: 2019-06-17 20:58:17
+ * @date 2019-06-17 20:58:17
  */
 @RestController
 @RequestMapping("developer/end")
@@ -97,6 +95,4 @@ public class DeveloperEndController {
     public Integer count(@Notes("查询参数") JEndQueryParams params) {
         return endService.count(params);
     }
-
-
 }

@@ -48,6 +48,7 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
     }
 
     /**
+     * entity must have the field 'version' and must be a Integer
      * compare version and set new entity
      *
      * @param entity entity
@@ -62,9 +63,8 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
         }
 
         Integer oldValue = (Integer) ReflectionUtils.getFieldValue(entity, version);
-        Integer newValue = oldValue + 1;
+        ReflectionUtils.setFieldIfNotMatchConvertIt(entity, version, oldValue == null ? 1 : oldValue + 1);
 
-        ReflectionUtils.setField(entity, version, newValue);
         int affectRow = update(entity, new QueryWrapper<T>().eq("version", oldValue));
 
         if (affectRow <= 0) {
@@ -153,4 +153,16 @@ public interface BaseMapper<T> extends com.baomidou.mybatisplus.core.mapper.Base
     default <R> Integer count(R params) {
         return this.selectCount(MapperUtils.buildQueryWrapper(params));
     }
+
+    /**
+     * update entity where condition
+     *
+     * @param entity    实体对象 (set 条件值,可以为 null)
+     * @param condition 查询条件
+     */
+    default <R> int updateBy(T entity, R condition) {
+        return this.update(entity, MapperUtils.buildQueryWrapper(condition));
+    }
+
+
 }
