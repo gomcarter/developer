@@ -26,8 +26,8 @@ public class ${entity.className}Controller {
         return this.${entity.classInstanceName}Service.query(params, pager);
     }
 
-    @GetMapping(value = "query", name = "接口")
-    Integer query(${entity.className}Param params) {
+    @GetMapping(value = "count", name = "接口")
+    Integer count(${entity.className}Param params) {
         return this.${entity.classInstanceName}Service.count(params);
     }
 
