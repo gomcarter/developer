@@ -1,6 +1,8 @@
 package ${entity.paramPackage};
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import lombok.Data;
+import lombok.experimental.Accessors;
 <#if entity.hasSetType>
 import java.util.Set;
 </#if>
@@ -14,6 +16,8 @@ import java.math.BigDecimal;
 /**
  * @author ${entity.author} on ${entity.createTime}
  */
+@Data
+@Accessors(chain = true)
 public class ${entity.className}Param {
 
     /**
@@ -28,25 +32,5 @@ public class ${entity.className}Param {
      */
     @Notes("${prop.note}")
     private ${prop.simpleType} ${prop.propName};
-</#list>
-
-    public ${entity.idSimpleType} ${entity.idGetMethod}() {
-       	return ${entity.idName};
-    }
-
-    public ${entity.className}Param ${entity.idSetMethod}(${entity.idSimpleType} ${entity.idName}) {
-        this.${entity.idName} = ${entity.idName};
-        return this;
-    }
-
-<#list entity.propList as prop>
-    public ${prop.simpleType} ${prop.getMethod}() {
-        return ${prop.propName};
-    }
-
-    public ${entity.className}Param ${prop.setMethod}(${prop.simpleType} ${prop.propName}) {
-        this.${prop.propName} = ${prop.propName};
-        return this;
-    }
 </#list>
 }
