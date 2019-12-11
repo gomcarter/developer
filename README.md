@@ -1,9 +1,3 @@
-# frameworks #
-### <a href="https://github.com/gomcarter/developer/blob/master/frameworks/base/README.md" >主框架功能</a>
-### <a href="https://github.com/gomcarter/developer/blob/master/frameworks/dubbo-starter/README.md" >dubbo-starter</a>
-### <a href="https://github.com/gomcarter/developer/blob/master/frameworks/http-api-starter/README.md" >http-api-starter</a>
-### <a href="https://github.com/gomcarter/developer/blob/master/frameworks/mybatis-starter/README.md" >mybatis-starter</a>
-### <a href="https://github.com/gomcarter/developer/blob/master/frameworks/redis-starter/README.md" >redis-starter</a>
 # developer #
 ### 一、快速开始：
 
