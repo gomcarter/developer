@@ -1,11 +1,16 @@
 package com.gomcarter.developer.dto;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.Date;
 
 /**
  * @author gomcarter
  * @date 2019-06-17 16:41:02
  */
+@Data
+@Accessors(chain = true)
 public class JTestCaseItem {
 
     /**
@@ -45,86 +50,5 @@ public class JTestCaseItem {
      *
      */
     private Date modifyTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public JTestCaseItem setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JTestCaseItem setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getResultHandler() {
-        return resultHandler;
-    }
-
-    public JTestCaseItem setResultHandler(String resultHandler) {
-        this.resultHandler = resultHandler;
-        return this;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public JTestCaseItem setHash(String hash) {
-        this.hash = hash;
-        return this;
-    }
-
-    public String getConfig() {
-        return config;
-    }
-
-    public JTestCaseItem setConfig(String config) {
-        this.config = config;
-        return this;
-    }
-
-    public Long getFkInterfacesId() {
-        return fkInterfacesId;
-    }
-
-    public JTestCaseItem setFkInterfacesId(Long fkInterfacesId) {
-        this.fkInterfacesId = fkInterfacesId;
-        return this;
-    }
-
-    public Long getFkTestCaseId() {
-        return fkTestCaseId;
-    }
-
-    public JTestCaseItem setFkTestCaseId(Long fkTestCaseId) {
-        this.fkTestCaseId = fkTestCaseId;
-        return this;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public JTestCaseItem setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public JTestCaseItem setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-        return this;
-    }
 
 }

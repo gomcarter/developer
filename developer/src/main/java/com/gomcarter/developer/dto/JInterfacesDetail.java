@@ -1,6 +1,8 @@
 package com.gomcarter.developer.dto;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -8,6 +10,8 @@ import java.util.Date;
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
+@Data
+@Accessors(chain = true)
 public class JInterfacesDetail {
 
     @Notes(value = "主键", notNull = true)
@@ -48,121 +52,4 @@ public class JInterfacesDetail {
 
     @Notes(value = "更新时间", notNull = true)
     private Date modifyTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public JInterfacesDetail setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public JInterfacesDetail setHash(String hash) {
-        this.hash = hash;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JInterfacesDetail setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public JInterfacesDetail setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public JInterfacesDetail setMethod(String method) {
-        this.method = method;
-        return this;
-    }
-
-    public Boolean getDeprecated() {
-        return deprecated;
-    }
-
-    public JInterfacesDetail setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-        return this;
-    }
-
-    public String getMark() {
-        return mark;
-    }
-
-    public JInterfacesDetail setMark(String mark) {
-        this.mark = mark;
-        return this;
-    }
-
-    public String getReturns() {
-        return returns;
-    }
-
-    public JInterfacesDetail setReturns(String returns) {
-        this.returns = returns;
-        return this;
-    }
-
-    public String getParameters() {
-        return parameters;
-    }
-
-    public JInterfacesDetail setParameters(String parameters) {
-        this.parameters = parameters;
-        return this;
-    }
-
-    public JJava getJava() {
-        return java;
-    }
-
-    public JInterfacesDetail setJava(JJava java) {
-        this.java = java;
-        return this;
-    }
-
-    public JEnd getEnd() {
-        return end;
-    }
-
-    public JInterfacesDetail setEnd(JEnd end) {
-        this.end = end;
-        return this;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public JInterfacesDetail setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public JInterfacesDetail setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-        return this;
-    }
 }

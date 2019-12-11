@@ -1,11 +1,15 @@
 package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
+@Data
+@Accessors(chain = true)
 public class JJavaQueryParams {
     /**
      * 主键
@@ -17,22 +21,4 @@ public class JJavaQueryParams {
      */
     @Notes("模块名称")
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public JJavaQueryParams setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JJavaQueryParams setName(String name) {
-        this.name = name;
-        return this;
-    }
 }

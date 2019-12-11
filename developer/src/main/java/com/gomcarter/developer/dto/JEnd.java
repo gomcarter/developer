@@ -1,6 +1,8 @@
 package com.gomcarter.developer.dto;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -8,6 +10,8 @@ import java.util.Date;
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
+@Data
+@Accessors(chain = true)
 public class JEnd {
 
     @Notes("主键")
@@ -39,94 +43,4 @@ public class JEnd {
 
     @Notes("创建时间")
     private Date createTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public JEnd setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JEnd setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public JEnd setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
-    public JEnd setHeader(String header) {
-        this.header = header;
-        return this;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public JEnd setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
-    }
-
-    public String getJarUrl() {
-        return jarUrl;
-    }
-
-    public JEnd setJarUrl(String jarUrl) {
-        this.jarUrl = jarUrl;
-        return this;
-    }
-
-    public String getKls() {
-        return kls;
-    }
-
-    public JEnd setKls(String kls) {
-        this.kls = kls;
-        return this;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public JEnd setMethod(String method) {
-        this.method = method;
-        return this;
-    }
-
-    public String getArgs() {
-        return args;
-    }
-
-    public JEnd setArgs(String args) {
-        this.args = args;
-        return this;
-    }
-
-    public String getMark() {
-        return mark;
-    }
-
-    public JEnd setMark(String mark) {
-        this.mark = mark;
-        return this;
-    }
 }

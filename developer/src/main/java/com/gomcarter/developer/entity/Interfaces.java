@@ -1,5 +1,8 @@
 package com.gomcarter.developer.entity;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.Date;
 
 /**
@@ -8,13 +11,14 @@ import java.util.Date;
  * @author gomcarter
  * @date 2019-06-17 16:41:01
  */
+@Data
+@Accessors(chain = true)
 public class Interfaces {
 
     /**
      * 主键
      */
     private Long id;
-
     /**
      * 认定唯一接口标识符
      */
@@ -63,121 +67,4 @@ public class Interfaces {
      *
      */
     private Date modifyTime;
-
-    public Long getId() {
-       	return id;
-    }
-
-    public Interfaces setId(Long id) {
-        this.id = id;
-        return this;
-    }
-    public String getHash() {
-        return hash;
-    }
-
-    public Interfaces setHash(String hash) {
-        this.hash = hash;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Interfaces setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public Interfaces setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public Interfaces setMethod(String method) {
-        this.method = method;
-        return this;
-    }
-
-    public Boolean getDeprecated() {
-        return deprecated;
-    }
-
-    public Interfaces setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-        return this;
-    }
-
-    public String getMark() {
-        return mark;
-    }
-
-    public Interfaces setMark(String mark) {
-        this.mark = mark;
-        return this;
-    }
-
-    public String getReturns() {
-        return returns;
-    }
-
-    public Interfaces setReturns(String returns) {
-        this.returns = returns;
-        return this;
-    }
-
-    public String getParameters() {
-        return parameters;
-    }
-
-    public Interfaces setParameters(String parameters) {
-        this.parameters = parameters;
-        return this;
-    }
-
-    public Long getFkJavaId() {
-        return fkJavaId;
-    }
-
-    public Interfaces setFkJavaId(Long fkJavaId) {
-        this.fkJavaId = fkJavaId;
-        return this;
-    }
-
-    public Long getFkEndId() {
-        return fkEndId;
-    }
-
-    public Interfaces setFkEndId(Long fkEndId) {
-        this.fkEndId = fkEndId;
-        return this;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public Interfaces setCreateTime(Date createTime) {
-        this.createTime = createTime;
-        return this;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public Interfaces setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-        return this;
-    }
-
 }

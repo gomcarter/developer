@@ -3,13 +3,15 @@ package com.gomcarter.developer.params;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import com.gomcarter.frameworks.mybatis.annotation.Condition;
 import com.gomcarter.frameworks.mybatis.annotation.MatchType;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author gomcarter
- *  JInterfaces
- *
  * @date 2019-06-17 16:41:01
  */
+@Data
+@Accessors(chain = true)
 public class JInterfacesQueryParams {
     @Notes("主键")
     private Long id;
@@ -37,76 +39,4 @@ public class JInterfacesQueryParams {
 
     @Notes("属于哪个前端项目")
     private Long endId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public JInterfacesQueryParams setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JInterfacesQueryParams setName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public JInterfacesQueryParams setUrl(String url) {
-        this.url = url;
-        return this;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public JInterfacesQueryParams setMethod(String method) {
-        this.method = method;
-        return this;
-    }
-
-    public Boolean getDeprecated() {
-        return deprecated;
-    }
-
-    public JInterfacesQueryParams setDeprecated(Boolean deprecated) {
-        this.deprecated = deprecated;
-        return this;
-    }
-
-    public String getMark() {
-        return mark;
-    }
-
-    public JInterfacesQueryParams setMark(String mark) {
-        this.mark = mark;
-        return this;
-    }
-
-    public Long getJavaId() {
-        return javaId;
-    }
-
-    public JInterfacesQueryParams setJavaId(Long javaId) {
-        this.javaId = javaId;
-        return this;
-    }
-
-    public Long getEndId() {
-        return endId;
-    }
-
-    public JInterfacesQueryParams setEndId(Long endId) {
-        this.endId = endId;
-        return this;
-    }
 }
