@@ -50,4 +50,16 @@ public class EndService {
         }
         return this.endMapper.getByPrefix(prefix);
     }
+
+    public End insertOrGetDefault() {
+        End end = this.getByPrefix("publics");
+        if (end == null) {
+            end = new End();
+            this.insert(
+                    end.setName("公共系统")
+                            .setPrefix("publics")
+            );
+        }
+        return end;
+    }
 }

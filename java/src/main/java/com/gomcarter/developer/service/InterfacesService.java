@@ -1,12 +1,12 @@
 package com.gomcarter.developer.service;
 
 import com.alibaba.nacos.client.config.utils.MD5;
-import com.gomcarter.developer.api.InterfacesGetterApi;
 import com.gomcarter.developer.dao.InterfacesMapper;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
@@ -35,9 +35,6 @@ public class InterfacesService {
     @Autowired
     private EndService endService;
 
-    @Autowired
-    private InterfacesGetterApi interfacesGetterApi;
-
     public void insert(Interfaces interfaces) {
         interfacesMapper.insert(interfaces);
     }
@@ -62,11 +59,13 @@ public class InterfacesService {
         return interfacesMapper.count(params);
     }
 
-    public Integer insert(Long javaId) {
+    public Integer insert(Long javaId, List<ApiInterface> interfaceList) {
+        if (CollectionUtils.isEmpty(interfaceList)) {
+            return 0;
+        }
+
         Java java = javaService.getById(javaId);
         AssertUtils.notNull(java, new CustomException("java项目不正确"));
-
-        List<ApiInterface> interfaceList = interfacesGetterApi.get(java);
 
         // 先把所有接口置为废弃。
         this.interfacesMapper.setDeprecatedByJavaId(javaId);
@@ -80,7 +79,9 @@ public class InterfacesService {
                     .orElse(null);
 
             End end = endService.getByPrefix(prefix);
-            AssertUtils.notNull(end, new CustomException(url + "没有对应的前端系统，请先配置。"));
+            if (end == null) {
+                end = endService.insertOrGetDefault();
+            }
 
             String returns = JsonMapper.buildNonNullMapper().toJson(s.getReturns());
             String parameters = JsonMapper.buildNonNullMapper().toJson(s.getParameters());

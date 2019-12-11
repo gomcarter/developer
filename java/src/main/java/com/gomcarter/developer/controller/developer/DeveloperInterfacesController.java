@@ -17,6 +17,7 @@ import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
@@ -77,8 +78,10 @@ public class DeveloperInterfacesController {
     }
 
     @PostMapping(value = "", name = "生成接口")
-    public Integer insert(@RequestParam Long javaId) {
-        return this.interfacesService.insert(javaId);
+    public Integer insert(@RequestParam Long javaId, String interfaces) {
+        List<ApiInterface> interfaceList = JsonMapper.buildNonNullMapper().fromJsonToList(interfaces, ApiInterface.class);
+
+        return this.interfacesService.insert(javaId, interfaceList);
     }
 
     @PostMapping(value = "delete/{id}", name = "删除接口")
