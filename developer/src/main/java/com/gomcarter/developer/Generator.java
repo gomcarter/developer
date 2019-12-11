@@ -45,6 +45,9 @@ public class Generator {
          */
         CodeGenerator.AUTHOR = "gomcarter";
 
+        // 添加数据库字段映射成 java 类
+        // CodeGenerator.addTypeMapping("", Integer.class);
+
         // 开始执行
         CodeGenerator.main(null);
     }
