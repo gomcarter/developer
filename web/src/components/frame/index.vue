@@ -84,7 +84,6 @@ export default {
     //   }
     // },
     doLogout () {
-      console.log(1111)
       this.$confirm('确定要退出吗？', '提示', {type: 'warning'}).then(() => {
         // this.stopBadge()
         logout()

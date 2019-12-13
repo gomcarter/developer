@@ -47,10 +47,17 @@ export const interfacesListApi = async (params) => {
 export const getInterfacesApi = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/interfaces/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-  // return JSON.parse(
-  //   '{"id":9,"hash":"b2d5f65824198a41016a4178d36a9244","name":"库存记录","url":"/pda/inventory/list","method":"GET","deprecated":false,"returns":"{\\"notNull\\":false,\\"type\\":\\"List\\",\\"children\\":[{\\"notNull\\":false,\\"type\\":\\"Object\\",\\"children\\":[{\\"key\\":\\"skuId\\",\\"notNull\\":true,\\"comment\\":\\"商品id\\",\\"type\\":\\"Long\\"},{\\"key\\":\\"skuName\\",\\"notNull\\":true,\\"comment\\":\\"sku名称\\",\\"type\\":\\"String\\"},{\\"key\\":\\"quantity\\",\\"notNull\\":true,\\"comment\\":\\"库存数量\\",\\"type\\":\\"Integer\\"},{\\"key\\":\\"images\\",\\"notNull\\":true,\\"comment\\":\\"sku图片\\",\\"type\\":\\"String\\"},{\\"key\\":\\"inventoryCycle\\",\\"notNull\\":true,\\"comment\\":\\"平均库存周期，前台直接展示即可\\",\\"type\\":\\"Integer\\"}]}]}","parameters":"[{\\"key\\":\\"skuName\\",\\"notNull\\":false,\\"comment\\":\\"商品名称\\",\\"type\\":\\"String\\"},{\\"key\\":\\"pager\\",\\"notNull\\":false,\\"comment\\":\\"分页器\\",\\"type\\":\\"Object\\",\\"children\\":[{\\"key\\":\\"rows\\",\\"notNull\\":false,\\"defaults\\":20,\\"type\\":\\"int\\"},{\\"key\\":\\"page\\",\\"notNull\\":false,\\"defaults\\":1,\\"type\\":\\"int\\"},{\\"key\\":\\"sort\\",\\"notNull\\":false,\\"defaults\\":\\"id\\",\\"type\\":\\"String\\"},{\\"key\\":\\"order\\",\\"notNull\\":false,\\"defaults\\":\\"desc\\",\\"type\\":\\"String\\"}]}]","java":{"id":12,"name":"wms","devDomain":"http://wms.zhonghuasou.com","testDomain":"http://wms.zhonghuasou.com","prevDomain":"http://wms.cpsdb.com","onlineDomain":"http://wms.cpsdb.com"},"end":{"id":11,"name":"仓库PDA管理平台","prefix":"pda","header":"调用接口需往header或者cookie中写入 token"},"createTime":1560901421000}'
-  // )
 }
+
+/**
+ * @author gomcarter 2019-02-14
+ * @returns 接口历史
+ */
+export const getInterfacesVersionedApi = async (interfacesId) => {
+  const res = await xhr.get(`${INSERV_URL}developer/versioned/of/${interfacesId}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
 /**
  * @author 李银 on 2019-06-22 13:24:19
  * @returns 获取接口的headers

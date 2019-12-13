@@ -1,14 +1,20 @@
 @charset "utf-8";
-.logs{
-  span{
+.logs {
+  span {
     color: #e76262;
   }
 }
-.json{
+
+.json {
   height: 475px;
   overflow: auto;
   padding: 20px;
   border: 4px solid #ddd;
   border-radius: 4px;
   line-height: 1.4;
+}
+
+.history {
+  color: #888d;
+  font-style: italic;
 }
