@@ -96,6 +96,7 @@ public class InterfacesService {
             if (interfaces == null) {
                 interfaces = new Interfaces()
                         .setUrl(url)
+                        .setController(s.getController())
                         .setFkJavaId(javaId)
                         .setHash(hash)
                         .setDeprecated(s.isDeprecated())
@@ -113,6 +114,7 @@ public class InterfacesService {
                 this.update(interfaces.setUrl(url)
                         .setFkJavaId(javaId)
                         .setHash(hash)
+                        .setController(s.getController())
                         .setDeprecated(s.isDeprecated())
                         .setFkEndId(end.getId())
                         .setMark(s.getMark())

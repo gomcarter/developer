@@ -77,13 +77,6 @@ public class DeveloperInterfacesController {
         return new Pair<>(end.getHeader(), method.invoke(null, argsList.stream().map(JArgs::getValue).toArray()));
     }
 
-    @PostMapping(value = "", name = "生成接口")
-    public Integer insert(@RequestParam Long javaId, String interfaces) {
-        List<ApiInterface> interfaceList = JsonMapper.buildNonNullMapper().fromJsonToList(interfaces, ApiInterface.class);
-
-        return this.interfacesService.insert(javaId, interfaceList);
-    }
-
     @PostMapping(value = "delete/{id}", name = "删除接口")
     public void delete(@PathVariable Long id) {
         this.interfacesService.delete(id);
@@ -124,7 +117,7 @@ public class DeveloperInterfacesController {
 
     @GetMapping(value = "{id}", name = "获取接口详情")
     @IgnoreLogin
-    public JInterfacesDetail list(@Notes("查询参数") @PathVariable Long id) {
+    public JInterfacesDetail detail(@Notes("查询参数") @PathVariable Long id) {
         Interfaces interfaces = interfacesService.getById(id);
 
         Java java = javaService.getById(interfaces.getFkJavaId());

@@ -1,5 +1,7 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -18,11 +20,16 @@ public class Interfaces {
     /**
      * 主键
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 认定唯一接口标识符
      */
     private String hash;
+    /**
+     * 控制器
+     */
+    private String controller;
     /**
      * 接口名称
      */

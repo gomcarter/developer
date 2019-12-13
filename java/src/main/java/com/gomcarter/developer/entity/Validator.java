@@ -1,5 +1,7 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,6 +17,7 @@ public class Validator {
     /**
      * 主键
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
     /**
      * 规则名称

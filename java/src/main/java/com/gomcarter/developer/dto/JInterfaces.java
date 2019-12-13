@@ -20,6 +20,9 @@ public class JInterfaces {
     @Notes(value = "接口唯一标识符", notNull = true)
     private String hash;
 
+    @Notes(value = "控制器", notNull = true)
+    private String controller;
+
     @Notes(value = "接口名称", notNull = true)
     private String name;
 
