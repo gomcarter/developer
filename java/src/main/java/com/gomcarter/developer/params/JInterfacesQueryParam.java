@@ -39,8 +39,10 @@ public class JInterfacesQueryParam {
     private String mark;
 
     @Notes("属于哪个java项目")
+    @Condition(field = "fk_java_id")
     private Long javaId;
 
     @Notes("属于哪个前端项目")
+    @Condition(field = "fk_end_id")
     private Long endId;
 }
