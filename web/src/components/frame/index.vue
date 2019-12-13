@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="harder">
+    <div class="header">
       <a href="">
         <img src="@/assets/img/login_logo.png" class="logo"/>
       </a>
@@ -27,19 +27,16 @@
         </template>
       </el-menu>
       <div class="user">
-        <img style="border-radius: 50%;" class="logo" :src="portrait ? getPictureUrl(portrait) :Logo"/>
-<!--        <el-dropdown>-->
-<!--          <span class="el-dropdown-link" style="color: white;cursor: pointer">-->
-<!--            欢迎，{{username}}<i :style="{'visibility': portrait ? 'visible' :'hidden'}" class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
-<!--          </span>-->
-<!--          <div style="visibility: hidden;">-->
-<!--            <span class="el-icon-arrow-down el-icon&#45;&#45;right"></span>-->
-<!--          </div>-->
-<!--          <el-dropdown-menu slot="dropdown" v-if="portrait">-->
+<!--        <img style="border-radius: 50%;" class="logo" :src="portrait ? getPictureUrl(portrait) :Logo"/>-->
+        <el-dropdown>
+          <span class="el-dropdown-link" style="color: white;cursor: pointer">
+            欢迎，{{username}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
 <!--            <el-dropdown-item @click="forgetPassword">修改密码</el-dropdown-item>-->
-<!--            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>-->
-<!--          </el-dropdown-menu>-->
-<!--        </el-dropdown>-->
+            <el-dropdown-item @click="doLogout">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </div>
     </div>
     <v-dialog ref="forget" title="修改密码">
@@ -60,7 +57,7 @@
 <script>
 import Logo from '@/assets/img/qa.png'
 import {getPictureUrl} from '@/config/utils'
-import {logout, getUsername, getLogo} from '@/config/login'
+import {logout, user} from '@/config/login'
 
 export default {
   name: 'frame',
@@ -69,8 +66,8 @@ export default {
       activeIndex: '1',
       getPictureUrl,
       Logo,
-      username: getUsername() || 'nobody',
-      portrait: getLogo(),
+      username: user() || 'nobody',
+      portrait: null,
       rule: [],
       items: [],
       timer: null,
@@ -80,13 +77,14 @@ export default {
   computed: {},
   methods: {
     // 阻止冒泡
-    stopproPagation () {
-      try {
-        window.event.cancelBubble = true
-      } catch (e) {
-      }
-    },
-    logout () {
+    // stopproPagation () {
+    //   try {
+    //     window.event.cancelBubble = true
+    //   } catch (e) {
+    //   }
+    // },
+    doLogout () {
+      console.log(1111)
       this.$confirm('确定要退出吗？', '提示', {type: 'warning'}).then(() => {
         // this.stopBadge()
         logout()
@@ -107,8 +105,8 @@ export default {
           name: '接口管理',
           open: false,
           subItems: [
-            {link: '/project/list', name: '项目列表', selected: false},
-            {link: '/module/list', name: '模块列表', selected: false},
+            {link: '/project/list', name: '前端项目', selected: false},
+            {link: '/module/list', name: 'JAVA项目', selected: false},
             {link: '/manage/list', name: '接口列表', selected: false}
           ]
         },
@@ -124,14 +122,6 @@ export default {
           name: '接口测试',
           link: '/test',
           selected: false
-        },
-        {
-          name: '商品中心',
-          selected: false,
-          open: false,
-          subItems: [
-            {link: '/item/search', name: '商品搜索测试', selected: false}
-          ]
         }
       ]
       this.selectMenuByRoute()

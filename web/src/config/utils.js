@@ -435,9 +435,9 @@ export const getPictureUrl = (url, params = {}) => {
     .reduce((a, b) => `${a}&${b}`)
 
   if (typeof url === 'string') {
-    return IMAGE_SERVER_URL + url + (url.indexOf('?') >= 0 ? '&' : '?') + p
+    return '/' + url + (url.indexOf('?') >= 0 ? '&' : '?') + p
   }
-  return url.map(v => IMAGE_SERVER_URL + v + (v.indexOf('?') >= 0 ? '&' : '?') + p)
+  return url.map(v => '/' + v + (v.indexOf('?') >= 0 ? '&' : '?') + p)
 }
 
 export const getUrlHashParams = () => {

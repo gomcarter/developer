@@ -2,7 +2,7 @@
   <div class="customer">
     <div class="header">
       <img src="@/assets/img/login_logo.png" class="logo"/>
-      <h3>亿安永道开发者中心</h3>
+      <h3>开发者中心</h3>
     </div>
     <div class="index_more">
       <div class="index_chunk">

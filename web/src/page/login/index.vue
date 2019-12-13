@@ -2,23 +2,14 @@
   <div class="login">
     <div class="login-box">
       <img src="@/assets/img/login_logo.png" alt="" class="logo">
-      <p class="logo_title">亿安永道开发者中心</p>
+      <p class="logo_title">开发者中心</p>
       <div class="form">
         <el-form ref="forms" :model="forms" label-width="0" :rules="rules">
-          <el-form-item prop="username">
-            <el-input v-model="forms.username" placeholder="请输入账号" @keypress.enter.native="onSubmit"></el-input>
+          <el-form-item prop="user">
+            <el-input v-model="forms.user" placeholder="请输入账号" @keypress.enter.native="onSubmit"></el-input>
           </el-form-item>
           <el-form-item prop="password">
             <el-input v-model="forms.password" type="password" placeholder="请输入密码" @keypress.enter.native="onSubmit"></el-input>
-          </el-form-item>
-          <el-form-item prop="checknumber">
-            <el-col :span="16" gutter="10">
-              <el-input v-model="forms.checknumber" placeholder="请输入验证码" maxlength="4" @keypress.enter.native="onSubmit">
-              </el-input>
-            </el-col>
-            <el-col :span="8" class="validate">
-              <img :src="codeImg" alt="" class="code-pic" width="116px" height="40px" @click="changeCode">
-            </el-col>
           </el-form-item>
         </el-form>
         <el-row>
@@ -30,8 +21,7 @@
 </template>
 
 <script>
-import { BASE_URL, DOMAIN } from '@/config/api/env'
-import { userLogin } from '@/config/api/base-api'
+import { loginApi } from '@/config/api/inserv-api'
 import { login } from '@/config/login'
 import { getUrlHashParams } from '@/config/utils'
 
@@ -39,20 +29,15 @@ export default {
   data () {
     return {
       forms: {
-        username: '',
-        password: '',
-        checknumber: ''
+        user: '',
+        password: ''
       },
-      codeImg: `${BASE_URL}publics/checknumber.jpg?t=${new Date().getTime()}&domain=${DOMAIN}`,
       rules: {
-        username: [
+        user: [
           { required: true, message: '请输入账号', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' }
-        ],
-        checknumber: [
-          { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
       },
       disClick: false
@@ -64,7 +49,7 @@ export default {
       this.$refs.forms.validate((valid) => {
         if (valid) {
           this.disClick = true
-          userLogin(this.forms).then((res) => {
+          loginApi(this.forms).then((res) => {
             // 设置过期时间 2小时
             login(res, 2)
             if (this.redirect) {
@@ -77,9 +62,6 @@ export default {
           })
         }
       })
-    },
-    changeCode () { // 验证码
-      this.codeImg = `${BASE_URL}publics/checknumber.jpg?t=${new Date().getTime()}&domain=${DOMAIN}`
     }
   },
   mounted () {

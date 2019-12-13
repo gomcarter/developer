@@ -2,7 +2,16 @@ import {xhr} from '@/config/api/http'
 import {INSERV_URL} from '@/config/api/env'
 
 /**
- * @author 曾世平2019-02-26
+ * @author gomcarter on 2019-02-13
+ * @returns 登录
+ */
+export const loginApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}publics/user/login`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-26
  * @returns 接口管理---接口列表-新增
  */
 export const addInterfaces = async (params) => {
@@ -16,7 +25,7 @@ export const deleteInterfaces = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-13
+ * @author gomcarter 2019-02-13
  * @returns 接口管理
  */
 export const interfacesCountApi = async (params) => {
@@ -24,7 +33,7 @@ export const interfacesCountApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-13
+ * @author gomcarter 2019-02-13
  * @returns 接口管理
  */
 export const interfacesListApi = async (params) => {
@@ -32,7 +41,7 @@ export const interfacesListApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-14
+ * @author gomcarter 2019-02-14
  * @returns 接口管理---详情
  */
 export const getInterfacesApi = async (id) => {
@@ -52,7 +61,7 @@ export const getInterfacesHeadersApi = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-14
+ * @author gomcarter 2019-02-14
  * @returns 接口管理---新增项目
  */
 export const endListApi = async (params) => {
@@ -61,7 +70,7 @@ export const endListApi = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 项目管理---项目数量
  */
 export const endCountApi = async (params) => {
@@ -69,7 +78,7 @@ export const endCountApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 项目管理---添加项目
  */
 export const addEndApi = async (params) => {
@@ -78,7 +87,7 @@ export const addEndApi = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 接口管理---项目编辑
  */
 export const updateEndApi = async (id, params) => {
@@ -87,7 +96,7 @@ export const updateEndApi = async (id, params) => {
 }
 
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 接口管理---项目详情
  */
 export const getEndApi = async (id) => {
@@ -96,7 +105,7 @@ export const getEndApi = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 模块管理---模块列表-模块数量
  */
 export const javaCountApi = async (params) => {
@@ -104,7 +113,7 @@ export const javaCountApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 模块管理---模块列表-添加模块
  */
 export const addJavaApi = async (params) => {
@@ -112,7 +121,7 @@ export const addJavaApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 模块管理---模块列表-编辑模块
  */
 export const updateJavaApi = async (params) => {
@@ -120,7 +129,7 @@ export const updateJavaApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
- * @author 曾世平2019-02-15
+ * @author gomcarter 2019-02-15
  * @returns 模块管理---模块列表-模块详情
  */
 export const getJavaApi = async (id) => {
@@ -129,7 +138,7 @@ export const getJavaApi = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-25
+ * @author gomcarter 2019-02-25
  * @returns 模块管理---列表
  */
 export const javaListApi = async (params) => {
@@ -138,7 +147,7 @@ export const javaListApi = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 类解析器---svn列表
  */
 export const getAutomationaddSvn = async (params) => {
@@ -149,7 +158,7 @@ export const getAutomationaddSvn = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 类解析器---svn列表-总数
  */
 export const getAutomationaddSvnCount = async (params) => {
@@ -160,7 +169,7 @@ export const getAutomationaddSvnCount = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 类解析器---svn列表-添加
  */
 export const postAutomationadd = async (params) => {
@@ -169,7 +178,7 @@ export const postAutomationadd = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 类解析器---svn详情
  */
 export const getAutomationaddSvnId = async (id) => {
@@ -178,7 +187,7 @@ export const getAutomationaddSvnId = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 类解析器---执行
  */
 export const automationaddUpdate = async (params) => {
@@ -187,7 +196,7 @@ export const automationaddUpdate = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表
  */
 export const getInterRules = async (params) => {
@@ -198,7 +207,7 @@ export const getInterRules = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-14
+ * @author gomcarter 2019-02-14
  * @returns 接口管理---新增-规则
  */
 export const interRules = async () => {
@@ -207,7 +216,7 @@ export const interRules = async () => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-数量
  */
 export const getInterRulesCount = async (params) => {
@@ -218,7 +227,7 @@ export const getInterRulesCount = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-添加
  */
 export const postInterRules = async (params) => {
@@ -227,7 +236,7 @@ export const postInterRules = async (params) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-详情
  */
 export const getInterRulesId = async (id) => {
@@ -236,7 +245,7 @@ export const getInterRulesId = async (id) => {
 }
 
 /**
- * @author 曾世平2019-02-28
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---用例列表
  */
 export const getInterTestcase = async (params) => {
@@ -247,7 +256,7 @@ export const getInterTestcase = async (params) => {
 }
 
 /**
-* @author 曾世平2019-02-28
+* @author gomcarter 2019-02-28
 * @returns 流程控制---用例列表
 */
 export const getInterTestcaseCount = async (params) => {

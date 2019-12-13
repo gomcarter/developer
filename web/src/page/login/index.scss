@@ -5,7 +5,7 @@
   position: relative;
   min-height: 650px;
   .login-box {
-    @include wh(650px, 610px);
+    @include wh(520px, 610px);
     @include allcover;
     margin: auto;
     text-align: center;

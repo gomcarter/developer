@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import { isLogin, refresh } from '@/config/login'
+import { isLogin, refresh } from '@/config/login'
 
 Vue.use(Router)
 
@@ -122,15 +122,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  // if (to.path.indexOf('/manage/list') >= 0) {
-  //   next()
-  // } else if (to.meta.menu !== false && to.path !== '/login' && !isLogin()) {
-  //   next({ path: '/login?redirect=' + encodeURIComponent(to.path) })
-  // } else {
-  next()
-  // 刷新登录状态
-  // refresh()
-  // }
+  if (to.path.indexOf('/manage/list') >= 0) {
+    next()
+  } else if (to.meta.menu !== false && to.path !== '/login' && !isLogin()) {
+    next({ path: '/login?redirect=' + encodeURIComponent(to.path) })
+  } else {
+    next()
+    // 刷新登录状态
+    refresh()
+  }
 })
 
 export default router

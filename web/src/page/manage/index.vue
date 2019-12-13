@@ -7,6 +7,9 @@
         <el-form-item label="接口名称">
           <el-input v-model="filter.name" placeholder="请输入接口名称" />
         </el-form-item>
+        <el-form-item label="控制器">
+          <el-input v-model="filter.controller" placeholder="请输入控制器" />
+        </el-form-item>
         <el-form-item label="URL">
           <el-input v-model="filter.url" placeholder="请输入URL" />
         </el-form-item>
@@ -73,6 +76,7 @@ export default {
         id: null,
         name: null,
         url: null,
+        controller: null,
         javaId: null,
         endId: null
       },
@@ -89,11 +93,11 @@ export default {
         {field: 'name', header: '接口名称', sort: 'name', width: 200},
         {field: 'method', header: 'METHOD', sort: 'method', width: 80},
         {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
+        {field: 'controller', header: '控制器', sort: 'controller', width: 200},
         {field: 'url', header: 'URL地址', sort: 'url', width: 120},
         {field: 'end', header: '前端项目', sort: 'fk_end_id', width: 160},
         {field: 'java', header: 'java模块', sort: 'fk_java_id', width: 120},
         {field: 'modifyTime', header: '更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
-        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
           header: '操作',

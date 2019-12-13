@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-.harder {
+.header {
   position: fixed;
   z-index: 100;
   background: #4063ff;
@@ -33,4 +33,10 @@
   display: inline-block;
   height: 100%;
   float: right;
+  line-height: 60px;
+  margin-right: 20px;
+}
+
+.el-dropdown-link:hover {
+  color: #ffffff8c !important;
 }

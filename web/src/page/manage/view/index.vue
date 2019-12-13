@@ -1,16 +1,17 @@
 <template>
   <div class="detail">
-    <h4 class="title">接口详情</h4>
+    <h4 class="title">接口详情 &nbsp;&nbsp;&nbsp;&nbsp;<el-button type="primary" circle icon="el-icon-timer" size="small"></el-button></h4>
     <hr/>
     <el-form v-if="data" label-width="9em">
       <el-form-item label="接口名称:">{{data.name}}<b v-if="data.deprecated" style="color:red">（已废弃）</b></el-form-item>
+      <el-form-item label="控制器:">{{data.controller}}</el-form-item>
       <el-form-item label="访问类型:">{{data.method}}</el-form-item>
       <el-form-item label="所属项目:">{{data.end.name}}</el-form-item>
       <el-form-item label="header参数说明:"><i style="color:red;">header名:{{data.end.header}}<br>{{data.end.mark}}</i></el-form-item>
       <el-form-item label="所属模块:">{{data.java.name}}</el-form-item>
-      <!--<el-form-item label="开发环境地址:"><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></el-form-item>-->
+      <el-form-item label="开发环境地址:"><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></el-form-item>
       <el-form-item label="测试环境地址:"><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></el-form-item>
-      <!--<el-form-item label="预发环境地址:"><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></el-form-item>-->
+      <el-form-item label="预发环境地址:"><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></el-form-item>
       <el-form-item label="线上环境地址:"><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></el-form-item>
       <el-form-item label="创建时间:">{{formatDate(data.createTime)}}</el-form-item>
       <el-form-item label="更新时间:">{{formatDate(data.modifyTime)}}</el-form-item>

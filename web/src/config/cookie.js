@@ -1,8 +1,6 @@
 /* eslint-disable */
 
 const DEFAULT_CONFIG = {
-  // 默认取当前浏览器一级域名
-  domain: window.location.hostname.split('.').slice(-2).join('.'),
   path: '/',
   expires: null,
   secure: null,
