@@ -35,6 +35,9 @@ public class InterfacesService {
     @Autowired
     private EndService endService;
 
+    @Autowired
+    private InterfacesVersionedService interfacesVersionedService;
+
     public void insert(Interfaces interfaces) {
         interfacesMapper.insert(interfaces);
     }
@@ -88,7 +91,7 @@ public class InterfacesService {
             String hash = MD5.getInstance().getMD5String(
                     StringUtils.join(new String[]{
                             url, javaId.toString(), end.getId().toString(), s.isDeprecated() + "",
-                            s.getMark(), s.getMethod(), s.getName(), returns, parameters
+                            s.getMark(), s.getMethod(), s.getName(), returns, parameters, s.getController()
                     }, ","));
 
             Interfaces interfaces = this.interfacesMapper.getByUrl(url, s.getMethod());
@@ -110,6 +113,9 @@ public class InterfacesService {
                 this.insert(interfaces);
                 success++;
             } else if (!hash.equals(interfaces.getHash())) {
+                // 插入历史版本
+                this.interfacesVersionedService.insert(interfaces, s.isDeprecated());
+
                 // 已经存在接口，那么看hash是否改变，改变了就修改，没改变就不修改
                 this.update(interfaces.setUrl(url)
                         .setFkJavaId(javaId)
@@ -125,6 +131,7 @@ public class InterfacesService {
 
                 success++;
             } else {
+                // 接口没有任何变化
                 this.update(interfaces.setDeprecated(s.isDeprecated()));
             }
         }

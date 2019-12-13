@@ -11,7 +11,7 @@ import java.util.List;
  * @author gomcarter
  */
 @RestController
-@RequestMapping("developer/interfaces")
+@RequestMapping("publics/interfaces")
 public class PublicsInterfacesController {
 
     @Autowired

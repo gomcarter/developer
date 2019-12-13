@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class JEndQueryParams {
+public class JEndQueryParam {
 
     @Notes("主键")
     private Long id;

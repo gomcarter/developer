@@ -27,7 +27,7 @@ public class Generator {
         /*
          * 数据库连接地址
          */
-        CodeGenerator.DB_URL = "jdbc:mysql://127.0.0.1:3306/item";
+        CodeGenerator.DB_URL = "jdbc:mysql://169.1.1.221:3306/developer";
         /*
          * 数据库用户
          */
@@ -35,11 +35,11 @@ public class Generator {
         /*
          * 数据库密码
          */
-        CodeGenerator.DB_PASSWORD = "123456";
+        CodeGenerator.DB_PASSWORD = "root123";
         /*
          * 表名， 为空会则生成整个数据库的所有表
          */
-        CodeGenerator.TOBE_GENERATE_TABLES = "";
+        CodeGenerator.TOBE_GENERATE_TABLES = "interfaces_versioned";
         /*
          * 作者信息
          */

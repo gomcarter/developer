@@ -2,7 +2,7 @@ package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.JEnd;
 import com.gomcarter.developer.entity.End;
-import com.gomcarter.developer.params.JEndQueryParams;
+import com.gomcarter.developer.params.JEndQueryParam;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
@@ -69,11 +69,11 @@ public class DeveloperEndController {
 
     @GetMapping(value = "{id}", name = "获取前端项目详情")
     public JEnd get(@Notes("主键") @PathVariable("id") Long id) {
-        return this.list(new JEndQueryParams().setId(id), new DefaultPager()).get(0);
+        return this.list(new JEndQueryParam().setId(id), new DefaultPager()).get(0);
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JEnd> list(@Notes("查询参数") JEndQueryParams params, @Notes("分页器") DefaultPager pager) {
+    public List<JEnd> list(@Notes("查询参数") JEndQueryParam params, @Notes("分页器") DefaultPager pager) {
         return endService.query(params, pager)
                 .stream()
                 .map(s -> new JEnd()
@@ -92,7 +92,7 @@ public class DeveloperEndController {
     }
 
     @GetMapping(value = "count", name = "获取接口地址列表总数")
-    public Integer count(@Notes("查询参数") JEndQueryParams params) {
+    public Integer count(@Notes("查询参数") JEndQueryParam params) {
         return endService.count(params);
     }
 }

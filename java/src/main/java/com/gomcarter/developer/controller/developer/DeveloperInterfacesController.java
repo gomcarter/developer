@@ -8,7 +8,7 @@ import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.JArgs;
-import com.gomcarter.developer.params.JInterfacesQueryParams;
+import com.gomcarter.developer.params.JInterfacesQueryParam;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.developer.service.JavaService;
@@ -17,7 +17,6 @@ import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +83,7 @@ public class DeveloperInterfacesController {
 
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JInterfaces> list(@Notes("查询参数") JInterfacesQueryParams params, @Notes("分页器") DefaultPager pager) {
+    public List<JInterfaces> list(@Notes("查询参数") JInterfacesQueryParam params, @Notes("分页器") DefaultPager pager) {
         List<Interfaces> interfacesList = interfacesService.query(params, pager);
         if (CollectionUtils.isEmpty(interfacesList)) {
             return new ArrayList<>();
@@ -104,6 +103,7 @@ public class DeveloperInterfacesController {
                         .setHash(s.getHash())
                         .setName(s.getName())
                         .setUrl(s.getUrl())
+                        .setController(s.getController())
                         .setMethod(s.getMethod())
                         .setMark(s.getMark())
                         .setJava(javaMap.get(s.getFkJavaId()).getName())
@@ -125,6 +125,7 @@ public class DeveloperInterfacesController {
 
         return new JInterfacesDetail()
                 .setId(interfaces.getId())
+                .setController(interfaces.getController())
                 .setHash(interfaces.getHash())
                 .setName(interfaces.getName())
                 .setUrl(interfaces.getUrl())
@@ -153,7 +154,7 @@ public class DeveloperInterfacesController {
     }
 
     @GetMapping(value = "count", name = "获取接口地址列表总数")
-    public Integer count(@Notes("查询参数") JInterfacesQueryParams params) {
+    public Integer count(@Notes("查询参数") JInterfacesQueryParam params) {
         return interfacesService.count(params);
     }
 }

@@ -18,10 +18,25 @@ CREATE TABLE `end` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前端项目';
 
 
+CREATE TABLE `java` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(50) DEFAULT NULL COMMENT '模块名称',
+  `dev_domain` varchar(100) DEFAULT NULL COMMENT '开发环境域名',
+  `test_domain` varchar(100) DEFAULT NULL COMMENT '测试环境域名',
+  `prev_domain` varchar(100) DEFAULT NULL COMMENT '预发环境域名',
+  `online_domain` varchar(100) DEFAULT NULL COMMENT '线上环境域名',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='java模块';
+
+
 CREATE TABLE `interfaces` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `hash` varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
   `name` varchar(50) DEFAULT NULL COMMENT '接口名称',
+  `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
   `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.cpsdb.com/platform/category中的platform/category',
   `method` varchar(10) DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
   `deprecated` tinyint(1) DEFAULT NULL COMMENT '是否已经废弃',
@@ -38,19 +53,25 @@ CREATE TABLE `interfaces` (
   KEY `fk_end_id` (`fk_end_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口';
 
-
-CREATE TABLE `java` (
+CREATE TABLE `interfaces_versioned` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(50) DEFAULT NULL COMMENT '模块名称',
-  `dev_domain` varchar(100) DEFAULT NULL COMMENT '开发环境域名',
-  `test_domain` varchar(100) DEFAULT NULL COMMENT '测试环境域名',
-  `prev_domain` varchar(100) DEFAULT NULL COMMENT '预发环境域名',
-  `online_domain` varchar(100) DEFAULT NULL COMMENT '线上环境域名',
+  `fk_interfaces_id` bigint(20) NOT NULL COMMENT '接口 id',
+  `name` varchar(50) DEFAULT NULL COMMENT '接口名称',
+  `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
+  `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.cpsdb.com/platform/category中的platform/category',
+  `method` varchar(10) DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
+  `deprecated` tinyint(1) DEFAULT NULL COMMENT '是否已经废弃',
+  `mark` text COMMENT '详细描述：如返回值说明，接口的一些说明等',
+  `returns` text COMMENT '返回值数据结构',
+  `parameters` text COMMENT '参数数据结构',
+  `fk_java_id` bigint(20) DEFAULT NULL COMMENT '属于哪个java项目',
+  `fk_end_id` bigint(20) DEFAULT NULL COMMENT '属于哪个前端项目',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='java模块';
+  KEY `fk_interfaces_id` (`fk_interfaces_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口历史版本';
+
 
 
 CREATE TABLE `rules` (

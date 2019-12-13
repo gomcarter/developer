@@ -12,13 +12,17 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class JInterfacesQueryParams {
+public class JInterfacesQueryParam {
     @Notes("主键")
     private Long id;
 
     @Notes("接口名称")
     @Condition(type = MatchType.LIKE)
     private String name;
+
+    @Notes("控制器")
+    @Condition(type = MatchType.LIKE)
+    private String controller;
 
     @Notes("接口地址，域名后面的一截如：http://g.yiayo.com/platform/category中的platform/category")
     @Condition(type = MatchType.LIKE)
