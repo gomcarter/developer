@@ -4,8 +4,8 @@ import com.gomcarter.developer.dto.JJava;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.JJavaQueryParams;
 import com.gomcarter.developer.service.JavaService;
+import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import com.gomcarter.frameworks.mybatis.pager.DefaultPager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

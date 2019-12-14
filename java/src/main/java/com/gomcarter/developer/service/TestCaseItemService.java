@@ -2,7 +2,7 @@ package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.TestCaseItemMapper;
 import com.gomcarter.developer.entity.TestCaseItem;
-import com.gomcarter.frameworks.mybatis.pager.Pageable;
+import com.gomcarter.frameworks.base.pager.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

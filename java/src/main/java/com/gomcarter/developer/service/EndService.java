@@ -2,7 +2,7 @@ package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.EndMapper;
 import com.gomcarter.developer.entity.End;
-import com.gomcarter.frameworks.mybatis.pager.Pageable;
+import com.gomcarter.frameworks.base.pager.Pageable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

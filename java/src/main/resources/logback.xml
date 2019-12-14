@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="logDir" value="/home/logs/developer"/>
+    <property name="logDir" value="~/home/logs/developer"/>
 
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -30,7 +30,9 @@
         <level value="WARN"/>
     </logger>
 
-    <root level="INFO">
-        <appender-ref ref="logfile"/>
+<!--    <root level="INFO">-->
+    <root level="DEBUG">
+<!--        <appender-ref ref="logfile"/>-->
+        <appender-ref ref="stdout"/>
     </root>
 </configuration>
