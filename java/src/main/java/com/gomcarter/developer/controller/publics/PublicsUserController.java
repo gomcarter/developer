@@ -20,7 +20,7 @@ public class PublicsUserController {
     @PostMapping(value = "login", name = "登录")
     public JUser login(@RequestParam String user, @RequestParam String password) throws Exception {
         Properties properties = new Properties();
-        properties.load(this.getClass().getResourceAsStream("/user.properties"));
+        properties.load(this.getClass().getResourceAsStream("/config/user.properties"));
 
         if (StringUtils.equals(properties.getProperty(user), password)) {
             return new JUser()
