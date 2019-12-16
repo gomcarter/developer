@@ -39,7 +39,7 @@
     </div>
     <h4 class="title">接口列表</h4>
     <hr/>
-    <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
+    <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" />
 
     <v-dialog ref="newAddDialog"
               title="更新接口"
@@ -83,11 +83,6 @@ export default {
       dataUrl: interfacesListApi,
       countUrl: interfacesCountApi,
       params: {},
-      toolbar: [{
-        title: '更新接口',
-        icon: 'el-icon-plus',
-        handler: this.openNewAddDialog
-      }],
       columns: [
         {field: 'id', header: '序号', sort: 'id', width: 90},
         {field: 'name', header: '接口名称', sort: 'name', width: 200},

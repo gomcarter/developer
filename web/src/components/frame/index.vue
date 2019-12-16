@@ -110,11 +110,11 @@ export default {
           ]
         },
         {
-          name: '流程控制',
+          name: '接口自动化测试',
           open: false,
           subItems: [
-            {link: '/flow/param', name: '参数规则列表', selected: false},
-            {link: '/flow/example', name: '用例列表', selected: false}
+            {link: '/flow/testCase', name: '用例列表', selected: false},
+            {link: '/flow/function', name: '自定义函数', selected: false}
           ]
         },
         {
