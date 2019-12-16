@@ -5,7 +5,7 @@ CREATE TABLE `end` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(50) DEFAULT NULL COMMENT '项目名称',
   `prefix` varchar(50) DEFAULT NULL COMMENT '前缀',
-  `jar_url` varchar(255) DEFAULT NULL COMMENT '登录的jar包地址',
+  `jar_url` varchar(2048) DEFAULT NULL COMMENT '登录的jar包地址',
   `kls` varchar(255) DEFAULT NULL COMMENT '登录方法对应的类',
   `method` varchar(255) DEFAULT NULL COMMENT '方法名',
   `args` varchar(255) DEFAULT NULL COMMENT 'json字符串格式:   {"java.lang.Long": 1, "java.lang.String": "13928001234"}',
