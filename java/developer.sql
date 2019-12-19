@@ -37,7 +37,7 @@ CREATE TABLE `interfaces` (
   `hash` varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
   `name` varchar(50) DEFAULT NULL COMMENT '接口名称',
   `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
-  `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.cpsdb.com/platform/category中的platform/category',
+  `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.domain.com/end/category中的end/category',
   `method` varchar(10) DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
   `deprecated` tinyint(1) DEFAULT NULL COMMENT '是否已经废弃',
   `mark` text COMMENT '详细描述：如返回值说明，接口的一些说明等',
@@ -58,7 +58,7 @@ CREATE TABLE `interfaces_versioned` (
   `fk_interfaces_id` bigint(20) NOT NULL COMMENT '接口 id',
   `name` varchar(50) DEFAULT NULL COMMENT '接口名称',
   `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
-  `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.cpsdb.com/platform/category中的platform/category',
+  `url` varchar(100) DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.domain.com/end/category中的end/category',
   `method` varchar(10) DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
   `deprecated` tinyint(1) DEFAULT NULL COMMENT '是否已经废弃',
   `mark` text COMMENT '详细描述：如返回值说明，接口的一些说明等',
@@ -73,6 +73,15 @@ CREATE TABLE `interfaces_versioned` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口历史版本';
 
 
+CREATE TABLE `function` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(50) DEFAULT NULL COMMENT '函数名称',
+  `script` text COMMENT 'javascript脚本',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='自定义函数';
+
 
 CREATE TABLE `rules` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -82,7 +91,6 @@ CREATE TABLE `rules` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='参数自动生成规则表';
-
 
 CREATE TABLE `test_case` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -94,7 +102,6 @@ CREATE TABLE `test_case` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口用例测试';
-
 
 CREATE TABLE `test_case_item` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键，也作为用例接口的执行顺序',
@@ -108,8 +115,6 @@ CREATE TABLE `test_case_item` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='选中接口用例测试';
-
-
 
 CREATE TABLE `validator` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',

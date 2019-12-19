@@ -33,6 +33,7 @@
         label="说明"
         width="800">
         <template slot-scope="scope">
+          <div v-html="scope.row.comment"></div>
           <v-jsonformatter v-if="scope.row.body" :json="scope.row.body" :minHeight="100"></v-jsonformatter>
         </template>
       </el-table-column>
