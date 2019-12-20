@@ -14,13 +14,13 @@ import java.util.List;
  * @author gomcarter on 2019-12-18 17:59:17
  */
 @RestController
-@RequestMapping("rules")
+@RequestMapping("developer/rules")
 public class DeveloperRulesController {
 
     @Autowired
     private RulesService rulesService;
 
-    @GetMapping(value = "list", name = "获取脚本列表")
+    @GetMapping(value = "", name = "获取脚本列表")
     List<Rules> list(RulesParam params, DefaultPager pager) {
         return this.rulesService.query(params, pager);
     }

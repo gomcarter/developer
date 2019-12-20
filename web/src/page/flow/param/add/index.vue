@@ -9,6 +9,9 @@
       <el-form-item label="生成规则脚本:" label-width="8em">
         <el-input v-model="form.generator" type="textarea" rows="10"/>
       </el-form-item>
+      <el-form-item label="备注:" label-width="8em">
+        <el-input v-model="form.mark" type="textarea" rows="2"/>
+      </el-form-item>
       <el-form-item label="" label-width="8em">
         <el-button @click="action">执行</el-button>
       </el-form-item>
@@ -24,14 +27,16 @@
 </template>
 
 <script>
-import { postInterRules, getInterRulesId } from '@/config/api/inserv-api'
+import {postInterRules, getInterRulesId, putInterRules} from '@/config/api/inserv-api'
 export default {
   data () {
     return {
       title: '新增规则',
       form: {
+        id: '',
         name: '',
-        generator: ''
+        generator: '',
+        mark: ''
       },
       result: ''
     }
@@ -52,16 +57,27 @@ export default {
       this.$refs.edit.validate((valid) => {
         if (valid) {
           this.$confirm('确定保存？', '提示', {type: 'info'}).then(() => {
-            postInterRules(this.form).then((res) => {
-              this.$transfer({
-                back: '继续添加',
-                buttons: [{
-                  text: '去列表',
-                  link: '/class/list'
-                }]
+            if (this.$route.params.id) {
+              putInterRules(this.form).then((res) => {
+                this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                })
+                this.$router.push(`/flow/param/`)
+              }).catch(() => {
               })
-            }).catch(() => {
-            })
+            } else {
+              postInterRules(this.form).then((res) => {
+                this.$transfer({
+                  back: '继续添加',
+                  buttons: [{
+                    text: '去列表',
+                    link: '/flow/param'
+                  }]
+                })
+              }).catch(() => {
+              })
+            }
           }).catch(() => {
           })
         }

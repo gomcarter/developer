@@ -22,7 +22,7 @@ public class DeveloperTestCaseController {
     @Autowired
     private TestCaseService testCaseService;
 
-    @GetMapping(value = "list", name = "获取测试用例列表")
+    @GetMapping(value = "", name = "获取测试用例列表")
     List<JTestCase> list(JTestCaseQueryParams params, DefaultPager pager) {
         return this.testCaseService.query(params, pager)
                 .stream()

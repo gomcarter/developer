@@ -244,6 +244,15 @@ export const postInterRules = async (params) => {
 
 /**
  * @author gomcarter 2019-02-28
+ * @returns 流程控制---参数规则列表-编辑
+ */
+export const putInterRules = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/rules/${params.id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-详情
  */
 export const getInterRulesId = async (id) => {
@@ -256,7 +265,7 @@ export const getInterRulesId = async (id) => {
  * @returns 流程控制---用例列表
  */
 export const getInterTestcase = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testcase`, {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
@@ -267,7 +276,7 @@ export const getInterTestcase = async (params) => {
 * @returns 流程控制---用例列表
 */
 export const getInterTestcaseCount = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testcase/count`, {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/count`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
