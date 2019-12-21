@@ -40,7 +40,7 @@ export default {
       columns: [
         {field: 'name', header: '用例名称', sort: 'name', width: 200},
         {field: 'mark', header: '备注', sort: 'mark', width: 400},
-        {field: 'userName', header: '执行人', sort: 'userName', width: 200},
+        // {field: 'userName', header: '执行人', sort: 'userName', width: 200},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {

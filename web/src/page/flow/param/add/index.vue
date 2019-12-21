@@ -2,18 +2,18 @@
   <div>
     <h4 class="title">{{title}}</h4>
     <hr/>
-    <el-form :model="form" ref="edit">
+    <el-form :model="form" ref="edit" >
       <el-form-item label="规则名称:" label-width="8em" :rules="[{ required: true, message: '请输入规则名称', trigger: ['blur', 'change'] }]" prop="name">
-        <el-input v-model="form.name" placeholder="请输入SVN地址" />
+        <el-input v-model="form.name" placeholder="请输入规则名称" />
       </el-form-item>
       <el-form-item label="生成规则脚本:" label-width="8em">
-        <el-input v-model="form.generator" type="textarea" rows="10"/>
+        <el-input v-model="form.generator" type="textarea" rows="10" />
       </el-form-item>
-      <el-form-item label="备注:" label-width="8em">
-        <el-input v-model="form.mark" type="textarea" rows="2"/>
+      <el-form-item label="备注:" label-width="8em" prop="mark">
+        <el-input v-model="form.mark" type="textarea" rows="2" />
       </el-form-item>
       <el-form-item label="" label-width="8em">
-        <el-button @click="action">执行</el-button>
+        <el-button @click="action">测试</el-button>
       </el-form-item>
       <el-form-item label="执行结果:" label-width="8em">
         <div class="result">{{result}}</div>
@@ -85,7 +85,8 @@ export default {
     },
     action () {
       /* eslint-disable */
-      this.result = new Function(this.form.generator)()
+      eval(this.form.generator)
+            // this.result = new Function(this.form.generator)()
     }
   },
   watch: {},

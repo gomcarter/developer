@@ -28,7 +28,7 @@
 </template>
 
 <script>
-// import { postInterRules, getInterRulesId } from '@/config/api/inserv-api'
+import { postInterTestcase, putInterTestcase, getInterTestcaseId } from '@/config/api/inserv-api'
 export default {
   data () {
     return {
@@ -45,28 +45,38 @@ export default {
     init () {
       if (this.$route.params.id) {
         this.title = '修改用例'
-        // getInterRulesId(this.$route.params.id).then((res) => {
-        //   this.form = res
-        // }).catch((err) => {
-        //   console.log(err)
-        // })
+        getInterTestcaseId(this.$route.params.id).then((res) => {
+          this.form = res
+        }).catch((err) => {
+          console.log(err)
+        })
       }
     },
     add () {
       this.$refs.edit.validate((valid) => {
         if (valid) {
           this.$confirm('确定保存？', '提示', {type: 'info'}).then(() => {
-            // postInterRules(this.form).then((res) => {
-            //   this.$transfer({
-            //     back: '继续添加',
-            //     buttons: [{
-            //       text: '去列表',
-            //       link: '/class/list'
-            //     }]
-            //   })
-            // }).catch((err) => {
-            //   console.log(err)
-            // })
+            if (this.$route.params.id) {
+              putInterTestcase(this.form).then((res) => {
+                this.$message({
+                  message: '修改成功',
+                  type: 'success'
+                })
+                this.$router.push(`/flow/example/`)
+              }).catch(() => {
+              })
+            } else {
+              postInterTestcase(this.form).then((res) => {
+                this.$transfer({
+                  back: '继续添加',
+                  buttons: [{
+                    text: '去列表',
+                    link: '/flow/example'
+                  }]
+                })
+              }).catch(() => {
+              })
+            }
           }).catch(() => {
           })
         }

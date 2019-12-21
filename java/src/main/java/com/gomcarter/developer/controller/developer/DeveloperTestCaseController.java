@@ -44,13 +44,13 @@ public class DeveloperTestCaseController {
 
     @PostMapping(value = "", name = "新增测试用例")
     public void insert(@Notes("用例名称") @RequestParam String name,
-                       @Notes("用户id") @RequestParam Long fkUserId,
-                       @Notes("用户名称") @RequestParam String userName,
+//                       @Notes("用户id") @RequestParam Long fkUserId,
+//                       @Notes("用户名称") @RequestParam String userName,
                        @Notes("备注") @RequestParam String mark) {
         testCaseService.insert(new TestCase()
                 .setName(name)
-                .setFkUserId(fkUserId)
-                .setUserName(userName)
+//                .setFkUserId(fkUserId)
+//                .setUserName(userName)
                 .setMark(mark)
 
         );
@@ -59,14 +59,14 @@ public class DeveloperTestCaseController {
     @PutMapping(value = "{id}", name = "修改测试用例")
     public void update(@Notes("主键") @PathVariable("id") Long id,
                        @Notes("用例名称") @RequestParam String name,
-                       @Notes("用户id") @RequestParam Long fkUserId,
-                       @Notes("用户名称") @RequestParam String userName,
+//                       @Notes("用户id") @RequestParam Long fkUserId,
+//                       @Notes("用户名称") @RequestParam String userName,
                        @Notes("备注") @RequestParam String mark) {
         testCaseService.update(new TestCase()
                 .setId(id)
                 .setName(name)
-                .setFkUserId(fkUserId)
-                .setUserName(userName)
+//                .setFkUserId(fkUserId)
+//                .setUserName(userName)
                 .setMark(mark)
         );
     }

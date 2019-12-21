@@ -281,3 +281,30 @@ export const getInterTestcaseCount = async (params) => {
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---新增
+ */
+export const postInterTestcase = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---编辑
+ */
+export const putInterTestcase = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/testCase/${params.id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例列表
+ */
+export const getInterTestcaseId = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
