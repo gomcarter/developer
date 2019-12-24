@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import { loginApi } from '@/config/api/inserv-api'
-import { login } from '@/config/login'
-import { getUrlHashParams } from '@/config/utils'
+  import { loginApi } from '@/config/api/inserv-api'
+  import { login } from '@/config/login'
+  import { getUrlHashParams } from '@/config/utils'
 
-export default {
+  export default {
   data () {
     return {
       forms: {
@@ -50,8 +50,8 @@ export default {
         if (valid) {
           this.disClick = true
           loginApi(this.forms).then((res) => {
-            // 设置过期时间 2小时
-            login(res, 2)
+            // 设置过期时间: 10年
+            login(res, 10 * 365 * 24)
             if (this.redirect) {
               this.$router.push(decodeURIComponent(this.redirect))
             } else {
