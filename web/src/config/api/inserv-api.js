@@ -308,3 +308,25 @@ export const getInterTestcaseId = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例接口列表
+ */
+export const getInterTestCaseItem = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem`, {
+    params: params
+  })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例接口列表
+ */
+export const getInterTestCaseItemCount = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/count`, {
+    params: params
+  })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}

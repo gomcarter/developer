@@ -53,6 +53,18 @@ export default {
               handler: (row) => {
                 this.$router.push(`/flow/example/add/${row.id}`)
               }
+            },
+            {
+              text: '详情',
+              handler: (row) => {
+                this.$router.push(`/flow/example/detail/${row.id}`)
+              }
+            },
+            {
+              text: '执行',
+              handler: (row) => {
+                // this.$router.push(`/flow/example/detail/${row.id}`)
+              }
             }
             // {
             //   text: (row) => {

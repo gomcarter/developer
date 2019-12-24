@@ -108,6 +108,11 @@ const router = new Router({
       name: 'flowExampleAddId',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/example/add')) }, 'flowExampleAddId')
     },
+    { // 流程控制---用例列表-详情
+      path: '/flow/example/detail/:id',
+      name: 'flowExampleDetailId',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/example/detail')) }, 'flowExampleDetailId')
+    },
     // 中转
     {
       path: '/transfer/:data',
