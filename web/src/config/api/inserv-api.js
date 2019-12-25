@@ -286,7 +286,7 @@ export const getInterTestcaseCount = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---新增
  */
-export const postInterTestcase = async (params) => {
+export const postInterTestCase = async (params) => {
   const res = await xhr.post(`${INSERV_URL}developer/testCase`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
@@ -295,7 +295,7 @@ export const postInterTestcase = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---编辑
  */
-export const putInterTestcase = async (params) => {
+export const putInterTestCase = async (params) => {
   const res = await xhr.put(`${INSERV_URL}developer/testCase/${params.id}`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
@@ -304,7 +304,7 @@ export const putInterTestcase = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---用例列表
  */
-export const getInterTestcaseId = async (id) => {
+export const getInterTestCaseId = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
@@ -328,5 +328,31 @@ export const getInterTestCaseItemCount = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/count`, {
     params: params
   })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-用例列表
+ */
+export const getInterTestCaseItemId = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-新增
+ */
+export const postInterTestCaseItem = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCaseItem`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-编辑
+ */
+export const putInterTestCaseItem = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/testCaseItem/${params.id}`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }

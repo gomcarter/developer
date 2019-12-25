@@ -38,6 +38,7 @@ export default {
         handler: this.add
       }],
       columns: [
+        {field: 'id', header: '用例id', sort: 'id', width: 200},
         {field: 'name', header: '用例名称', sort: 'name', width: 200},
         {field: 'mark', header: '备注', sort: 'mark', width: 400},
         // {field: 'userName', header: '执行人', sort: 'userName', width: 200},

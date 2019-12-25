@@ -18,7 +18,7 @@ export default {
       },
       dataUrl: getInterTestCaseItem,
       countUrl: getInterTestCaseItemCount,
-      params: {},
+      params: {'fkTestCaseId': this.$route.params.id},
       toolbar: [{
         title: '新增',
         icon: 'el-icon-plus',
@@ -38,36 +38,9 @@ export default {
             {
               text: '编辑',
               handler: (row) => {
-                this.$router.push(`/flow/example/add/${row.id}`)
-              }
-            },
-            {
-              text: '详情',
-              handler: (row) => {
-                this.$router.push(`/flow/example/detail/${row.id}`)
-              }
-            },
-            {
-              text: '测试',
-              handler: (row) => {
-                alert('开发中')
+                this.$router.push(`/flow/testCaseItem/add/${row.id}/` + this.$route.params.id)
               }
             }
-            // {
-            //   text: (row) => {
-            //     return row.type === '0' ? '<p style="color: red">已禁用</p>' : '<p>已启用</p>'
-            //   },
-            //   html: true,
-            //   handler: (row) => {
-            //     this.$confirm('确定修改？', '提示', {type: 'info'}).then(() => {
-            //       postModuleChangeType({objId: row.id, type: row.type}).then((res) => {
-            //         this.search()
-            //       }).catch((err) => {
-            //         console.log(err)
-            //       })
-            //     })
-            //   }
-            // }
           ]
         }
       ]
@@ -87,7 +60,7 @@ export default {
       this.filter = { name: '' }
     },
     add (r) {
-      this.$router.push(`/flow/testCaseItem/add`)
+      this.$router.push(`/flow/testCaseItem/add/` + this.$route.params.id)
     }
   },
   components: {

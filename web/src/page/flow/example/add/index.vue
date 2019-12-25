@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { postInterTestcase, putInterTestcase, getInterTestcaseId } from '@/config/api/inserv-api'
+import { postInterTestCase, putInterTestCase, getInterTestCaseId } from '@/config/api/inserv-api'
 export default {
   data () {
     return {
@@ -45,7 +45,7 @@ export default {
     init () {
       if (this.$route.params.id) {
         this.title = '修改用例'
-        getInterTestcaseId(this.$route.params.id).then((res) => {
+        getInterTestCaseId(this.$route.params.id).then((res) => {
           this.form = res
         }).catch((err) => {
           console.log(err)
@@ -57,7 +57,7 @@ export default {
         if (valid) {
           this.$confirm('确定保存？', '提示', {type: 'info'}).then(() => {
             if (this.$route.params.id) {
-              putInterTestcase(this.form).then((res) => {
+              putInterTestCase(this.form).then((res) => {
                 this.$message({
                   message: '修改成功',
                   type: 'success'
@@ -66,7 +66,7 @@ export default {
               }).catch(() => {
               })
             } else {
-              postInterTestcase(this.form).then((res) => {
+              postInterTestCase(this.form).then((res) => {
                 this.$transfer({
                   back: '继续添加',
                   buttons: [{
