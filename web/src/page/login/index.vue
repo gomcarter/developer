@@ -21,11 +21,11 @@
 </template>
 
 <script>
-  import { loginApi } from '@/config/api/inserv-api'
-  import { login } from '@/config/login'
-  import { getUrlHashParams } from '@/config/utils'
+import { loginApi } from '@/config/api/inserv-api'
+import { login } from '@/config/login'
+import { getUrlHashParams } from '@/config/utils'
 
-  export default {
+export default {
   data () {
     return {
       forms: {
