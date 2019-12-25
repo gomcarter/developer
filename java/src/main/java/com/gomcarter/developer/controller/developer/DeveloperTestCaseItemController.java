@@ -14,13 +14,13 @@ import java.util.List;
  * @author gomcarter on 2019-12-18 16:13:58
  */
 @RestController
-@RequestMapping("testCaseItem")
+@RequestMapping("developer/testCaseItem")
 public class DeveloperTestCaseItemController {
 
     @Autowired
     private TestCaseItemService testCaseItemService;
 
-    @GetMapping(value = "list", name = "获取接口用例地址列表")
+    @GetMapping(value = "", name = "获取接口用例地址列表")
     List<TestCaseItem> list(TestCaseItemParam params, DefaultPager pager) {
         return this.testCaseItemService.query(params, pager);
     }

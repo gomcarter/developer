@@ -1,6 +1,5 @@
 <template>
   <div>
-    <hr/>
     <h4 class="title">用例接口列表</h4>
     <hr/>
     <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
@@ -17,8 +16,8 @@ export default {
       filter: {
         name: ''
       },
-      dataUrl: getInterTestCaseItemCount,
-      countUrl: getInterTestCaseItem,
+      dataUrl: getInterTestCaseItem,
+      countUrl: getInterTestCaseItemCount,
       params: {},
       toolbar: [{
         title: '新增',
@@ -26,9 +25,9 @@ export default {
         handler: this.add
       }],
       columns: [
-        {field: 'fk_interfaces_id', header: '用例接口名称', sort: 'fk_interfaces_id', width: 200},
-        {field: 'parm_config', header: '入参配置', sort: 'parm_config', width: 200},
-        {field: 'result_handler', header: '结果验证', sort: 'result_handler', width: 200},
+        {field: 'name', header: '接口名称', sort: 'name', width: 200},
+        {field: 'fkInterfacesId', header: '接口ID', sort: 'fkInterfacesId', width: 400},
+        {field: 'parmConfig', header: '入参配置', sort: 'parmConfig', width: 400},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
@@ -41,7 +40,34 @@ export default {
               handler: (row) => {
                 this.$router.push(`/flow/example/add/${row.id}`)
               }
+            },
+            {
+              text: '详情',
+              handler: (row) => {
+                this.$router.push(`/flow/example/detail/${row.id}`)
+              }
+            },
+            {
+              text: '测试',
+              handler: (row) => {
+                alert('开发中')
+              }
             }
+            // {
+            //   text: (row) => {
+            //     return row.type === '0' ? '<p style="color: red">已禁用</p>' : '<p>已启用</p>'
+            //   },
+            //   html: true,
+            //   handler: (row) => {
+            //     this.$confirm('确定修改？', '提示', {type: 'info'}).then(() => {
+            //       postModuleChangeType({objId: row.id, type: row.type}).then((res) => {
+            //         this.search()
+            //       }).catch((err) => {
+            //         console.log(err)
+            //       })
+            //     })
+            //   }
+            // }
           ]
         }
       ]
@@ -61,7 +87,7 @@ export default {
       this.filter = { name: '' }
     },
     add (r) {
-      this.$router.push(`/flow/example/add`)
+      this.$router.push(`/flow/testCaseItem/add`)
     }
   },
   components: {

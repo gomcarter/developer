@@ -57,13 +57,13 @@ export default {
             {
               text: '详情',
               handler: (row) => {
-                this.$router.push(`/flow/example/detail/${row.id}`)
+                this.$router.push(`/flow/testCaseItem/${row.id}`)
               }
             },
             {
               text: '执行',
               handler: (row) => {
-                // this.$router.push(`/flow/example/detail/${row.id}`)
+                alert('开发中')
               }
             }
             // {
