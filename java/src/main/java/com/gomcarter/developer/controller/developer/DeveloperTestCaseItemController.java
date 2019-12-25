@@ -33,7 +33,7 @@ public class DeveloperTestCaseItemController {
     @PostMapping(value = "", name = "新增接口用例")
     public void insert(@Notes("接口用例名称") @RequestParam String name,
                        @Notes("用户id") @RequestParam String resultHandler,
-                       @Notes("用户id") @RequestParam String config,
+//                       @Notes("用户id") @RequestParam String config,
                        @Notes("接口外键") @RequestParam Long fkInterfacesId,
                        @Notes("接口用例外键") @RequestParam Long fkTestCaseId,
                        @Notes("排序") @RequestParam Integer sort,
@@ -41,7 +41,7 @@ public class DeveloperTestCaseItemController {
         testCaseItemService.insert(new TestCaseItem()
                 .setName(name)
                 .setResultHandler(resultHandler)
-                .setConfig(config)
+//                .setConfig(config)
                 .setFkInterfacesId(fkInterfacesId)
                 .setFkTestCaseId(fkTestCaseId)
                 .setSort(sort)
@@ -53,7 +53,7 @@ public class DeveloperTestCaseItemController {
     public void update(@Notes("主键") @PathVariable("id") Long id,
                        @Notes("接口用例名称") @RequestParam String name,
                        @Notes("用户id") @RequestParam String resultHandler,
-                       @Notes("用户id") @RequestParam String config,
+//                       @Notes("用户id") @RequestParam String config,
                        @Notes("接口外键") @RequestParam Long fkInterfacesId,
                        @Notes("接口用例外键") @RequestParam Long fkTestCaseId,
                        @Notes("排序") @RequestParam Integer sort,
@@ -62,7 +62,7 @@ public class DeveloperTestCaseItemController {
                 .setId(id)
                 .setName(name)
                 .setResultHandler(resultHandler)
-                .setConfig(config)
+//                .setConfig(config)
                 .setFkInterfacesId(fkInterfacesId)
                 .setFkTestCaseId(fkTestCaseId)
                 .setSort(sort)
