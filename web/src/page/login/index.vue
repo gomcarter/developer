@@ -51,7 +51,7 @@ export default {
           this.disClick = true
           loginApi(this.forms).then((res) => {
             // 设置过期时间: 10年
-            login(res, 10 * 365 * 24)
+            login(res)
             if (this.redirect) {
               this.$router.push(decodeURIComponent(this.redirect))
             } else {
