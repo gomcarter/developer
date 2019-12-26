@@ -1,16 +1,8 @@
 <template>
   <div>
-    <h4 class="title">参数配置: {{data.name}}</h4>
+    <h4 class="title">接口测试: {{data.name}}</h4>
     <hr/>
     <el-form :inline="true">
-      <el-form-item label="" style="width: 100px">
-        <el-select v-model="env">
-          <!--<el-option label="开发" value="devDomain"></el-option>-->
-          <el-option label="测试" value="testDomain"></el-option>
-          <!--<el-option label="预发" value="prevDomain"></el-option>-->
-          <el-option label="线上" value="onlineDomain"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="" style="width: 100px">
         <el-select v-model="method" value="POST">
           <el-option label="POST" value="POST"></el-option>
@@ -22,6 +14,9 @@
       </el-form-item>
       <el-form-item label="">
         <el-input v-model="showUrl" class="min_width"></el-input>
+      </el-form-item>
+      <el-form-item label="">
+        <el-button type="primary" @click="saveParm">保存设置</el-button>
       </el-form-item>
     </el-form>
     <div>
@@ -46,10 +41,17 @@
             <el-input placeholder="请输入参数名" class="half_min_width" v-model="param.key">
               <template slot="prepend"><span class="table_title">参数名</span></template>
             </el-input>
-            <el-input placeholder="请输入参数值" class="half_max_width" v-if="param.inputType === 'textarea'" :rows="15" type="textarea" v-model="param.defaults">
+<!--            <el-input placeholder="参数来源" class="half_min_width" v-model="param.key">-->
+<!--              <template slot="prepend"><span class="table_title">参数来源</span></template>-->
+<!--            </el-input>-->
+            <el-select  class="half_min_width"   v-model="param.pramSource" placeholder="请选择参数来源">
+              <el-option label="自定义参数" value="1"></el-option>
+              <el-option label="参数规则" value="2"></el-option>
+            </el-select>
+            <el-input placeholder="请输入参数值" class="half_min_width" v-if="param.inputType === 'textarea'" :rows="15" type="textarea" v-model="param.defaults">
               <template slot="prepend"><span class="table_title">参数值</span></template>
             </el-input>
-            <el-input v-else placeholder="请输入参数值" class="half_max_width" v-model="param.defaults">
+            <el-input v-else placeholder="请输入参数值" class="half_min_width" v-model="param.defaults">
               <template slot="prepend"><span class="table_title">参数值</span></template>
             </el-input>
             <el-button type="primary" icon="el-icon-plus" @click="addParams()" circle size="small"></el-button>
@@ -63,26 +65,17 @@
         </el-form>
       </div>
       <div class="right">
-        <h4 class="title">返回结果</h4>
+        <h4 class="title">结果验证</h4>
         <hr/>
         <el-form>
-          <el-form-item label="">
-            <v-jsonformatter :json="result" style="max-height:  600px; overflow-x: hidden;"></v-jsonformatter>
-          </el-form-item>
+          <el-input type="textarea" rows="10" placeholder="请输入结果验证"/>
         </el-form>
       </div>
     </div>
   </div>
 </template>
-
-/**
-待实现:
-    1,根据参数类型判断输入是否正确;
-    2,支持参数选择文件
-    3,支持POST输入body
-    4,支持检查参数是否必填
-*/
 <script>
+
 import { getInterfacesApi, getInterfacesHeadersApi } from '@/config/api/inserv-api'
 import { formatDate } from '@/config/utils'
 
@@ -194,6 +187,7 @@ export default {
           notNull: node.notNull,
           comment: node.comment,
           defaults: JSON.stringify(this.generateBodyPlaceholder(node), null, 4),
+          pramSource: 1,
           type: node.type,
           inputType: 'textarea'
         }
@@ -222,6 +216,9 @@ export default {
     addParams () {
       let obj = {key: '', value: '', type: ''}
       this.parameters.push(obj)
+    },
+    saveParm () {
+      alert(JSON.stringify(this.parameters))
     },
     addHeader () {
       let obj = {key: '', value: ''}

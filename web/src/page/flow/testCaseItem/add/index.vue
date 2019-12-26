@@ -55,7 +55,7 @@ export default {
     },
     parmConfig () {
       if (this.form.fkInterfacesId) {
-        this.$router.push(`/flow/testCaseItem/test/293/devDomain`)
+        this.$router.push(`/flow/testCaseItem/add/test/` + this.form.fkInterfacesId + '/devDomain')
       }
     },
     add () {
