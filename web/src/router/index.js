@@ -123,6 +123,11 @@ const router = new Router({
       name: 'flowTestCaseItemId',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem')) }, 'flowTestCaseItemId')
     },
+    { // 流程控制---用例列表-详情-新增（修改）-参数配置
+      path: '/flow/testCaseItem/test/:id/:env',
+      name: 'testCaseItemLink',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/test')) }, 'testCaseItemLink')
+    },
     // 中转
     {
       path: '/transfer/:data',

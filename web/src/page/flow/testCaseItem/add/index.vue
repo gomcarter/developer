@@ -3,11 +3,12 @@
     <h4 class="title">{{title}}</h4>
     <hr/>
     <el-form :model="form" ref="edit">
-      <el-form-item label="接口名称:" label-width="8em" :rules="[{ required: true, message: '用例接口名称', trigger: ['blur', 'change'] }]" prop="name">
-        <el-input v-model="form.name" placeholder="请输入用例接口名称" />
+      <el-form-item label="接口id:" label-width="8em"   :rules="[{ required: true, message: '用例接口id', trigger: ['blur', 'change'] }]" prop="fkInterfacesId">
+        <el-input v-model="form.fkInterfacesId" placeholder="请输入用例接口id" />
+        <el-button type="primary" @click="parmConfig">参数配置</el-button>
       </el-form-item>
-        <el-form-item label="接口id:" label-width="8em" :rules="[{ required: true, message: '用例接口名称', trigger: ['blur', 'change'] }]" prop="fkInterfacesId">
-          <el-input v-model="form.fkInterfacesId" placeholder="请输入用例接口id" />
+      <el-form-item label="接口名称:" label-width="8em"  :rules="[{ required: true, message: '用例接口名称', trigger: ['blur', 'change'] }]" prop="name">
+        <el-input v-model="form.name" placeholder="请输入用例接口名称" />
       </el-form-item>
       <el-form-item label="入参配置:" label-width="8em">
         <el-input v-model="form.parmConfig"  placeholder="请输入入参配置"/>
@@ -50,6 +51,11 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
+      }
+    },
+    parmConfig () {
+      if (this.form.fkInterfacesId) {
+        this.$router.push(`/flow/testCaseItem/test/293/devDomain`)
       }
     },
     add () {
