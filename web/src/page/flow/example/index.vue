@@ -21,9 +21,8 @@
 
 <script>
 import { xhr } from '@/config/api/http'
-import { getInterTestcaseCount, getInterTestcase, getListTestCaceItem } from '@/config/api/inserv-api'
-import { formatDate, removeBlank } from '@/config/utils'
-
+import { getInterTestcaseCount, getInterTestcase, getListTestCaceItem, perform } from '@/config/api/inserv-api'
+import { toQueryString, formatDate, removeBlank } from '@/config/utils'
 export default {
   data () {
     return {
@@ -106,23 +105,26 @@ export default {
     },
     testUrl (id) {
       getListTestCaceItem(id).then((res) => {
+        console.debug(111)
         res.forEach(s => {
-          console.log(s)
-          let params
+          let params = s.parameters
           let method = s.method.toLowerCase()
+          let url = 'http://119.23.240.12:10013/keeper' + s.url
           let res
           let obj
-          if (this.parameters.length === 0) {
+          if (params.length === 0) {
             obj = ''
           } else {
             obj = {}
-            this.parameters.forEach(e => {
-              // 同一key的时候，需要合并
-              if (obj[e['key']] === undefined) {
-                obj[e['key']] = e['defaults']
-              } else {
-                obj[e['key']] = [e['defaults']].concat(obj[e['key']])
-              }
+            console.debug(JSON.parse(params)[0].children)
+            JSON.parse(params)[0].children.forEach(e => {
+              console.log(e)
+              // // 同一key的时候，需要合并
+              // if (obj[e['key']] === undefined) {
+              //   obj[e['key']] = e['defaults']
+              // } else {
+              //   obj[e['key']] = [e['defaults']].concat(obj[e['key']])
+              // }
             })
           }
           switch (method) {
@@ -138,7 +140,6 @@ export default {
               }
               break
           }
-
           // 清除不必要的headers
           Object.entries(xhr.defaults.headers)
             .forEach(s => {
@@ -152,16 +153,17 @@ export default {
               xhr.defaults.headers[s.key] = s.value
             })
           }
-
-          console.log(this.bodyParams)
           if (this.bodyParams) {
             xhr.defaults.headers['content-type'] = 'application/json'
             const body = JSON.stringify(JSON.parse(obj[this.bodyParams]))
             delete obj[this.bodyParams]
-            // res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'postWithBody'})
-            res = xhr[method](this.showUrl + '?' + obj, body, {type: 'postWithBody'})
+            console.log('w1' + this.showUrl + '?' + toQueryString(obj))
+            res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'postWithBody'})
           } else {
-            res = xhr[method](this.showUrl, params)
+            console.log(url)
+            perform(url, 'get', 1).then((res) => {
+              console.log(res[0].name)
+            })
           }
           res.then(r => {
             this.result = r.data
@@ -172,6 +174,7 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+      console.log('测试用例执行完毕')
     }
   },
   components: {

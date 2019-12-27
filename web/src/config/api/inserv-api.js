@@ -364,3 +364,11 @@ export const getListTestCaceItem = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/listInterfacesDetail/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 封装接口请求
+ */
+export const perform = async (url, method, parm) => {
+  const res = await xhr[method](url, parm)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
