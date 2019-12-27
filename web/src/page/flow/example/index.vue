@@ -20,7 +20,8 @@
 </template>
 
 <script>
-import { getInterTestcaseCount, getInterTestcase } from '@/config/api/inserv-api'
+import { xhr } from '@/config/api/http'
+import { getInterTestcaseCount, getInterTestcase, getListTestCaceItem } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -64,7 +65,7 @@ export default {
             {
               text: '执行',
               handler: (row) => {
-                alert('开发中')
+                this.testUrl(row.id)
               }
             }
             // {
@@ -102,6 +103,75 @@ export default {
     },
     add (r) {
       this.$router.push(`/flow/example/add`)
+    },
+    testUrl (id) {
+      getListTestCaceItem(id).then((res) => {
+        res.forEach(s => {
+          console.log(s)
+          let params
+          let method = s.method.toLowerCase()
+          let res
+          let obj
+          if (this.parameters.length === 0) {
+            obj = ''
+          } else {
+            obj = {}
+            this.parameters.forEach(e => {
+              // 同一key的时候，需要合并
+              if (obj[e['key']] === undefined) {
+                obj[e['key']] = e['defaults']
+              } else {
+                obj[e['key']] = [e['defaults']].concat(obj[e['key']])
+              }
+            })
+          }
+          switch (method) {
+            case 'put':
+            case 'post':
+            case 'patch':
+              params = obj
+              break
+            case 'delete':
+            case 'get':
+              params = {
+                params: obj
+              }
+              break
+          }
+
+          // 清除不必要的headers
+          Object.entries(xhr.defaults.headers)
+            .forEach(s => {
+              if (['common', 'delete', 'get', 'head', 'patch', 'post', 'put'].indexOf(s[0]) < 0) {
+                delete xhr.defaults.headers[s[0]]
+              }
+            })
+
+          if (this.headers && this.headers.length > 0) {
+            this.headers.forEach(s => {
+              xhr.defaults.headers[s.key] = s.value
+            })
+          }
+
+          console.log(this.bodyParams)
+          if (this.bodyParams) {
+            xhr.defaults.headers['content-type'] = 'application/json'
+            const body = JSON.stringify(JSON.parse(obj[this.bodyParams]))
+            delete obj[this.bodyParams]
+            // res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'postWithBody'})
+            res = xhr[method](this.showUrl + '?' + obj, body, {type: 'postWithBody'})
+          } else {
+            res = xhr[method](this.showUrl, params)
+          }
+          res.then(r => {
+            this.result = r.data
+          }).catch(e => {
+            console.log(e)
+          })
+        })
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   components: {

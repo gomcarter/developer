@@ -20,7 +20,6 @@
       </el-form-item>
     </el-form>
     <div>
-      <div class="left">
         <h4 class="title">header    <el-button type="primary" icon="el-icon-plus" @click="addHeader()" circle size="small"></el-button></h4>
         <hr/>
         <el-form v-if="headers">
@@ -64,14 +63,6 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class="right">
-        <h4 class="title">结果验证</h4>
-        <hr/>
-        <el-form>
-          <el-input type="textarea" rows="10" placeholder="请输入结果验证"/>
-        </el-form>
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -219,6 +210,7 @@ export default {
     },
     saveParm () {
       alert(JSON.stringify(this.parameters))
+      this.$router.push(`/flow/testCaseItem/add/` + this.$route.params.id + '/devDomain')
     },
     addHeader () {
       let obj = {key: '', value: ''}

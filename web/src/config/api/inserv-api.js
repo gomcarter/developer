@@ -356,3 +356,11 @@ export const putInterTestCaseItem = async (params) => {
   const res = await xhr.put(`${INSERV_URL}developer/testCaseItem/${params.id}`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--用例列表-执行-获取所有测试用例接口
+ */
+export const getListTestCaceItem = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/listInterfacesDetail/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}

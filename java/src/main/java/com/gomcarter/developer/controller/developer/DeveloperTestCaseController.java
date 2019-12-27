@@ -1,6 +1,8 @@
 package com.gomcarter.developer.controller.developer;
 
+import com.gomcarter.developer.dto.JInterfacesDetail;
 import com.gomcarter.developer.dto.JTestCase;
+import com.gomcarter.developer.dto.JTestCaseItemDetail;
 import com.gomcarter.developer.entity.TestCase;
 import com.gomcarter.developer.params.JTestCaseQueryParams;
 import com.gomcarter.developer.service.TestCaseService;
@@ -71,10 +73,17 @@ public class DeveloperTestCaseController {
         );
     }
 
-    @GetMapping(value = "{id}", name = "获取java项目详情")
+    @GetMapping(value = "{id}", name = "获取测试用例详情")
     public JTestCase get(@Notes("主键") @PathVariable("id") Long id) {
         return this.list(new JTestCaseQueryParams().setId(id), new DefaultPager()).get(0);
     }
 
+
+
+    @GetMapping(value = "listInterfacesDetail/{id}", name = "获取制定测试用例所有用例接口")
+    List<JTestCaseItemDetail> listInterfacesDetail(@Notes("测试用例id")@PathVariable("id") Long id) {
+        return this.testCaseService.listInterfacesDetail(id);
+
+    }
 
 }
