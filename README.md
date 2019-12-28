@@ -130,7 +130,13 @@ read.jdbc.password=PASSWORD
       private List<ParamsAA> list;
   }
 ```
+启动服务：
+```
+java -jar -Xms1g -Xmx2g -Dserver.port=自己服务端口 -Dinterfaces.domain=接口中心地址 -Dinterfaces.javaId=下面配置的java模块id xx-project.jar
 
+-Dinterfaces.domain：接口中心地址
+-Dinterfaces.javaId：见下面配置java模块
+```
 
 配置发者中心：
 
@@ -139,32 +145,25 @@ read.jdbc.password=PASSWORD
 
 a，配置前端系统，需要根据接口的第一个目录开区分给哪个端提供的接口，如
 
-http://xserver.com/end1/xxx
+http://xserver.com/endpoint1/xxx
 
-http://xserver.com/end2/yyy
+http://xserver.com/endpoint2/yyy
 
-http://xserver.com/end3/zzz
+http://xserver.com/endpoint3/zzz
 
-end1,end2,end3用来区分哪个端提供的接口，所以对接口的设计有要求， 如图：
+endpoint1,endpoint2,endpoint3用来区分哪个端提供的接口，所以对接口的设计有要求， 如图：
 
 ![image](https://upload-images.jianshu.io/upload_images/19189438-aeda91cbb1640585.png)
 
-b，配置模块
+b，配置java模块：意思其实就是 java 项目，配置这个 java 项目的信息
 
-模块的意思其实就是 java 项目，配置这个 java 项目的信息
 ![image](https://upload-images.jianshu.io/upload_images/19189438-58f2e07a1a67112f.png)
 
-c，导入接口
-![image](https://upload-images.jianshu.io/upload_images/19189438-467c8a1b093bec82.png)
-
-选择上一步配置的 java 项目即可生成接口
-![image](https://upload-images.jianshu.io/upload_images/19189438-852be8a8a2fc375a.png)
-
-d，接口详情
+c，接口详情
 ![image](https://upload-images.jianshu.io/upload_images/19189438-d53d8b03f5eedba4.png)
 ![image](https://upload-images.jianshu.io/upload_images/19189438-8d3fcf8bf096b014.png)
 
-e,接口测试
+d,接口测试
 ![image](https://upload-images.jianshu.io/upload_images/19189438-43d9d3c47fc2e755.png)
 
 ### 二、帮助

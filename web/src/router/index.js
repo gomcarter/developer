@@ -78,35 +78,25 @@ const router = new Router({
       name: 'testLink',
       component: r => require.ensure([], (require) => { r(require('@/page/test')) }, 'test')
     },
-    { // 流程控制---参数规则列表
-      path: '/flow/param',
-      name: 'flowParam',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/param')) }, 'flowParam')
+    { // 流程控制--- 自定义函数列表
+      path: '/flow/function',
+      name: 'function',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/function')) }, 'function')
     },
-    { // 流程控制---参数规则列表-新增
-      path: '/flow/param/add',
-      name: 'flowParamAdd',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/param/add')) }, 'flowParamAdd')
-    },
-    { // 流程控制---参数规则列表-编辑
-      path: '/flow/param/add/:id',
-      name: 'flowParamAddId',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/param/add')) }, 'flowParamAddId')
+    { // 流程控制---自定义函数编辑
+      path: '/flow/function/edit',
+      name: 'functionEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/function/edit')) }, 'functionEdit')
     },
     { // 流程控制---用例列表
-      path: '/flow/example',
-      name: 'flowExample',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/example')) }, 'flowExample')
-    },
-    { // 流程控制---用例列表-新增
-      path: '/flow/example/add',
-      name: 'flowExampleAdd',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/example/add')) }, 'flowExampleAdd')
+      path: '/flow/testCase',
+      name: 'testCase',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase')) }, 'testCase')
     },
     { // 流程控制---用例列表-编辑
-      path: '/flow/example/add/:id',
-      name: 'flowExampleAddId',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/example/add')) }, 'flowExampleAddId')
+      path: '/flow/testCase/edit',
+      name: 'testCaseEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/edit')) }, 'testCaseEdit')
     },
     { // 流程控制---用例列表-详情-新增
       path: '/flow/testCaseItem/add/:fkTestCaseId',

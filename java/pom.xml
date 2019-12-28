@@ -15,38 +15,60 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <frameworks.version>1.0.6-SNAPSHOT</frameworks.version>
+        <project.environment>-SNAPSHOT</project.environment>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <properties>
+                <project.environment/>
+            </properties>
+        </profile>
+    </profiles>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
     <dependencies>
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>base</artifactId>
-            <version>${frameworks.version}</version>
+            <version>1.0.6${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
-            <artifactId>http-api-starter</artifactId>
-            <version>${frameworks.version}</version>
+            <artifactId>redis-starter</artifactId>
+            <version>1.0.6${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>mybatis-starter</artifactId>
-            <version>${frameworks.version}</version>
+            <version>1.0.6${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>interfaces-starter</artifactId>
-            <version>${frameworks.version}</version>
+            <version>1.0.6${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -60,7 +82,12 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
 
 </project>
