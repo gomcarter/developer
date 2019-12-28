@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author gomcarter on 2019-12-18 18:05:57 -->
 <mapper namespace="com.gomcarter.developer.dao.RulesMapper">
     <resultMap type="com.gomcarter.developer.entity.Rules" id="rulesMap">
         <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="generator" property="generator"/>
-        <result column="create_time" property="createTime"/>
-        <result column="modify_time" property="modifyTime"/>
+            <result column="name" property="name"/>
+            <result column="generator" property="generator"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+            <result column="mark" property="mark"/>
     </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
 
+
+    <!-- //@NotReplaceableEnd  -->
 </mapper>

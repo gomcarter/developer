@@ -12,4 +12,30 @@
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
 
+    <resultMap type="com.gomcarter.developer.dto.JTestCaseItemDetail" id="testCaseItemDetailMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="fk_channel_id" property="fkChannelId"/>
+        <result column="fk_activity_id" property="fkActivityId"/>
+        <result column="sort_order" property="sortOrder"/>
+        <result column="state" property="state"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+
+    <select id="listInterfacesDetail" resultMap="testCaseItemDetailMap">
+            SELECT
+            b.*
+            FROM
+            test_case_item a
+            LEFT JOIN interfaces b ON a.fk_interfaces_id = b.id
+            LEFT JOIN test_case c ON a.fk_test_case_id = c.id
+            WHERE
+            c.id = #{id}
+    </select>
 </mapper>

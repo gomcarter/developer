@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import { getInterTestcaseCount, getInterTestcase } from '@/config/api/inserv-api'
-import { formatDate, removeBlank } from '@/config/utils'
-
+import { xhr } from '@/config/api/http'
+import { getInterTestcaseCount, getInterTestcase, getListTestCaceItem, perform } from '@/config/api/inserv-api'
+import { toQueryString, formatDate, removeBlank } from '@/config/utils'
 export default {
   data () {
     return {
@@ -38,9 +38,10 @@ export default {
         handler: this.add
       }],
       columns: [
+        {field: 'id', header: '用例id', sort: 'id', width: 200},
         {field: 'name', header: '用例名称', sort: 'name', width: 200},
         {field: 'mark', header: '备注', sort: 'mark', width: 400},
-        {field: 'userName', header: '执行人', sort: 'userName', width: 200},
+        // {field: 'userName', header: '执行人', sort: 'userName', width: 200},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
@@ -52,6 +53,18 @@ export default {
               text: '编辑',
               handler: (row) => {
                 this.$router.push(`/flow/example/add/${row.id}`)
+              }
+            },
+            {
+              text: '详情',
+              handler: (row) => {
+                this.$router.push(`/flow/testCaseItem/${row.id}`)
+              }
+            },
+            {
+              text: '执行',
+              handler: (row) => {
+                this.testUrl(row.id)
               }
             }
             // {
@@ -89,6 +102,79 @@ export default {
     },
     add (r) {
       this.$router.push(`/flow/example/add`)
+    },
+    testUrl (id) {
+      getListTestCaceItem(id).then((res) => {
+        console.debug(111)
+        res.forEach(s => {
+          let params = s.parameters
+          let method = s.method.toLowerCase()
+          let url = 'http://119.23.240.12:10013/keeper' + s.url
+          let res
+          let obj
+          if (params.length === 0) {
+            obj = ''
+          } else {
+            obj = {}
+            console.debug(JSON.parse(params)[0].children)
+            JSON.parse(params)[0].children.forEach(e => {
+              console.log(e)
+              // // 同一key的时候，需要合并
+              // if (obj[e['key']] === undefined) {
+              //   obj[e['key']] = e['defaults']
+              // } else {
+              //   obj[e['key']] = [e['defaults']].concat(obj[e['key']])
+              // }
+            })
+          }
+          switch (method) {
+            case 'put':
+            case 'post':
+            case 'patch':
+              params = obj
+              break
+            case 'delete':
+            case 'get':
+              params = {
+                params: obj
+              }
+              break
+          }
+          // 清除不必要的headers
+          Object.entries(xhr.defaults.headers)
+            .forEach(s => {
+              if (['common', 'delete', 'get', 'head', 'patch', 'post', 'put'].indexOf(s[0]) < 0) {
+                delete xhr.defaults.headers[s[0]]
+              }
+            })
+
+          if (this.headers && this.headers.length > 0) {
+            this.headers.forEach(s => {
+              xhr.defaults.headers[s.key] = s.value
+            })
+          }
+          if (this.bodyParams) {
+            xhr.defaults.headers['content-type'] = 'application/json'
+            const body = JSON.stringify(JSON.parse(obj[this.bodyParams]))
+            delete obj[this.bodyParams]
+            console.log('w1' + this.showUrl + '?' + toQueryString(obj))
+            res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'postWithBody'})
+          } else {
+            console.log(url)
+            perform(url, 'get', 1).then((res) => {
+              console.log(res[0].name)
+            })
+          }
+          res.then(r => {
+            this.result = r.data
+          }).catch(e => {
+            console.log(e)
+          })
+        })
+      }).catch((err) => {
+        console.log(err)
+      })
+      console.log('测试用例执行完毕')
     }
   },
   components: {

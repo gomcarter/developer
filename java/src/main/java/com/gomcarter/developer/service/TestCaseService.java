@@ -1,11 +1,14 @@
 package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.TestCaseMapper;
+import com.gomcarter.developer.dto.JInterfacesDetail;
+import com.gomcarter.developer.dto.JTestCaseItemDetail;
 import com.gomcarter.developer.entity.TestCase;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,5 +44,9 @@ public class TestCaseService {
 
     public <R> Integer count(R params) {
         return testCaseMapper.count(params);
+    }
+
+    public List<JTestCaseItemDetail> listInterfacesDetail(Long id) {
+        return testCaseMapper.listInterfacesDetail(id);
     }
 }

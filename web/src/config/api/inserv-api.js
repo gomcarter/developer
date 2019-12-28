@@ -244,6 +244,15 @@ export const postInterRules = async (params) => {
 
 /**
  * @author gomcarter 2019-02-28
+ * @returns 流程控制---参数规则列表-编辑
+ */
+export const putInterRules = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/rules/${params.id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-详情
  */
 export const getInterRulesId = async (id) => {
@@ -256,7 +265,7 @@ export const getInterRulesId = async (id) => {
  * @returns 流程控制---用例列表
  */
 export const getInterTestcase = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testcase`, {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
@@ -267,8 +276,99 @@ export const getInterTestcase = async (params) => {
 * @returns 流程控制---用例列表
 */
 export const getInterTestcaseCount = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testcase/count`, {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/count`, {
     params: params
   })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---新增
+ */
+export const postInterTestCase = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---编辑
+ */
+export const putInterTestCase = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/testCase/${params.id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例列表
+ */
+export const getInterTestCaseId = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例接口列表
+ */
+export const getInterTestCaseItem = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem`, {
+    params: params
+  })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例接口列表
+ */
+export const getInterTestCaseItemCount = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/count`, {
+    params: params
+  })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-用例列表
+ */
+export const getInterTestCaseItemId = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-新增
+ */
+export const postInterTestCaseItem = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCaseItem`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--详情-编辑
+ */
+export const putInterTestCaseItem = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/testCaseItem/${params.id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制--用例列表-执行-获取所有测试用例接口
+ */
+export const getListTestCaceItem = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/listInterfacesDetail/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 封装接口请求
+ */
+export const perform = async (url, method, parm) => {
+  const res = await xhr[method](url, parm)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
