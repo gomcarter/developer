@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import java.util.Date;
 
 /**
- * @author gomcarter
- * @date 2019-06-17 16:41:01
+ * @author gomcarter on 2019-12-18 18:05:57
  */
 @Data
 @Accessors(chain = true)
@@ -20,6 +18,8 @@ public class Rules {
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
+
     /**
      * 规则名称
      */
@@ -29,11 +29,21 @@ public class Rules {
      */
     private String generator;
     /**
-     *
+     * 
      */
     private Date createTime;
     /**
-     *
+     * 
      */
     private Date modifyTime;
+    /**
+     * 脚本备注
+     */
+    private String mark;
+
+    //@NotReplaceableStart
+    // 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖
+
+
+    //@NotReplaceableEnd
 }

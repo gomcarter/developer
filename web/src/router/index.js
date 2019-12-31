@@ -98,6 +98,26 @@ const router = new Router({
       name: 'testCaseEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/edit')) }, 'testCaseEdit')
     },
+    { // 流程控制---用例列表-详情-新增
+      path: '/flow/testCaseItem/add/:fkTestCaseId',
+      name: 'flowTestCaseItemAdd',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/')) }, 'flowTestCaseItemAdd')
+    },
+    { // 流程控制---用例列表-详情-编辑
+      path: '/flow/testCaseItem/add/:id/:fkTestCaseId',
+      name: 'flowTestCaseItemAdd',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/')) }, 'flowTestCaseItemAdd')
+    },
+    { // 流程控制---用例列表-详情
+      path: '/flow/testCaseItem/:id',
+      name: 'flowTestCaseItemId',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem')) }, 'flowTestCaseItemId')
+    },
+    { // 流程控制---用例列表-详情-新增（修改）-参数配置
+      path: '/flow/testCaseItem/add/test/:id/:env',
+      name: 'testCaseItemLink',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/test')) }, 'testCaseItemLink')
+    },
     // 中转
     {
       path: '/transfer/:data',

@@ -3,21 +3,18 @@
     <h4 class="title">{{title}}</h4>
     <hr/>
     <el-form :model="form" ref="edit">
-      <el-form-item label="用例名称:" label-width="8em" :rules="[{ required: true, message: '请输入用例名称', trigger: ['blur', 'change'] }]" prop="name">
-        <el-input v-model="form.name" placeholder="请输入用例名称" />
+      <el-form-item label="接口id:" label-width="8em"   :rules="[{ required: true, message: '用例接口id', trigger: ['blur', 'change'] }]" prop="fkInterfacesId">
+        <el-input v-model="form.fkInterfacesId" placeholder="请输入用例接口id" />
+        <el-button type="primary" @click="parmConfig">参数配置</el-button>
       </el-form-item>
-      <el-form-item label="备注:" label-width="8em">
-        <el-input v-model="form.mark" type="textarea" rows="10" placeholder="请输入备注"/>
+      <el-form-item label="接口名称:" label-width="8em"  :rules="[{ required: true, message: '用例接口名称', trigger: ['blur', 'change'] }]" prop="name">
+        <el-input v-model="form.name" placeholder="请输入用例接口名称" />
       </el-form-item>
-      <el-form-item label="测试接口:" label-width="8em">
-        <!-- <el-select placeholder="选择类型" v-model="data.method" class="min_width">
-          <el-option
-            v-for="(v, i) in methods"
-            :key="i"
-            :label="v"
-            :value="v">
-          </el-option>
-        </el-select> -->
+      <el-form-item label="入参配置:" label-width="8em">
+        <el-input v-model="form.parmConfig"  placeholder="请输入入参配置"/>
+      </el-form-item>
+      <el-form-item label="结果验证:" label-width="8em">
+        <el-input v-model="form.resultHandler"  placeholder="请输入结果验证"/>
       </el-form-item>
       <el-form-item label-width="8em">
         <el-button type="primary" @click="add" icon="el-icon-success">提交</el-button>
@@ -28,14 +25,18 @@
 </template>
 
 <script>
-import { postInterTestCase, putInterTestCase, getInterTestCaseId } from '@/config/api/inserv-api'
+import { postInterTestCaseItem, putInterTestCaseItem, getInterTestCaseItemId } from '@/config/api/inserv-api'
 export default {
   data () {
     return {
-      title: '新增用例',
+      title: '新增用例接口',
       form: {
         name: '',
-        mark: ''
+        fkInterfacesId: '',
+        resultHandler: '',
+        fkTestCaseId: this.$route.params.fkTestCaseId,
+        sort: 1,
+        parmConfig: ''
       },
       result: ''
     }
@@ -44,12 +45,17 @@ export default {
   methods: {
     init () {
       if (this.$route.params.id) {
-        this.title = '修改用例'
-        getInterTestCaseId(this.$route.params.id).then((res) => {
+        this.title = '修改用例接口'
+        getInterTestCaseItemId(this.$route.params.id).then((res) => {
           this.form = res
         }).catch((err) => {
           console.log(err)
         })
+      }
+    },
+    parmConfig () {
+      if (this.form.fkInterfacesId) {
+        this.$router.push(`/flow/testCaseItem/add/test/` + this.form.fkInterfacesId + '/devDomain')
       }
     },
     add () {
@@ -57,21 +63,21 @@ export default {
         if (valid) {
           this.$confirm('确定保存？', '提示', {type: 'info'}).then(() => {
             if (this.$route.params.id) {
-              putInterTestCase(this.form).then((res) => {
+              putInterTestCaseItem(this.form).then((res) => {
                 this.$message({
                   message: '修改成功',
                   type: 'success'
                 })
-                this.$router.push(`/flow/example/`)
+                this.$router.push(`/flow/testCaseItem/` + this.form.fkTestCaseId)
               }).catch(() => {
               })
             } else {
-              postInterTestCase(this.form).then((res) => {
+              postInterTestCaseItem(this.form).then((res) => {
                 this.$transfer({
                   back: '继续添加',
                   buttons: [{
                     text: '去列表',
-                    link: '/flow/example'
+                    link: '/flow/testCaseItem/' + this.form.fkTestCaseId
                   }]
                 })
               }).catch(() => {
