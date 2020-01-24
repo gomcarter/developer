@@ -40,6 +40,16 @@ export const interfacesListApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/interfaces/list`, {params})
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+
+/**
+ * @author gomcarter 2019-02-13
+ * @returns 接口管理
+ */
+export const interfacesSimpleListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/interfaces/simple/list`, {params})
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
 /**
  * @author gomcarter 2019-02-14
  * @returns 接口管理---详情
@@ -53,8 +63,16 @@ export const getInterfacesApi = async (id) => {
  * @author gomcarter 2019-02-14
  * @returns 接口历史
  */
-export const getInterfacesVersionedApi = async (interfacesId) => {
+export const interfacesVersionedListApi = async (interfacesId) => {
   const res = await xhr.get(`${INSERV_URL}developer/versioned/of/${interfacesId}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+/**
+ * @author gomcarter 2019-02-14
+ * @returns 接口历史
+ */
+export const interfacesVersionedSimpleListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/versioned/simple/list`, {params})
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -155,10 +173,10 @@ export const javaListApi = async (params) => {
 
 /**
  * @author gomcarter 2019-02-28
- * @returns 类解析器---svn列表
+ * @returns 自定义函数列表
  */
-export const getAutomationaddSvn = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/automationadd/svn`, {
+export const functionListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/function/list`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
@@ -166,68 +184,10 @@ export const getAutomationaddSvn = async (params) => {
 
 /**
  * @author gomcarter 2019-02-28
- * @returns 类解析器---svn列表-总数
+ * @returns 自定义函数列表-数量
  */
-export const getAutomationaddSvnCount = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/automationadd/svn/count`, {
-    params: params
-  })
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 类解析器---svn列表-添加
- */
-export const postAutomationadd = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/automationadd`, params)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 类解析器---svn详情
- */
-export const getAutomationaddSvnId = async (id) => {
-  const res = await xhr.get(`${INSERV_URL}developer/automationadd/svn/${id}`)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 类解析器---执行
- */
-export const automationaddUpdate = async (params) => {
-  const res = await xhr.put(`${INSERV_URL}developer/automationadd/update`, params)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制---参数规则列表
- */
-export const getInterRules = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/rules`, {
-    params: params
-  })
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-14
- * @returns 接口管理---新增-规则
- */
-export const interRules = async () => {
-  const res = await xhr.get(`${INSERV_URL}developer/rules`)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制---参数规则列表-数量
- */
-export const getInterRulesCount = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/rules/count`, {
+export const functionCountApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/function/count`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
@@ -237,8 +197,8 @@ export const getInterRulesCount = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-添加
  */
-export const postInterRules = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/rules`, params)
+export const addFunctionApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/function`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -246,8 +206,8 @@ export const postInterRules = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-编辑
  */
-export const putInterRules = async (params) => {
-  const res = await xhr.put(`${INSERV_URL}developer/rules/${params.id}`, params)
+export const modifyFunctionApi = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/function/${params.id}`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -255,8 +215,8 @@ export const putInterRules = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---参数规则列表-详情
  */
-export const getInterRulesId = async (id) => {
-  const res = await xhr.get(`${INSERV_URL}developer/rules/${id}`)
+export const getFunctionApi = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/function/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -264,8 +224,8 @@ export const getInterRulesId = async (id) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---用例列表
  */
-export const getInterTestcase = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testCase`, {
+export const testCaseListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/testCase/list`, {
     params: params
   })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
@@ -275,7 +235,7 @@ export const getInterTestcase = async (params) => {
 * @author gomcarter 2019-02-28
 * @returns 流程控制---用例列表
 */
-export const getInterTestcaseCount = async (params) => {
+export const testCaseCountApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/count`, {
     params: params
   })
@@ -286,8 +246,8 @@ export const getInterTestcaseCount = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---新增
  */
-export const postInterTestCase = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params)
+export const createTestCaseApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params, {type: 'json'})
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -295,8 +255,8 @@ export const postInterTestCase = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---编辑
  */
-export const putInterTestCase = async (params) => {
-  const res = await xhr.put(`${INSERV_URL}developer/testCase/${params.id}`, params)
+export const updateTestCaseApi = async (id, params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCase/${id}`, params, {type: 'json'})
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -304,71 +264,7 @@ export const putInterTestCase = async (params) => {
  * @author gomcarter 2019-02-28
  * @returns 流程控制---用例列表
  */
-export const getInterTestCaseId = async (id) => {
+export const getTestCaseDetailApi = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制---用例接口列表
- */
-export const getInterTestCaseItem = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem`, {
-    params: params
-  })
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制---用例接口列表
- */
-export const getInterTestCaseItemCount = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/count`, {
-    params: params
-  })
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制--详情-用例列表
- */
-export const getInterTestCaseItemId = async (id) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testCaseItem/${id}`)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制--详情-新增
- */
-export const postInterTestCaseItem = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/testCaseItem`, params)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制--详情-编辑
- */
-export const putInterTestCaseItem = async (params) => {
-  const res = await xhr.put(`${INSERV_URL}developer/testCaseItem/${params.id}`, params)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-/**
- * @author gomcarter 2019-02-28
- * @returns 流程控制--用例列表-执行-获取所有测试用例接口
- */
-export const getListTestCaceItem = async (id) => {
-  const res = await xhr.get(`${INSERV_URL}developer/testCase/listInterfacesDetail/${id}`)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-/**
- * @author gomcarter 2019-02-28
- * @returns 封装接口请求
- */
-export const perform = async (url, method, parm) => {
-  const res = await xhr[method](url, parm)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }

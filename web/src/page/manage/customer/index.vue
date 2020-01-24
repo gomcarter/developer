@@ -34,7 +34,7 @@
 
 <script>
 import { getInterfacesApi } from '@/config/api/inserv-api'
-import { formatDate } from '@/config/utils'
+import { formatDate, generateReturns } from '@/config/utils'
 
 export default {
   name: 'interfacesDetail',
@@ -54,29 +54,12 @@ export default {
       getInterfacesApi(this.$route.params.id).then((res) => {
         this.data = res
         this.returns = JSON.parse(this.data.returns)
-        this.generatedReturns = this.generateReturns(this.returns)
+        this.generatedReturns = generateReturns(this.returns)
         this.parameters = JSON.parse(this.data.parameters)
       })
     },
     linkTo (data, env) {
       this.$router.push(`/test/${data.id}/${env}`)
-    },
-    generateReturns (node) {
-      if (node.type === 'List') {
-        return [this.generateReturns(node.children[0])]
-      } else if (node.type === 'Object') {
-        const o = {}
-        node.children.forEach(s => {
-          o[s.key] = this.generateReturns(s)
-        })
-        return o
-      } else if (node.type === undefined) {
-        return '...'
-      } else if (node.type === 'void') {
-        return '无'
-      } else {
-        return `${node.comment ? node.comment + '； ' : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
-      }
     }
   },
   components: {

@@ -13,14 +13,14 @@
         </el-form-item>
       </el-form>
     </div>
-    <h4 class="title">规则列表</h4>
+    <h4 class="title">自定义函数列表</h4>
     <hr/>
     <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
   </div>
 </template>
 
 <script>
-import { getInterRulesCount, getInterRules } from '@/config/api/inserv-api'
+import { functionCountApi, functionListApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -29,8 +29,8 @@ export default {
       filter: {
         name: ''
       },
-      dataUrl: getInterRules,
-      countUrl: getInterRulesCount,
+      dataUrl: functionListApi,
+      countUrl: functionCountApi,
       params: {},
       toolbar: [{
         title: '新增',
@@ -39,7 +39,7 @@ export default {
       }],
       columns: [
         {field: 'name', header: '规则名称', sort: 'name', width: 200},
-        {field: 'generator', header: '脚本', sort: 'generator', width: 600},
+        {field: 'script', header: '脚本', sort: 'script', width: 600},
         {field: 'mark', header: '备注', sort: 'mark', width: 500},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
@@ -51,33 +51,15 @@ export default {
             {
               text: '编辑',
               handler: (row) => {
-                this.$router.push(`/flow/param/add/${row.id}`)
+                this.$router.push(`/flow/function/edit/${row.id}`)
               }
             }
-            // {
-            //   text: (row) => {
-            //     return row.type === '0' ? '<p style="color: red">已禁用</p>' : '<p>已启用</p>'
-            //   },
-            //   html: true,
-            //   handler: (row) => {
-            //     this.$confirm('确定修改？', '提示', {type: 'info'}).then(() => {
-            //       postModuleChangeType({objId: row.id, type: row.type}).then((res) => {
-            //         this.search()
-            //       }).catch((err) => {
-            //         console.log(err)
-            //       })
-            //     })
-            //   }
-            // }
           ]
         }
       ]
     }
   },
   mounted () {
-    if (this.action) {
-      this.columns.push({field: 'action', header: '操作', sort: 'id', width: 230, actions: this.action || []})
-    }
   },
   methods: {
     search () {
@@ -87,8 +69,8 @@ export default {
       this.params = {}
       this.filter = { name: '' }
     },
-    add (r) {
-      this.$router.push(`/flow/param/add`)
+    add () {
+      this.$router.push(`/flow/function/edit`)
     }
   },
   components: {

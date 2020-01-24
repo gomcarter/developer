@@ -1,5 +1,4 @@
 /* eslint-disable */
-import { IMAGE_SERVER_URL } from '@/config/api/env'
 import { Notification } from 'element-ui'
 
 export const toJsonHtml = (json) => {
@@ -440,6 +439,28 @@ export const getPictureUrl = (url, params = {}) => {
   return url.map(v => '/' + v + (v.indexOf('?') >= 0 ? '&' : '?') + p)
 }
 
+export const fromQueryString = (queryString) => {
+  const searchsplits = queryString.split('?')
+  const search = searchsplits.length > 1 ? searchsplits[1] : searchsplits[0]
+  const r = {}
+  if (!search || search.length < 3) {
+    return r
+  }
+  search.slice(0, search.length).split('&').forEach(k => {
+    const p = k.split('=')
+    const key = p[0]
+    const value = p[1]
+    if (value) {
+      if (r[key] != null) {
+        r[key] = [value].concat(r[key])
+      } else {
+        r[key] = value
+      }
+    }
+  })
+  return r
+}
+
 export const getUrlHashParams = () => {
   const searchsplits = window.location.hash.split('?')
   const search = searchsplits.length > 1 ? searchsplits[1] : ''
@@ -460,4 +481,155 @@ export const getUrlHashParams = () => {
     }
   })
   return r
+}
+
+export const generateParameters = (parameters) => {
+  return JSON.parse(parameters || '[]').flatMap(s => {
+    // 第一层的Object参数名去掉
+    if (s.type === 'Object' && !s.body) {
+      s.key = undefined
+    }
+    return generateChild(s, undefined)
+  })
+}
+
+export const generateChild = (node, key) => {
+  const k = (key ? (key + '.') : '') + (node.key || '')
+  if (node.body) {
+    // todo:
+    this.bodyParams = k
+    return {
+      key: k,
+      notNull: node.notNull,
+      comment: node.comment,
+      defaults: JSON.stringify(generateBodyPlaceholder(node), null, 4),
+      type: node.type,
+      inputType: 'textarea'
+    }
+  } else {
+    if (node.type === 'List') {
+      let that = []
+      if (node.children[0].type === 'Object' || node.children[0].type === 'List') {
+        that = that.concat(
+          (node.children[0].children || []).flatMap(s => generateChild(s, k))
+        )
+      }
+      return that
+    } else if (node.type === 'Object') {
+      return (node.children || []).flatMap(s => generateChild(s, k))
+    } else {
+      return {
+        key: k,
+        notNull: node.notNull,
+        comment: node.comment,
+        defaults: node.defaults,
+        type: node.type
+      }
+    }
+  }
+}
+
+export const generateBodyPlaceholder = (node) => {
+  if (node.type === 'List') {
+    return [generateBodyPlaceholder(node.children[0])]
+  } else if (node.type === 'Object') {
+    const o = {}
+    node.children = node.children || []
+    node.children.forEach(s => {
+      o[s.key] = generateBodyPlaceholder(s)
+    })
+    return o
+  } else if (node.type === undefined || node.type === 'void') {
+    return null
+  } else if (node.type === 'boolean') {
+    return false
+  } else if (node.type === 'Date') {
+    return formatDate(new Date())
+  } else if (node.type === 'Integer') {
+    return 0
+  } else {
+    return '改这里'
+  }
+}
+
+/**
+ * 粘帖自动解析内容为params，包含 xx：11， xx=2&yy=3
+ * text : xx：11， xx=2&yy=3
+ * e : 粘帖事件
+ */
+export const fillParamsFromClipboardData = (e, parameters) => {
+  // 粘帖到textarea忽略
+  if (e.target.type === 'textarea') {
+    return
+  }
+
+  const text = (e.clipboardData.getData('text') || '').trim()
+  if (text) {
+    const params = parseParams(text)
+    setTimeout(() => {
+      const name = e.target.name
+      parameters.forEach(s => {
+        if (s.key === name) {
+          s.defaults = null
+        }
+        s.assign = false
+      })
+
+      // 开始填充
+      for (const key in params) {
+        let value = params[key]
+        if (value) {
+          (type(value) === 'array' ? value : [value]).forEach(v => {
+            const p = parameters.filter(s => s.key === key && !s.assign)[0]
+            if (p) {
+              p.defaults = v
+              p.assign = true
+            } else {
+              parameters.push({key, defaults: v, assign: true, body: false})
+            }
+          })
+        }
+      }
+    }, 1)
+  }
+}
+
+export const parseParams = (text) => {
+  if (/:/.test(text)) {
+    const params = {}
+    const texts = text.split('\n')
+    for (let i = 0; i < texts.length; ++i) {
+      const t = texts[i].split(':')
+      const key = t[0].trim()
+      const newValue = t[1].trim()
+      let oldValue = params[key]
+      if (oldValue) {
+        params[key] = [newValue].concat(oldValue)
+      } else {
+        params[key] = newValue
+      }
+    }
+    return params
+  } else if (/=/.test(text)) {
+    return fromQueryString(text)
+  }
+}
+
+
+export const generateReturns = (node) => {
+  if (node.type === 'List') {
+    return [generateReturns(node.children[0])]
+  } else if (node.type === 'Object') {
+    const o = {}
+    node.children.forEach(s => {
+      o[s.key] = generateReturns(s)
+    })
+    return o
+  } else if (node.type === undefined) {
+    return '...'
+  } else if (node.type === 'void') {
+    return '无'
+  } else {
+    return `${node.comment ? node.comment + '； ' : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
+  }
 }

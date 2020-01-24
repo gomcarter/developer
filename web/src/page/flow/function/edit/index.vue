@@ -7,16 +7,16 @@
         <el-input v-model="form.name" placeholder="请输入规则名称" />
       </el-form-item>
       <el-form-item label="生成规则脚本:" label-width="8em">
-        <el-input v-model="form.generator" type="textarea" rows="10" />
+        <el-input v-model="form.script" type="textarea" rows="10" />
       </el-form-item>
       <el-form-item label="备注:" label-width="8em" prop="mark">
-        <el-input v-model="form.mark" type="textarea" rows="2" />
+        <el-input v-model="form.mark" type="textarea" rows="3" />
       </el-form-item>
       <el-form-item label="" label-width="8em">
         <el-button @click="action">测试</el-button>
       </el-form-item>
       <el-form-item label="执行结果:" label-width="8em">
-        <div class="result">{{result}}</div>
+        <v-jsonformatter v-if="result" :json="result"></v-jsonformatter>
       </el-form-item>
       <el-form-item label-width="8em">
         <el-button type="primary" @click="add" icon="el-icon-success">提交</el-button>
@@ -27,15 +27,15 @@
 </template>
 
 <script>
-import {postInterRules, getInterRulesId, putInterRules} from '@/config/api/inserv-api'
+import {addFunctionApi, getFunctionApi, modifyFunctionApi} from '@/config/api/inserv-api'
 export default {
   data () {
     return {
-      title: '新增规则',
+      title: '新增自定义函数',
       form: {
         id: '',
         name: '',
-        generator: '',
+        script: '',
         mark: ''
       },
       result: ''
@@ -45,8 +45,8 @@ export default {
   methods: {
     init () {
       if (this.$route.params.id) {
-        this.title = '修改规则'
-        getInterRulesId(this.$route.params.id).then((res) => {
+        this.title = '编辑自定义函数'
+        getFunctionApi(this.$route.params.id).then((res) => {
           this.form = res
         }).catch((err) => {
           console.log(err)
@@ -58,21 +58,23 @@ export default {
         if (valid) {
           this.$confirm('确定保存？', '提示', {type: 'info'}).then(() => {
             if (this.$route.params.id) {
-              putInterRules(this.form).then((res) => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
+              modifyFunctionApi(this.form).then((res) => {
+                this.$transfer({
+                  back: '返回编辑',
+                  buttons: [{
+                    text: '去列表',
+                    link: '/flow/function'
+                  }]
                 })
-                this.$router.push(`/flow/param/`)
               }).catch(() => {
               })
             } else {
-              postInterRules(this.form).then((res) => {
+              addFunctionApi(this.form).then((res) => {
                 this.$transfer({
                   back: '继续添加',
                   buttons: [{
                     text: '去列表',
-                    link: '/flow/param'
+                    link: '/flow/function'
                   }]
                 })
               }).catch(() => {
@@ -85,29 +87,15 @@ export default {
     },
     action () {
       /* eslint-disable */
-      eval(this.form.generator)
-            // this.result = new Function(this.form.generator)()
+      // this.result = eval(this.form.script)
+      this.result = new Function(this.form.script)()
     }
   },
-  watch: {},
   components: {
-  },
-  beforeCreate () {
-  },
-  cteated () {
-  },
-  beforeMount () {
+    'v-jsonformatter': () => import('@/components/jsonformatter')
   },
   mounted () {
     this.init()
-  },
-  beforeUpdate () {
-  },
-  updated () {
-  },
-  beforeDestroy () {
-  },
-  destroyed () {
   }
 }
 </script>

@@ -85,6 +85,11 @@ const router = new Router({
     },
     { // 流程控制---自定义函数编辑
       path: '/flow/function/edit',
+      name: 'functionAdd',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/function/edit')) }, 'functionAdd')
+    },
+    { // 流程控制---自定义函数编辑
+      path: '/flow/function/edit/:id',
       name: 'functionEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/function/edit')) }, 'functionEdit')
     },
@@ -93,30 +98,20 @@ const router = new Router({
       name: 'testCase',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase')) }, 'testCase')
     },
-    { // 流程控制---用例列表-编辑
+    { // 流程控制---用例列表-新增
       path: '/flow/testCase/edit',
+      name: 'testCaseAdd',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/edit')) }, 'testCaseAdd')
+    },
+    { // 流程控制---用例列表-编辑
+      path: '/flow/testCase/edit/:id',
       name: 'testCaseEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/edit')) }, 'testCaseEdit')
     },
-    { // 流程控制---用例列表-详情-新增
-      path: '/flow/testCaseItem/add/:fkTestCaseId',
-      name: 'flowTestCaseItemAdd',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/')) }, 'flowTestCaseItemAdd')
-    },
-    { // 流程控制---用例列表-详情-编辑
-      path: '/flow/testCaseItem/add/:id/:fkTestCaseId',
-      name: 'flowTestCaseItemAdd',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/')) }, 'flowTestCaseItemAdd')
-    },
-    { // 流程控制---用例列表-详情
-      path: '/flow/testCaseItem/:id',
-      name: 'flowTestCaseItemId',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem')) }, 'flowTestCaseItemId')
-    },
-    { // 流程控制---用例列表-详情-新增（修改）-参数配置
-      path: '/flow/testCaseItem/add/test/:id/:env',
-      name: 'testCaseItemLink',
-      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCaseItem/add/test')) }, 'testCaseItemLink')
+    { // 流程控制---用例列表-编辑
+      path: '/flow/testCase/run/:id',
+      name: 'testCaseRun',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/run')) }, 'testCaseRun')
     },
     // 中转
     {

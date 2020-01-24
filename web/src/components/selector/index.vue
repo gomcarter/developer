@@ -104,6 +104,7 @@ export default {
       selections: [],
       selected: null,
       loading: false,
+      params: {},
       mappedData: {}
     }
   },
@@ -113,46 +114,92 @@ export default {
     }, 100)
   },
   watch: {
-    load: 'loadChanged'
+    load () {
+      const load = (this.load || []).filter(d => d != null)
+      const selected = this.multiple ? [].concat(this.selected) : (this.selected == null ? [] : [this.selected])
+      if (load.sort().join('|_|') === selected.sort().join('|_|')) {
+        // not changed
+        return
+      }
+      this.loadChanged()
+    },
+    extraParams () {
+      const extraParams = this.extraParams || {}
+      const params = this.params || {}
+      if (JSON.stringify(extraParams) !== JSON.stringify(params)) {
+        this.params = extraParams
+        this.loadChanged(-1)
+      }
+    }
   },
   methods: {
-    loadChanged () {
-      const load = (this.load || []).filter(d => d != null)
-      if (this.multiple) {
-        this.selected = load
-      } else {
-        this.selected = load[0]
+    loadParams (load) {
+      const loadParams = {}
+      if (load.length > 0) {
+        loadParams['rows'] = load.length
+        loadParams[this.id] = load
+        loadParams[`${this.id}List`] = load
       }
-      return load
+      return loadParams
+    },
+    loadChanged (p) {
+      const load = (this.load || []).filter(d => d != null)
+      if (p === -1) {
+        // 初始化
+        this.remoteMethod('', this.loadParams(load))
+      } else if (load.length > 0) {
+        // 后面修改load, 先看自己数据里面是否有当前数据，如果有则直接加载，没有就请求数据
+        const selections = this.selections || []
+        const matched = selections.filter(s => load.indexOf(s[this.id]) >= 0) || []
+
+        // 没有匹配完全，请求远端数据来完成
+        if (matched.length !== load.length && this.remote && this.url) {
+          this.remoteMethod('', this.loadParams(load))
+        } else {
+          this._setSelectedAsLoad(load)
+        }
+      } else {
+        // 清空选择项
+        this.clear()
+      }
+    },
+    _setSelectedAsLoad (load) {
+      setTimeout(() => {
+        if (this.multiple) {
+          this.selected = load
+        } else {
+          this.selected = load.length > 0 ? load[0] : null
+        }
+      }, 1)
     },
     init () {
+      this.params = this.extraParams || {}
       this.searchKey0 = this.searchKey || this.text
-      const load = this.loadChanged()
       if (this.data) {
-        if (!(this.data instanceof Array)) {
-          this.selections = Object.entries(this.data)
-            .map(d => {
-              return {id: d[0], text: d[1]}
-            })
-        } else {
-          this.selections = this.data
-        }
-        this.mappingData()
+        this.loadData(this.data)
       } else if (this.remote && this.url) {
-        const loadParams = {}
-        if (load.length > 0) {
-          loadParams['rows'] = load.length
-          loadParams[this.id] = load
-          loadParams[`${this.id}List`] = load
-        }
-        this.remoteMethod('', loadParams, load)
+        this.loadChanged(-1)
       }
     },
-    mappingData () {
+    loadData (data) {
+      if (!(data instanceof Array)) {
+        this.selections = Object.entries(data)
+          .map(d => {
+            return {id: d[0], text: d[1]}
+          })
+      } else {
+        this.selections = data
+      }
+
+      // 将数据转化成map
       this.mappedData = {}
       this.selections.forEach((d) => {
         this.mappedData[d[this.id]] = d
       })
+
+      // 加载需要选择的项
+      const load = (this.load || []).filter(d => d != null)
+      this._setSelectedAsLoad(load)
     },
     getSelection () {
       let selected = []
@@ -176,22 +223,19 @@ export default {
         this.loading = true
         let params = {}
         params[this.searchKey0] = text
-        params = Object.assign(params, loadParams, this.extraParams);
+        params = Object.assign(params, loadParams, this.params);
         // 如果url是字符串，则自行请求结果，否则直接执行url方法
         (typeof this.url === 'string' ? xhr.get(this.url, {params}).then((d) => {
           this.loading = false
-          this.selections = d.data.data
-          this.mappingData()
+          this.loadData(d.extra.data)
         }) : this.url(params)
           .then((d) => {
             this.loading = false
-            this.selections = d
-            this.mappingData()
+            this.loadData(d)
           }))
           .catch(() => {
             this.loading = false
-            this.selections = []
-            this.mappingData()
+            this.loadData([])
           })
       }
     },

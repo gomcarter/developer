@@ -113,8 +113,8 @@ export default {
           name: '接口自动化测试',
           open: false,
           subItems: [
-            {link: '/flow/testCase', name: '用例列表', selected: false},
-            {link: '/flow/function', name: '自定义函数', selected: false}
+            {link: '/flow/function', name: '自定义函数', selected: false},
+            {link: '/flow/testCase', name: '用例列表', selected: false}
           ]
         },
         {
@@ -131,11 +131,11 @@ export default {
         this.items.forEach((o, index) => {
           if (o.subItems) {
             o.subItems.forEach((s, j) => {
-              if (path.indexOf(s.link) >= 0) {
+              if (path.indexOf(s.link) === 0) {
                 this.activeIndex = index + '_' + j
               }
             })
-          } else if (path.indexOf(o.link) >= 0) {
+          } else if (path.indexOf(o.link) === 0) {
             this.activeIndex = index + ''
           }
         })

@@ -5,9 +5,9 @@
     <el-form :inline="true">
       <el-form-item label="" style="width: 100px">
         <el-select v-model="env">
-          <!--<el-option label="开发" value="devDomain"></el-option>-->
+          <el-option label="开发" value="devDomain"></el-option>
           <el-option label="测试" value="testDomain"></el-option>
-          <!--<el-option label="预发" value="prevDomain"></el-option>-->
+          <el-option label="预发" value="prevDomain"></el-option>
           <el-option label="线上" value="onlineDomain"></el-option>
         </el-select>
       </el-form-item>
@@ -53,15 +53,16 @@
         </el-form>
         <h4 class="title">参数</h4>
         <hr/>
-        <el-form v-if="parameters && parameters.length > 0">
+        <el-form v-if="parameters && parameters.length > 0" class="params-form">
           <el-form-item label="" v-for="(param, index) in parameters" :key="index">
             <el-input placeholder="请输入参数名" class="half_min_width" v-model="param.key">
               <template slot="prepend"><span class="table_title">参数名</span></template>
             </el-input>
-            <el-input placeholder="请输入参数值" class="half_max_width" v-if="param.inputType === 'textarea'" :rows="15" type="textarea" v-model="param.defaults">
+            <el-input placeholder="请输入参数值" class="half_max_width" v-if="param.inputType === 'textarea' && (bodyParams = param.key)"
+                      :rows="15" type="textarea" v-model="param.defaults" :name="param.key">
               <template slot="prepend"><span class="table_title">参数值</span></template>
             </el-input>
-            <el-input v-else placeholder="请输入参数值" class="half_max_width" v-model="param.defaults">
+            <el-input v-else placeholder="请输入参数值" class="half_max_width" v-model="param.defaults" :name="param.key">
               <template slot="prepend"><span class="table_title">参数值</span></template>
             </el-input>
             <el-button type="primary" icon="el-icon-plus" @click="addParams()" circle size="small"></el-button>
@@ -88,7 +89,7 @@
 <script>
 import { xhr } from '@/config/api/http'
 import { getInterfacesApi, getInterfacesHeadersApi } from '@/config/api/inserv-api'
-import { toQueryString, formatDate } from '@/config/utils'
+import { toQueryString, generateParameters, fillParamsFromClipboardData } from '@/config/utils'
 
 export default {
   props: {},
@@ -146,27 +147,8 @@ export default {
     this.init()
   },
   methods: {
-    generateBodyPlaceholder (node) {
-      if (node.type === 'List') {
-        return [this.generateBodyPlaceholder(node.children[0])]
-      } else if (node.type === 'Object') {
-        const o = {}
-        node.children = node.children || []
-        node.children.forEach(s => {
-          o[s.key] = this.generateBodyPlaceholder(s)
-        })
-        return o
-      } else if (node.type === undefined || node.type === 'void') {
-        return null
-      } else if (node.type === 'boolean') {
-        return false
-      } else if (node.type === 'Date') {
-        return formatDate(new Date())
-      } else if (node.type === 'Integer') {
-        return 0
-      } else {
-        return '改这里'
-      }
+    paste (e) {
+      fillParamsFromClipboardData(e, this.parameters)
     },
     init () {
       this.env = this.$route.params.env || this.env
@@ -180,48 +162,11 @@ export default {
           })
 
         // 把json数据结构全部打平
-        this.parameters = JSON.parse(this.data.parameters).flatMap(s => {
-          // 第一层的Object参数名去掉
-          if (s.type === 'Object' && !s.body) {
-            s.key = undefined
-          }
-          return this.generateChild(s, undefined)
-        })
+        this.parameters = generateParameters(this.data.parameters)
       })
-    },
-    generateChild (node, key) {
-      const k = (key ? (key + '.') : '') + (node.key || '')
-      if (node.body) {
-        this.bodyParams = k
-        return {
-          key: k,
-          notNull: node.notNull,
-          comment: node.comment,
-          defaults: JSON.stringify(this.generateBodyPlaceholder(node), null, 4),
-          type: node.type,
-          inputType: 'textarea'
-        }
-      } else {
-        if (node.type === 'List') {
-          let that = []
-          if (node.children[0].type === 'Object' || node.children[0].type === 'List') {
-            that = that.concat(
-              (node.children[0].children || []).flatMap(s => this.generateChild(s, k))
-            )
-          }
-          return that
-        } else if (node.type === 'Object') {
-          return (node.children || []).flatMap(s => this.generateChild(s, k))
-        } else {
-          return {
-            key: k,
-            notNull: node.notNull,
-            comment: node.comment,
-            defaults: node.defaults,
-            type: node.type
-          }
-        }
-      }
+
+      // 绑定参数粘帖事件
+      this.$el.addEventListener('paste', this.paste)
     },
     testUrl () {
       let params
@@ -241,41 +186,33 @@ export default {
           }
         })
       }
-      switch (method) {
-        case 'put':
-        case 'post':
-        case 'patch':
-          params = obj
-          break
-        case 'delete':
-        case 'get':
-          params = {
-            params: obj
-          }
-          break
+      if (['put', 'post', 'patch'].indexOf(method) >= 0) {
+        params = obj
+      } else { // get and delete
+        params = {
+          params: obj
+        }
       }
 
-      // 清除不必要的headers
-      Object.entries(xhr.defaults.headers)
-        .forEach(s => {
-          if (['common', 'delete', 'get', 'head', 'patch', 'post', 'put'].indexOf(s[0]) < 0) {
-            delete xhr.defaults.headers[s[0]]
-          }
-        })
-
-      if (this.headers && this.headers.length > 0) {
-        this.headers.forEach(s => {
-          xhr.defaults.headers[s.key] = s.value
-        })
-      }
-
-      console.log(this.bodyParams)
+      // // 清除不必要的headers
+      // Object.entries(xhr.defaults.headers)
+      //   .forEach(s => {
+      //     if (['common', 'delete', 'get', 'head', 'patch', 'post', 'put'].indexOf(s[0]) < 0) {
+      //       delete xhr.defaults.headers[s[0]]
+      //     }
+      //   })
+      //
+      // if (this.headers && this.headers.length > 0) {
+      //   this.headers.forEach(s => {
+      //     xhr.defaults.headers[s.key] = s.value
+      //   })
+      // }
       if (this.bodyParams) {
-        xhr.defaults.headers['content-type'] = 'application/json'
         const body = JSON.stringify(JSON.parse(obj[this.bodyParams]))
         delete obj[this.bodyParams]
-        res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'postWithBody'})
+        res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'json', customHeaders: this.headers})
       } else {
+        params.customHeaders = this.headers
         res = xhr[method](this.showUrl, params)
       }
       res.then(r => {

@@ -12,10 +12,29 @@ axios.defaults.crossDomain = true
 
 // 添加请求拦截器
 axios.interceptors.request.use((config) => {
+  const customHeaders = config.customHeaders || (config.params && config.params.customHeaders)
+  // console.log(customHeaders)
+  if (config.params) {
+    delete config.params.customHeaders
+  }
+
+  if (customHeaders && customHeaders.length > 0) {
+    customHeaders.filter(n => n.key).forEach(h => { config.headers[h.key] = h.value })
+  }
+
   config.paramsSerializer = params => qs.stringify(params)
   // 在发送请求之前做些什么
   if (['post', 'put', 'patch'].indexOf(config.method) >= 0) {
-    if (config.type !== 'upload' && config.type !== 'postWithBody') {
+    if (config.type === 'updoad') {
+      // do nothing
+    } else if (config.type === 'json') {
+      if (typeof config.data !== 'string') {
+        config.data = JSON.stringify(config.data)
+      }
+      config.headers['Content-type'] = 'application/json'
+    } else if (config.type === 'raw') {
+      config.headers['Content-type'] = 'html/text'
+    } else {
       config.data = qs.stringify(removeBlank(config.data))
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
     }
@@ -37,9 +56,7 @@ axios.interceptors.response.use((response) => {
         alerted = true
         that.$alert('登录超时', '提示', {type: 'error'}).then(() => that.$router.push('/login'))
 
-        setTimeout(() => {
-          alerted = false
-        }, 5000)
+        setTimeout(() => { alerted = false }, 5000)
       }
     } else if (!response.data.success) {
       that.$alert(response.data.message || '请求失败！', '提示', {type: 'error'})
