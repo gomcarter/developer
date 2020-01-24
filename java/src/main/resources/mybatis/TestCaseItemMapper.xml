@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- @author gomcarter on 2019-12-18 16:34:04 -->
+<!-- @author gomcarter on 2020-01-10 14:40:23 -->
 <mapper namespace="com.gomcarter.developer.dao.TestCaseItemMapper">
     <resultMap type="com.gomcarter.developer.entity.TestCaseItem" id="testCaseItemMap">
         <id column="id" property="id"/>
+            <result column="sort" property="sort"/>
             <result column="name" property="name"/>
-            <result column="result_handler" property="resultHandler"/>
             <result column="hash" property="hash"/>
-            <result column="config" property="config"/>
-            <result column="fk_interfaces_id" property="fkInterfacesId"/>
+            <result column="auto_refresh" property="autoRefresh"/>
+            <result column="param_handler" property="paramHandler"/>
+            <result column="result_handler" property="resultHandler"/>
             <result column="fk_test_case_id" property="fkTestCaseId"/>
             <result column="create_time" property="createTime"/>
             <result column="modify_time" property="modifyTime"/>
-            <result column="sort" property="sort"/>
-            <result column="parm_config" property="parmConfig"/>
     </resultMap>
     <!-- //@NotReplaceableStart -->
     <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
-
-
+    <insert id="batchInsert" parameterType="com.gomcarter.developer.entity.TestCaseItem"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO test_case_item
+        (`sort`,`name`,hash,auto_refresh,param_handler,result_handler,fk_test_case_id)
+        VALUES
+        <foreach collection="itemList" item="_item_" index="index" separator=",">
+            (#{_item_.sort},#{_item_.name},#{_item_.hash},#{_item_.autoRefresh},
+            #{_item_.paramHandler},#{_item_.resultHandler},#{_item_.fkTestCaseId})
+        </foreach>
+    </insert>
     <!-- //@NotReplaceableEnd  -->
 </mapper>

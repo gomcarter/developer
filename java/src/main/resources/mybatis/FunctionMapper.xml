@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author gomcarter on 2020-01-06 10:09:59 -->
+<mapper namespace="com.gomcarter.developer.dao.FunctionMapper">
+    <resultMap type="com.gomcarter.developer.entity.Function" id="functionMap">
+        <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="script" property="script"/>
+            <result column="mark" property="mark"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+
+
+    <!-- //@NotReplaceableEnd  -->
+</mapper>

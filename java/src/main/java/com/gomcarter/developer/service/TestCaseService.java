@@ -1,16 +1,17 @@
 package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.TestCaseMapper;
-import com.gomcarter.developer.dto.JInterfacesDetail;
-import com.gomcarter.developer.dto.JTestCaseItemDetail;
+import com.gomcarter.developer.dto.TestCaseDto;
 import com.gomcarter.developer.entity.TestCase;
+import com.gomcarter.developer.params.TestCaseParam;
 import com.gomcarter.frameworks.base.pager.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author gomcarter
@@ -19,11 +20,12 @@ import java.util.List;
 @Service
 public class TestCaseService {
 
-    @Autowired
+    @Resource
     private TestCaseMapper testCaseMapper;
 
-    public void insert(TestCase testCase) {
+    public TestCase insert(TestCase testCase) {
         testCaseMapper.insert(testCase);
+        return testCase;
     }
 
     public void update(TestCase testCase) {
@@ -46,7 +48,45 @@ public class TestCaseService {
         return testCaseMapper.count(params);
     }
 
-    public List<JTestCaseItemDetail> listInterfacesDetail(Long id) {
-        return testCaseMapper.listInterfacesDetail(id);
+    public TestCaseDto detail(Long id) {
+        Objects.requireNonNull(id);
+
+        return Optional.ofNullable(this.getById(id))
+                .map(s -> new TestCaseDto()
+                        .setId(s.getId())
+                        .setName(s.getName())
+                        .setPresetParams(s.getPresetParams())
+                        .setMark(s.getMark())
+                        .setWorkflow(s.getWorkflow())
+                        .setUserName(s.getUserName())
+                        .setCreateTime(s.getCreateTime())
+                        .setModifyTime(s.getModifyTime())
+                )
+                .orElse(null);
+    }
+
+    public void create(String userName, TestCaseParam testCaseParam) {
+        this.insert(new TestCase()
+                .setName(testCaseParam.getName())
+                .setPresetParams(testCaseParam.getPresetParams())
+                .setMark(testCaseParam.getMark())
+                .setUserName(userName)
+                .setWorkflow(testCaseParam.getWorkflow())
+        );
+    }
+
+    public void update(Long id, String userName, TestCaseParam testCaseParam) {
+        int affectRows = this.testCaseMapper.update(new TestCase()
+                .setId(id)
+                .setName(testCaseParam.getName())
+                .setPresetParams(testCaseParam.getPresetParams())
+                .setMark(testCaseParam.getMark())
+                .setUserName(userName)
+                .setWorkflow(testCaseParam.getWorkflow())
+        );
+
+        if (affectRows == 0) {
+            throw new RuntimeException("不存在用例：" + id);
+        }
     }
 }

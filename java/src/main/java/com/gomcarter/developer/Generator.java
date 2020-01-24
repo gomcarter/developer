@@ -27,19 +27,19 @@ public class Generator {
         /*
          * 数据库连接地址
          */
-        CodeGenerator.DB_URL = "jdbc:mysql://169.1.1.221:3306/developer";
+        CodeGenerator.DB_URL = "jdbc:mysql://39.108.147.10:3306/developer?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&useSSL=false";
         /*
          * 数据库用户
          */
-        CodeGenerator.DB_USERNAME = "root";
+        CodeGenerator.DB_USERNAME = "java";
         /*
          * 数据库密码
          */
-        CodeGenerator.DB_PASSWORD = "root123";
+        CodeGenerator.DB_PASSWORD = "h6IGZQ7IOf82DCa1CtSYmalOfi2ymBOB";
         /*
          * 表名， 为空会则生成整个数据库的所有表
          */
-        CodeGenerator.TOBE_GENERATE_TABLES = "interfaces_versioned";
+        CodeGenerator.TOBE_GENERATE_TABLES = "test_case_item";
         /*
          * 作者信息
          */

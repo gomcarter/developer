@@ -55,6 +55,7 @@ CREATE TABLE `interfaces` (
 
 CREATE TABLE `interfaces_versioned` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `hash` varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
   `fk_interfaces_id` bigint(20) NOT NULL COMMENT '接口 id',
   `name` varchar(50) DEFAULT NULL COMMENT '接口名称',
   `controller` varchar(100) DEFAULT NULL COMMENT '控制器',
@@ -69,60 +70,29 @@ CREATE TABLE `interfaces_versioned` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  KEY `hash` (`hash`),
   KEY `fk_interfaces_id` (`fk_interfaces_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口历史版本';
-
 
 CREATE TABLE `function` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(50) DEFAULT NULL COMMENT '函数名称',
   `script` text COMMENT 'javascript脚本',
+  `mark` varchar(2048) DEFAULT NULL COMMENT '脚本备注',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='自定义函数';
 
 
-CREATE TABLE `rules` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(50) DEFAULT NULL COMMENT '规则名称',
-  `generator` text COMMENT '自动生成变量的javascript脚本',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='参数自动生成规则表';
-
 CREATE TABLE `test_case` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(40) DEFAULT NULL COMMENT '用例名称',
-  `fk_user_id` bigint(20) DEFAULT NULL COMMENT '用户id（谁建的）',
   `user_name` varchar(225) DEFAULT NULL COMMENT '用户名称（谁建的）',
-  `mark` text COMMENT '备注',
+  `preset_params` text DEFAULT NULL COMMENT '预置参数',
+  `mark` varchar(1024)  DEFAULT NULL COMMENT '备注',
+  `workflow` longtext  DEFAULT NULL COMMENT '详细接口配置: json数据结构',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口用例测试';
-
-CREATE TABLE `test_case_item` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键，也作为用例接口的执行顺序',
-  `name` varchar(40) DEFAULT NULL COMMENT '具体接口',
-  `result_handler` text COMMENT '结果处理器，存储javascript脚本，此脚本应该return下一个接口的参数',
-  `hash` text COMMENT '接口hash值',
-  `config` text COMMENT '配置',
-  `fk_interfaces_id` bigint(20) DEFAULT NULL COMMENT '接口外键',
-  `fk_test_case_id` bigint(20) DEFAULT NULL COMMENT '接口用例外键',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='选中接口用例测试';
-
-CREATE TABLE `validator` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(50) DEFAULT NULL COMMENT '规则名称',
-  `handler` text COMMENT '验证值的javascript脚本',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口返回值校验';
-
-

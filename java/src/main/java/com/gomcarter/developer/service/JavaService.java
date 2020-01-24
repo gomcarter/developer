@@ -3,11 +3,13 @@ package com.gomcarter.developer.service;
 import com.gomcarter.developer.dao.JavaMapper;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.frameworks.base.pager.Pageable;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gomcarter.frameworks.base.streaming.Streamable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gomcarter
@@ -16,7 +18,7 @@ import java.util.List;
 @Service
 public class JavaService {
 
-    @Autowired
+    @Resource
     private JavaMapper javaMapper;
 
     public void insert(Java java) {
@@ -41,5 +43,9 @@ public class JavaService {
 
     public <R> Integer count(R params) {
         return javaMapper.count(params);
+    }
+
+    public Map<Long, Java> getMapByIdList(Collection<Long> idList) {
+        return Streamable.valueOf(this.getByIdList(idList)).uniqueGroupby(Java::getId).collect();
     }
 }

@@ -1,14 +1,14 @@
 package com.gomcarter.developer.controller.developer;
 
-import com.gomcarter.developer.dto.JEnd;
+import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.entity.End;
-import com.gomcarter.developer.params.JEndQueryParam;
+import com.gomcarter.developer.params.EndParam;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 @RequestMapping("developer/end")
 public class DeveloperEndController {
 
-    @Autowired
-    private EndService endService;
+    @Resource
+    EndService endService;
 
     @PostMapping(value = "", name = "新增前端项目")
-    public void list(@Notes("项目名称") @RequestParam String name,
+    void list(@Notes("项目名称") @RequestParam String name,
                      @Notes("对应前缀") @RequestParam String prefix,
                      @Notes("登录使用的jar包地址") String jarUrl,
                      @Notes("登录使用的类名") String kls,
@@ -45,7 +45,7 @@ public class DeveloperEndController {
     }
 
     @PutMapping(value = "{id}", name = "修改前端项目")
-    public void list(@Notes("主键") @PathVariable("id") Long id,
+    void list(@Notes("主键") @PathVariable("id") Long id,
                      @Notes("项目名称") @RequestParam String name,
                      @Notes("对应前缀") @RequestParam String prefix,
                      @Notes("登录使用的jar包地址") String jarUrl,
@@ -68,15 +68,15 @@ public class DeveloperEndController {
     }
 
     @GetMapping(value = "{id}", name = "获取前端项目详情")
-    public JEnd get(@Notes("主键") @PathVariable("id") Long id) {
-        return this.list(new JEndQueryParam().setId(id), new DefaultPager()).get(0);
+    EndDto get(@Notes("主键") @PathVariable("id") Long id) {
+        return this.list(new EndParam().setId(id), new DefaultPager()).get(0);
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    public List<JEnd> list(@Notes("查询参数") JEndQueryParam params, @Notes("分页器") DefaultPager pager) {
+    List<EndDto> list(@Notes("查询参数") EndParam params, @Notes("分页器") DefaultPager pager) {
         return endService.query(params, pager)
                 .stream()
-                .map(s -> new JEnd()
+                .map(s -> new EndDto()
                         .setId(s.getId())
                         .setName(s.getName())
                         .setPrefix(s.getPrefix())
@@ -92,7 +92,7 @@ public class DeveloperEndController {
     }
 
     @GetMapping(value = "count", name = "获取接口地址列表总数")
-    public Integer count(@Notes("查询参数") JEndQueryParam params) {
+    Integer count(@Notes("查询参数") EndParam params) {
         return endService.count(params);
     }
 }

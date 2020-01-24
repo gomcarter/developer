@@ -1,6 +1,6 @@
 package com.gomcarter.developer.configuration;
 
-import com.gomcarter.developer.aop.UserInterceptor;
+import com.gomcarter.developer.interceptors.UserInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

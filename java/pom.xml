@@ -38,25 +38,31 @@
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>base</artifactId>
-            <version>1.0.6${project.environment}</version>
+            <version>2.0.0${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>redis-starter</artifactId>
-            <version>1.0.6${project.environment}</version>
+            <version>2.0.0${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>mybatis-starter</artifactId>
-            <version>1.0.6${project.environment}</version>
+            <version>2.0.0${project.environment}</version>
         </dependency>
 
         <dependency>
             <groupId>com.gomcarter.frameworks</groupId>
             <artifactId>interfaces-starter</artifactId>
-            <version>1.0.6${project.environment}</version>
+            <version>2.0.0${project.environment}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.gomcarter.frameworks</groupId>
+            <artifactId>config-center-nacos</artifactId>
+            <version>2.0.0${project.environment}</version>
         </dependency>
 
         <dependency>

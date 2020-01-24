@@ -20,6 +20,10 @@ public class InterfacesVersioned {
     @TableId(type = IdType.AUTO)
     private Long id;
     /**
+     * 认定唯一接口标识符
+     */
+    private String hash;
+    /**
      * 接口 id
      */
     private Long fkInterfacesId;

@@ -1,10 +1,13 @@
 package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.annotation.Condition;
+import com.gomcarter.frameworks.mybatis.annotation.MatchType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author gomcarter on 2019-12-13 11:24:57
@@ -18,12 +21,21 @@ public class InterfacesVersionedParam {
      */
     @Notes("主键")
     private Long id;
+    /**
+     * 认定唯一接口标识符
+     */
+    @Notes("认定唯一接口标识符")
+    private String hash;
 
+    @Notes(value = "接口唯一标识符")
+    @Condition(field = "hash", type = MatchType.IN)
+    private Set<String> hashSet;
     /**
      * 接口 id
      */
     @Notes("接口 id")
-    private Long fkInterfacesId;
+    @Condition(field = "fk_interfaces_id")
+    private Long interfacesId;
     /**
      * 接口名称
      */

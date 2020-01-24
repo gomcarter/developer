@@ -3,12 +3,15 @@ package com.gomcarter.developer.service;
 import com.gomcarter.developer.dao.EndMapper;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.frameworks.base.pager.Pageable;
+import com.gomcarter.frameworks.base.streaming.Streamable;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author gomcarter
@@ -17,7 +20,7 @@ import java.util.List;
 @Service
 public class EndService {
 
-    @Autowired
+    @Resource
     private EndMapper endMapper;
 
     public void insert(End end) {
@@ -61,5 +64,9 @@ public class EndService {
             );
         }
         return end;
+    }
+
+    public Map<Long, End> getMapByIdList(Set<Long> idList) {
+        return Streamable.valueOf(this.getByIdList(idList)).uniqueGroupby(End::getId).collect();
     }
 }

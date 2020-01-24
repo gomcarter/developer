@@ -2,9 +2,13 @@ package com.gomcarter.developer.service;
 
 import com.alibaba.nacos.client.config.utils.MD5;
 import com.gomcarter.developer.dao.InterfacesMapper;
+import com.gomcarter.developer.dto.EndDto;
+import com.gomcarter.developer.dto.InterfacesDetailDto;
+import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
+import com.gomcarter.developer.params.InterfacesQueryParam;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
@@ -12,12 +16,11 @@ import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author gomcarter
@@ -26,16 +29,16 @@ import java.util.List;
 @Service
 public class InterfacesService {
 
-    @Autowired
+    @Resource
     private InterfacesMapper interfacesMapper;
 
-    @Autowired
+    @Resource
     private JavaService javaService;
 
-    @Autowired
+    @Resource
     private EndService endService;
 
-    @Autowired
+    @Resource
     private InterfacesVersionedService interfacesVersionedService;
 
     public void insert(Interfaces interfaces) {
@@ -144,5 +147,53 @@ public class InterfacesService {
 
     public void delete(Long id) {
         this.interfacesMapper.deleteById(id);
+    }
+
+    public List<InterfacesDetailDto> list(InterfacesQueryParam param, Pageable pager) {
+        List<Interfaces> interfacesList = this.query(param, pager);
+
+        if (CollectionUtils.isEmpty(interfacesList)) {
+            return new ArrayList<>();
+        }
+
+        Map<Long, Java> javaMap = this.javaService.getMapByIdList(interfacesList.stream().map(Interfaces::getFkJavaId).collect(Collectors.toSet()));
+        Map<Long, End> endMap = endService.getMapByIdList(interfacesList.stream().map(Interfaces::getFkEndId).collect(Collectors.toSet()));
+
+        return interfacesList.stream()
+                .map(s -> {
+                    Java java = javaMap.get(s.getFkJavaId());
+                    End end = endMap.get(s.getFkEndId());
+
+                    return new InterfacesDetailDto()
+                            .setId(s.getId())
+                            .setInterfacesId(s.getFkEndId())
+                            .setController(s.getController())
+                            .setHash(s.getHash())
+                            .setName(s.getName())
+                            .setUrl(s.getUrl())
+                            .setMethod(s.getMethod())
+                            .setReturns(s.getReturns())
+                            .setParameters(s.getParameters())
+                            .setMark(s.getMark())
+                            .setJava(new JavaDto()
+                                    .setId(java.getId())
+                                    .setName(java.getName())
+                                    .setDevDomain(java.getDevDomain())
+                                    .setTestDomain(java.getTestDomain())
+                                    .setPrevDomain(java.getPrevDomain())
+                                    .setOnlineDomain(java.getOnlineDomain())
+                            )
+                            .setEnd(new EndDto()
+                                    .setId(end.getId())
+                                    .setName(end.getName())
+                                    .setHeader(end.getHeader())
+                                    .setPrefix(end.getPrefix())
+                                    .setMark(end.getMark())
+                            )
+                            .setDeprecated(s.getDeprecated())
+                            .setCreateTime(s.getCreateTime())
+                            .setModifyTime(s.getModifyTime());
+                })
+                .collect(Collectors.toList());
     }
 }

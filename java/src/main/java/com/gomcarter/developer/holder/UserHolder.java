@@ -1,6 +1,6 @@
 package com.gomcarter.developer.holder;
 
-import com.gomcarter.developer.dto.JUser;
+import com.gomcarter.developer.dto.UserDto;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.BlowfishUtils;
 import com.gomcarter.frameworks.base.common.CookieUtils;
@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 
 public class UserHolder {
 
-    private static ThreadLocal<JUser> userThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<UserDto> userThreadLocal = new ThreadLocal<>();
 
-    public static void set(JUser user) {
+    public static void set(UserDto user) {
         userThreadLocal.set(user);
     }
 
-    public static JUser get() {
-        JUser user = userThreadLocal.get();
+    public static UserDto get() {
+        UserDto user = userThreadLocal.get();
         AssertUtils.notNull(user, new NoLoginException());
 
         return user;
@@ -44,13 +44,13 @@ public class UserHolder {
      * 如果返回结果为null，那么获取userId或者userName失败； 可能需要重新发起用户去登录；
      *
      * @param request request
-     * @return JUser
+     * @return UserDto
      */
-    public static JUser auth(HttpServletRequest request) {
+    public static UserDto auth(HttpServletRequest request) {
         String token = CookieUtils.getByHeaderOrCookies(request, TOKEN_NAME);
 
         // 解密
-        JUser user = decrypt(token);
+        UserDto user = decrypt(token);
 
         // 判断是否为 null
         AssertUtils.notNull(user, new NoLoginException());
@@ -81,12 +81,12 @@ public class UserHolder {
         }
     }
 
-    private static JUser decrypt(String userCypher) {
+    private static UserDto decrypt(String userCypher) {
         try {
             String user = d(userCypher);
             String[] splits = StringUtils.split(user, SPLIT);
             assert splits != null;
-            return new JUser().setName(splits[0]);
+            return new UserDto().setName(splits[0]);
         } catch (Exception e) {
             return null;
         }
