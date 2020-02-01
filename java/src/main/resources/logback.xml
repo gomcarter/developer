@@ -10,9 +10,9 @@
 
     <appender name="logfile"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>${logDir}/developer_${processName}.log</File>
+        <File>${logDir}/developer.log</File>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${logDir}/logs/history/developer.%d{yyyy-MM-dd}${processName}.log.gz</FileNamePattern>
+            <FileNamePattern>${logDir}/logs/history/developer.%d{yyyy-MM-dd}.log.gz</FileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder>
