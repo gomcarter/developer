@@ -25,6 +25,7 @@
           <span v-if="log.type === 'json'">
             <v-jsonformatter :json="log.data" :min-height="25"></v-jsonformatter>
           </span>
+          <span v-else-if="log.type === 'error'" style="color: red;">{{ log.data }}</span>
           <span v-else>{{ log.data }}</span>
         </div>
       </el-aside>
@@ -326,8 +327,7 @@ export default {
                 this.log('脚本处理后结果：')
                 this.log(window['$' + model.id], 'json')
               } catch (e) {
-                this.log('脚本处理出错：')
-                this.log(e.message)
+                this.log(`脚本处理出错：${e.message}`, 'error')
                 this.log('')
 
                 this.setState(edges.concat(node), ['selected', 'running'], false)
@@ -380,26 +380,27 @@ export default {
         obj = ''
       } else {
         obj = {}
-        model.parameters.forEach(e => {
-          let value
-          try {
-            value = new Function('return ' + e['defaults'])()
-          } catch (e) {
-            this.log(`返回值处理失败: ${e.message}`)
-            this.log('')
-            value = e['defaults']
+        model.parameters.forEach(p => {
+          let value = p['defaults']
+          if ((value + '').indexOf('$') >= 0) {
+            try {
+              value = new Function('return ' + p['defaults'])()
+            } catch (e) {
+              this.log(`参数处理失败: ${e.message}`, 'error')
+              this.log('')
+            }
           }
 
-          if (e.inputType === 'textarea') {
+          if (p.inputType === 'textarea') {
             bodyParams = value
-          } else if (url.indexOf(`{${e['key']}}`) >= 0) {
-            url = url.replace(`{${e['key']}}`, value)
+          } else if (url.indexOf(`{${p['key']}}`) >= 0) {
+            url = url.replace(`{${p['key']}}`, value)
           } else {
             // 同一key的时候，需要合并
-            if (obj[e['key']] === undefined) {
-              obj[e['key']] = value
+            if (obj[p['key']] === undefined) {
+              obj[p['key']] = value
             } else {
-              obj[e['key']] = [value].concat(obj[e['key']])
+              obj[p['key']] = [value].concat(obj[p['key']])
             }
           }
         })
@@ -418,7 +419,7 @@ export default {
         try {
           value = new Function('return ' + h.value)()
         } catch (e) {
-          this.log(`header处理失败: ${e.message}`)
+          this.log(`header处理失败: ${e.message}`, 'error')
           this.log('')
           value = h.value
         }

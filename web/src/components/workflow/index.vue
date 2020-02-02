@@ -121,8 +121,8 @@ export default {
         width: this.width,
         height: this.height,
         // 是否开启画布自适应。开启后图自动适配画布大小。
-        fitView: true,
-        fitViewPadding: 100,
+        // fitView: true,
+        // fitViewPadding: 100,
         modes: {
           default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select']
         },
