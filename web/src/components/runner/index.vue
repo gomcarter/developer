@@ -99,7 +99,7 @@ export default {
       this.model.push(currentNodes)
       // 标记节点已经被修改
       currentNodes.forEach(n => { n.getModel().mark = n.getModel().mark + 1 })
-      currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
+      // currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
 
       // 第二层开始：入口是上一层的下层节点，而且（如果一个节点存在多个入口，如又是第二层又是第三层，那么要取第三层）
       while (count < totalCounts) {
@@ -297,8 +297,6 @@ export default {
       this.runLevel(0)
     },
     runLevel (level) {
-      console.log('now level ' + level)
-
       if (level >= this.model.length) {
         return
       }
@@ -317,28 +315,39 @@ export default {
         this.log(`开始执行节点：${model.label}（$${model.id}）`)
         this.buildXhr(data)
           .then((d) => {
-            console.log('success', d)
             // 赋值
             window['$' + model.id] = d.data.extra
             this.log(`返回结果：`)
             this.log(window['$' + model.id], 'json')
             if (data.javascript) {
               // 有脚本，则按照脚本重新赋值
-              window['$' + model.id] = new Function(data.javascript)
-              this.log(`脚本处理后结果：`)
-              this.log(window['$' + model.id], 'json')
+              try {
+                window['$' + model.id] = new Function(data.javascript)
+                this.log('脚本处理后结果：')
+                this.log(window['$' + model.id], 'json')
+              } catch (e) {
+                this.log('脚本处理出错：')
+                this.log(e.message)
+                this.log('')
+
+                this.setState(edges.concat(node), ['selected', 'running'], false)
+                this.setState(node, ['failed'], true)
+                error = true
+              }
             }
 
-            // 将结果放到输送线上去
-            edges.forEach(e => { window['$' + e.getModel().id] = window['$' + model.id] })
+            if (!error) {
+              // 将结果放到输送线上去
+              edges.forEach(e => { window['$' + e.getModel().id] = window['$' + model.id] })
 
-            this.setState(edges.concat(node), ['selected', 'running'], false)
-            this.setState(node, ['success'], true)
+              this.setState(edges.concat(node), ['selected', 'running'], false)
+              this.setState(node, ['success'], true)
 
-            this.log('')
+              this.log('')
+            }
           })
           .catch((e) => {
-            this.log('执行出错了' + e.toString())
+            this.log('执行出错了: ' + e.toString())
 
             this.setState(edges.concat(node), ['selected', 'running'], false)
             this.setState(node, ['failed'], true)
@@ -376,6 +385,8 @@ export default {
           try {
             value = new Function('return ' + e['defaults'])()
           } catch (e) {
+            this.log(`返回值处理失败: ${e.message}`)
+            this.log('')
             value = e['defaults']
           }
 
@@ -402,13 +413,13 @@ export default {
         }
       }
 
-      console.log(params)
-
       const headers = model.headers.map(h => {
         let value
         try {
           value = new Function('return ' + h.value)()
         } catch (e) {
+          this.log(`header处理失败: ${e.message}`)
+          this.log('')
           value = h.value
         }
         return {key: h.key, value: value}
