@@ -54,7 +54,7 @@ export default {
           this.presetParams = JSON.parse(res.presetParams)
 
           const data = { workflow: this.form.workflow, presetParams: this.presetParams }
-          setTimeout(() => this.$refs.runner.setData(data), 1)
+          setTimeout(() => this.$refs.runner.setData(data), 500)
         })
       }
     },

@@ -159,7 +159,7 @@ export default {
       } else {
         this.$refs.runnerDialog.open()
         const data = { workflow: this.$refs.workflow.workflow(), presetParams: this.presetParams }
-        setTimeout(() => this.$refs.runner.setData(data), 1)
+        setTimeout(() => this.$refs.runner.setData(data), 500)
       }
     },
     runTest () {
