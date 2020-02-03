@@ -172,7 +172,7 @@ a，配置用例
 ![image](https://upload-images.jianshu.io/upload_images/19189438-37eb222b999cf3f8.png)
 
 b，执行用例
-![image](https://upload-images.jianshu.io/upload_images/19189438-c6163975968aeae5.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-6b662ff6191c4588.png)
 
 
 ### 三、帮助
