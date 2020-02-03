@@ -163,10 +163,19 @@ c，接口详情
 ![image](https://upload-images.jianshu.io/upload_images/19189438-d53d8b03f5eedba4.png)
 ![image](https://upload-images.jianshu.io/upload_images/19189438-8d3fcf8bf096b014.png)
 
-d,接口测试
+d，接口测试
 ![image](https://upload-images.jianshu.io/upload_images/19189438-43d9d3c47fc2e755.png)
 
-### 二、帮助
+### 二、接口自动化测试
+a，配置用例
+![image](https://upload-images.jianshu.io/upload_images/19189438-37eb222b999cf3f8.png)
+![image](https://upload-images.jianshu.io/upload_images/19189438-c6163975968aeae5.png)
+
+b，执行用例
+![image](https://upload-images.jianshu.io/upload_images/19189438-c6163975968aeae5.png)
+
+
+### 三、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 
