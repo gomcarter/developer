@@ -294,6 +294,10 @@ export default {
     run () {
       this.log('开始执行：')
       this.clearState()
+      this.graph.getNodes().forEach(n => {
+        n.getModel().data.shouldRun = true
+      })
+
       this.setState(null, 'waiting')
       this.runLevel(0)
     },
@@ -308,53 +312,95 @@ export default {
       let error = false
 
       toBeRunning.forEach(node => {
+        // 下游节点和线
         const edges = node.getEdges().filter(e => e.getSource() === node)
         this.setState(edges.concat(node), ['selected', 'running'])
-
         const model = node.getModel()
         const data = model.data
-        this.log(`开始执行节点：${model.label}（$${model.id}）`)
-        this.buildXhr(data)
-          .then((d) => {
-            // 赋值
-            window['$' + model.id] = d.data.extra
-            this.log(`返回结果：`)
-            this.log(window['$' + model.id], 'json')
-            if (data.javascript) {
-              // 有脚本，则按照脚本重新赋值
-              try {
-                window['$' + model.id] = new Function(data.javascript)
-                this.log('脚本处理后结果：')
-                this.log(window['$' + model.id], 'json')
-              } catch (e) {
-                this.log(`脚本处理出错：${e.message}`, 'error')
-                this.log('')
 
-                this.setState(edges.concat(node), ['selected', 'running'], false)
-                this.setState(node, ['failed'], true)
-                error = true
-              }
-            }
+        // 条件
+        if (model.shape === 'diamond') {
+          // 执行脚本
+          // 有脚本，则按照脚本重新赋值
+          try {
+            this.log('条件判断结果：')
+            const condition = new Function(data.javascript) || []
+            this.log('执行路线：' + condition.join(','))
+            // 看线的下游不在condition内的，标记不执行
+            edges.filter(e => !condition.indexOf(e.getTarget().getModel().id) >= 0)
+              .forEach(e => {
+                const m = e.getTarget().getModel()
+                if (!m.data) {
+                  m.data = { shouldRun : false }
+                } else {
+                  m.data.shouldRun = false
+                }
+                this.setState([e], ['selected', 'running'], false)
+              })
 
-            if (!error) {
-              // 将结果放到输送线上去
-              edges.forEach(e => { window['$' + e.getModel().id] = window['$' + model.id] })
-
-              this.setState(edges.concat(node), ['selected', 'running'], false)
-              this.setState(node, ['success'], true)
-
-              this.log('')
-            }
-          })
-          .catch((e) => {
-            this.log('执行出错了: ' + e.toString())
+            // // 入线
+            // const entry = node.getEdges().filter(e => e.getTarget() === node)
+            // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
+            //   .forEach(e => {
+            //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
+            //   })
+          } catch (e) {
+            this.log(`脚本处理出错：${e.message}`, 'error')
+            this.log('')
 
             this.setState(edges.concat(node), ['selected', 'running'], false)
             this.setState(node, ['failed'], true)
             error = true
-          })
+          }
+        } else {
+          if (!data.shouldRun) {
+            count++
+            return
+          }
+          this.log(`开始执行节点：${model.label}（$${model.id}）`)
+          this.buildXhr(data)
+            .then((d) => {
+              // 赋值
+              window['$' + model.id] = d.data.extra
+              this.log(`返回结果：`)
+              this.log(window['$' + model.id], 'json')
+              if (data.javascript) {
+                // 有脚本，则按照脚本重新赋值
+                try {
+                  window['$' + model.id] = new Function(data.javascript)
+                  this.log('脚本处理后结果：')
+                  this.log(window['$' + model.id], 'json')
+                } catch (e) {
+                  this.log(`脚本处理出错：${e.message}`, 'error')
+                  this.log('')
 
-        count++
+                  this.setState(edges.concat(node), ['selected', 'running'], false)
+                  this.setState(node, ['failed'], true)
+                  error = true
+                }
+              }
+
+              if (!error) {
+                // 将结果放到输送线上去
+                edges.forEach(e => { window['$' + e.getModel().id] = window['$' + model.id] })
+
+                this.setState(edges.concat(node), ['selected', 'running'], false)
+                this.setState(node, ['success'], true)
+
+                this.log('')
+              }
+
+              count++
+            })
+            .catch((e) => {
+              this.log('执行出错了: ' + e.toString())
+
+              this.setState(edges.concat(node), ['selected', 'running'], false)
+              this.setState(node, ['failed'], true)
+              error = true
+              count++
+            })
+        }
       })
 
       // 等待所有上述执行完毕，进行下次操作

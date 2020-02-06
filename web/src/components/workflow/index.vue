@@ -390,6 +390,8 @@ export default {
       } else if (!this.isAllConnected(nodes, edges)) {
         message = '流程配置有误，所有节点都应该被串联起来'
       } else {
+        // 条件节点必须至少有一个口节点
+        // nodes.filter(n => n.getModel().shape === 'diamond' && n.getEdges().filter(e => e.getTarget()))
         result = true
       }
 
