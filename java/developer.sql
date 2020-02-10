@@ -96,3 +96,15 @@ CREATE TABLE `test_case` (
   `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口用例测试';
+
+
+CREATE TABLE `mark` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `user` varchar(200) DEFAULT NULL COMMENT '用户',
+  `mark` text DEFAULT NULL COMMENT '备注内容',
+  `fk_interfaces_id` bigint(20) NOT NULL COMMENT '接口 id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_interfaces_id` (`fk_interfaces_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口备注';

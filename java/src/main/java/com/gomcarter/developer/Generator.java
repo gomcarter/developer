@@ -39,7 +39,7 @@ public class Generator {
         /*
          * 表名， 为空会则生成整个数据库的所有表
          */
-        CodeGenerator.TOBE_GENERATE_TABLES = "test_case_item";
+        CodeGenerator.TOBE_GENERATE_TABLES = "mark";
         /*
          * 作者信息
          */
