@@ -116,12 +116,12 @@ export default {
             {link: '/flow/function', name: '自定义函数', selected: false},
             {link: '/flow/testCase', name: '用例列表', selected: false}
           ]
-        },
-        {
-          name: '接口测试',
-          link: '/test',
-          selected: false
         }
+        // {
+        //   name: '接口测试',
+        //   link: '/test',
+        //   selected: false
+        // }
       ]
       this.selectMenuByRoute()
     },
