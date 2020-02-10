@@ -1,6 +1,6 @@
 <template>
   <div class="detail">
-    <h4 class="title">接口详情 &nbsp;&nbsp;&nbsp;&nbsp;
+    <h4 class="title">接口详情 &#12288;&#12288;
       <el-button v-if="versioned.length > 0" type="primary" circle icon="el-icon-timer" title="查看历史版本" size="small" @click="listVersioned"></el-button></h4>
     <hr/>
     <el-form v-if="data" label-width="9em">
@@ -55,9 +55,18 @@
       <!--<el-form-item label="返回值数据结构:">-->
         <!--<v-jsonformatter :json="returns"></v-jsonformatter>-->
       <!--</el-form-item>-->
+      <el-form-item label="备注:">
+        <el-button type="primary" @click="addMark" icon="el-icon-plus">添加备注</el-button>
+        <div v-if="marks && marks.length > 0" v-for="(m, i) of marks" v-bind:key="i">
+          <span class="user">[{{m.user === username ? '我' : m.user }}]</span>&#12288;
+          <span class="date">[{{formatDate(m.createTime)}}]：</span>&#12288;
+          <span class="mark">{{m.mark}}</span>
+        </div>
+      </el-form-item>
     </el-form>
     <v-dialog ref="historyDialog"
               title="选择一个历史版本进行对比"
+              :width="800"
               :ok="claimVersioned">
       <div slot="body">
         <v-datagrid ref="dg" :loadData="versioned" :checkable="true" :singleCheck="true" :columns="columns" :pageable="false"/>
@@ -67,8 +76,9 @@
 </template>
 
 <script>
-import { getInterfacesApi, interfacesVersionedListApi } from '@/config/api/inserv-api'
+import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
+import { user } from '@/config/login'
 
 export default {
   name: 'interfacesDetail',
@@ -81,9 +91,11 @@ export default {
       generatedReturns: null,
       versioned: [],
       currentVersioned: null,
+      marks: null,
+      username: user(),
       columns: [
         {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
-        {field: 'url', header: 'URL地址', sort: 'url', width: 220},
+        {field: 'url', header: 'URL地址', sort: 'url', width: 320},
         {field: 'modifyTime', header: '上次更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ]
     }
@@ -108,19 +120,39 @@ export default {
       this.$refs.historyDialog.open()
     },
     init () {
-      getInterfacesApi(this.$route.params.id).then((res) => {
+      const id = this.$route.params.id
+      getInterfacesApi(id).then((res) => {
         this.data = res
         this.returns = JSON.parse(this.data.returns)
         this.generatedReturns = generateReturns(this.returns)
         this.parameters = JSON.parse(this.data.parameters)
       })
 
-      interfacesVersionedListApi(this.$route.params.id).then((res) => {
+      interfacesVersionedListApi(id).then((res) => {
         this.versioned = res || []
+      })
+
+      getInterfaceMarkApi(id).then((res) => {
+        this.marks = res
       })
     },
     linkTo (data, env) {
       this.$router.push(`/test/${data.id}/${env}`)
+    },
+    addMark () {
+      this.$prompt('添加备注', '', {
+        inputType: 'textarea',
+        inputPlaceholder: '请输入备注信息',
+        inputValidator: (d) => (d || '').trim().length > 0 || '请输入备注信息'
+      }).then((d) => {
+        const id = this.$route.params.id
+        const mark = d.value
+        addInterfaceMarkApi(id, mark)
+          .then(d => {
+            this.marks.unshift({user: this.username, createTime: new Date().getTime(), mark: mark})
+          })
+      }).catch((d) => {
+      })
     }
   },
   components: {

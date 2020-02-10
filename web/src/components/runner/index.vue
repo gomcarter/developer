@@ -11,9 +11,9 @@
       </el-form-item>
     </el-form>
     <div>
-      <span class="simple waiting"></span><span>-等待执行</span>&nbsp;&nbsp;
-      <span class="simple running"></span><span>-执行中</span>&nbsp;&nbsp;
-      <span class="simple success"></span><span>-执行成功</span>&nbsp;&nbsp;
+      <span class="simple waiting"></span><span>-等待执行</span>&#12288;
+      <span class="simple running"></span><span>-执行中</span>&#12288;
+      <span class="simple success"></span><span>-执行成功</span>&#12288;
       <span class="simple failed"></span><span>-执行失败</span>
     </div>
     <el-container>

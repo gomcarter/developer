@@ -268,3 +268,21 @@ export const getTestCaseDetailApi = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例列表
+ */
+export const getInterfaceMarkApi = async (interfaceId) => {
+  const res = await xhr.get(`${INSERV_URL}developer/mark/${interfaceId}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---新增
+ */
+export const addInterfaceMarkApi = async (interfaceId, mark) => {
+  const res = await xhr.post(`${INSERV_URL}developer/mark/${interfaceId}`, {mark: mark})
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}

@@ -18,3 +18,12 @@
   color: #888d;
   font-style: italic;
 }
+
+.user, .mark, .date {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.mark {
+  white-space: pre;
+}
