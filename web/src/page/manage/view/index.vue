@@ -97,7 +97,7 @@ export default {
         this.currentVersioned = current[0]
 
         this.versionedReturns = JSON.parse(this.currentVersioned.returns)
-        this.versionedGeneratedReturns = this.generateReturns(this.versionedReturns)
+        this.versionedGeneratedReturns = generateReturns(this.versionedReturns)
         this.versionedParameters = JSON.parse(this.currentVersioned.parameters)
       } else {
         this.currentVersioned = null
