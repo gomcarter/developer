@@ -2,7 +2,7 @@
   <div>
     <div class="header">
       <a href="">
-        <img src="@/assets/img/login_logo.png" class="logo"/>
+        <img src="@/assets/img/logo.png" class="logo"/>
       </a>
       <el-menu :default-active="activeIndex" class="menu"
                mode="horizontal"

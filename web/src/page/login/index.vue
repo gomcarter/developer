@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="login-box">
-      <img src="@/assets/img/login_logo.png" alt="" class="logo">
+      <img src="@/assets/img/logo.png" alt="developer center" class="logo">
       <p class="logo_title">开发者中心</p>
       <div class="form">
         <el-form ref="forms" :model="forms" label-width="0" :rules="rules">

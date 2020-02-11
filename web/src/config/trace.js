@@ -7,7 +7,7 @@
   that.config = {
     userInfoKey: 'userinfo',
     // log接受服务端域名
-    host: 'https://log.hesheng138.com',
+    host: 'https://log.domain.com',
     // 记录唯一用户的僵尸cookie
     uuidKey: '__jfm_uu__',
     // 记录这个用户第一次进入咱们平台的时间，可以大致算一下新访客。

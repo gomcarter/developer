@@ -1,7 +1,7 @@
 <template>
   <div class="customer">
     <div class="header">
-      <img src="@/assets/img/login_logo.png" class="logo"/>
+      <img src="@/assets/img/logo.png" class="logo"/>
       <h3>开发者中心</h3>
     </div>
     <div class="index_more">
