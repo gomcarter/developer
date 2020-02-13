@@ -211,6 +211,8 @@ export default {
         const body = JSON.stringify(JSON.parse(obj[this.bodyParams]))
         delete obj[this.bodyParams]
         res = xhr[method](this.showUrl + '?' + toQueryString(obj), body, {type: 'json', customHeaders: this.headers})
+      } else if (method === 'post') {
+        res = xhr[method](this.showUrl, params, {customHeaders: this.headers})
       } else {
         params.customHeaders = this.headers
         res = xhr[method](this.showUrl, params)
