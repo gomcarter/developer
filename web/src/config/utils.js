@@ -496,7 +496,6 @@ export const generateParameters = (parameters) => {
 export const generateChild = (node, key) => {
   const k = (key ? (key + '.') : '') + (node.key || '')
   if (node.body) {
-    // todo:
     this.bodyParams = k
     return {
       key: k,
@@ -508,7 +507,13 @@ export const generateChild = (node, key) => {
     }
   } else {
     if (node.type === 'List') {
-      let that = []
+      let that = [{
+        key: k,
+        notNull: node.notNull,
+        comment: node.comment,
+        defaults: node.defaults,
+        type: 'text'
+      }]
       if (node.children[0].type === 'Object' || node.children[0].type === 'List') {
         that = that.concat(
           (node.children[0].children || []).flatMap(s => generateChild(s, k))
@@ -620,8 +625,8 @@ export const generateReturns = (node) => {
   if (node.type === 'List') {
     return [generateReturns(node.children[0])]
   } else if (node.type === 'Object') {
-    const o = {}
-    node.children.forEach(s => {
+    const o = {};
+    (node.children || []).forEach(s => {
       o[s.key] = generateReturns(s)
     })
     return o

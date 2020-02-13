@@ -157,6 +157,8 @@ export default {
       this.node.parameters = data.parameters || []
       this.node.javascript = data.javascript
       this.node.java = data.java
+      this.node.url = data.url
+      this.node.method = data.method
 
       if (data.returns) {
         this.node.returns = data.returns

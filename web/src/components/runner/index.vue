@@ -360,45 +360,56 @@ export default {
           this.log(`开始执行节点：${model.label}（$${model.id}）`)
           this.buildXhr(data)
             .then((d) => {
-              // 赋值
-              window['$' + model.id] = d.data.extra
-              this.log(`返回结果：`)
-              this.log(window['$' + model.id], 'json')
-              if (data.javascript) {
-                // 有脚本，则按照脚本重新赋值
-                try {
-                  window['$' + model.id] = new Function(data.javascript)
-                  this.log('脚本处理后结果：')
-                  this.log(window['$' + model.id], 'json')
-                } catch (e) {
-                  this.log(`脚本处理出错：${e.message}`, 'error')
-                  this.log('')
+              if (d.data.success) {
+                // 赋值
+                window['$' + model.id] = d.data.extra
+                this.log(`返回结果：`)
+                this.log(window['$' + model.id], 'json')
+                if (data.javascript) {
+                  // 有脚本，则按照脚本重新赋值
+                  try {
+                    window['$' + model.id] = new Function(data.javascript)
+                    this.log('脚本处理后结果：')
+                    this.log(window['$' + model.id], 'json')
+                  } catch (e) {
+                    this.log(`脚本处理出错：${e.message}`, 'error')
+                    this.log('')
+
+                    this.setState(edges.concat(node), ['selected', 'running'], false)
+                    this.setState(node, ['failed'], true)
+                    error = true
+                  }
+                }
+
+                if (!error) {
+                  // 将结果放到输送线上去
+                  edges.forEach(e => {
+                    window['$' + e.getModel().id] = window['$' + model.id]
+                  })
 
                   this.setState(edges.concat(node), ['selected', 'running'], false)
-                  this.setState(node, ['failed'], true)
-                  error = true
-                }
-              }
+                  this.setState(node, ['success'], true)
 
-              if (!error) {
-                // 将结果放到输送线上去
-                edges.forEach(e => { window['$' + e.getModel().id] = window['$' + model.id] })
+                  this.log('')
+                }
+
+                count++
+              } else {
+                this.log('执行结果出错：')
+                this.log(d.data, 'json')
+                this.log('')
 
                 this.setState(edges.concat(node), ['selected', 'running'], false)
-                this.setState(node, ['success'], true)
-
-                this.log('')
+                this.setState(node, ['failed'], true)
+                error = true
               }
-
-              count++
             })
             .catch((e) => {
               this.log('执行出错了: ' + e.toString())
-
+              this.log('')
               this.setState(edges.concat(node), ['selected', 'running'], false)
               this.setState(node, ['failed'], true)
               error = true
-              count++
             })
         }
       })
@@ -413,19 +424,16 @@ export default {
           this.runLevel(level + 1)
           clearInterval(timer)
         }
-      }, 3000)
+      }, 100)
     },
     buildXhr (model) {
       let params
       let method = model.method.toLowerCase()
       let res
-      let obj
+      let obj = {}
       let url = model.java[this.env] + model.url
       let bodyParams
-      if (model.parameters.length === 0) {
-        obj = ''
-      } else {
-        obj = {}
+      if (model.parameters.length > 0) {
         model.parameters.forEach(p => {
           let value = p['defaults']
           if ((value + '').indexOf('$') >= 0) {
@@ -461,9 +469,11 @@ export default {
       }
 
       const headers = model.headers.map(h => {
-        let value
+        let value = h.value
         try {
-          value = new Function('return ' + h.value)()
+          if (h.value.indexOf('$') === 0) {
+            value = new Function('return ' + h.value)()
+          }
         } catch (e) {
           this.log(`header处理失败: ${e.message}`, 'error')
           this.log('')
@@ -489,6 +499,11 @@ export default {
         headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)
         this.log(`body：${body}`)
         res = xhr[method](u, body, {notice: false, type: type, customHeaders: headers})
+      } else if (method === 'post') {
+        this.log(`${method.toUpperCase()} ${url}`)
+        headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)
+        this.log(`参数：${JSON.stringify(obj)}`)
+        res = xhr[method](url, params, {notice: false, customHeaders: headers})
       } else {
         this.log(`${method.toUpperCase()} ${url}`)
         headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)

@@ -113,7 +113,6 @@ export default {
     generateChild (node, key) {
       const k = (key ? (key + '.') : '') + (node.key || '')
       if (node.body) {
-        console.log(node)
         const comment = node.comment || ''
         return [{
           key: k,
