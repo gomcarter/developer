@@ -54,14 +54,17 @@
           <v-jsonformatter v-if="generatedReturns" :json="generatedReturns" :min-height="100"></v-jsonformatter>
         </el-form-item>
         <el-form-item label="返回值处理脚本:">
-          <el-input :placeholder="`录入javascript脚本，return 的值存入$${nodeId}
-您可以使用$${nodeId}来获取返回值，如$${nodeId}.id可获取到返回值中的id
+          <el-input :placeholder="`注：本接口的调用结果将存入$${nodeId}中。
+此脚本可以对数据进行转换，在脚本最后使用 return xxx;    xxx（即为转换后的数据）将作为新值覆盖$${nodeId}
+当然这里也可以不 return或者return null，那么$${nodeId}将保留接口请求返回的原始数据
+您可以在后续流程中使用$${nodeId}来获取本节点的返回值，如$${nodeId}.id可获取到返回值中的id
 另外可以获取上游节（以及上游的上游）点带来的数据，如：$anotherNode.xx
-如不做任何处理，将此接口返回的数据的值存入$${nodeId}中
 当然您可以可以在这里做一些返回值校验，如果发现错误了写如下代码： throw new Error('错误信息')，示例：
 
 if ($${nodeId}.id == null) throw new Error('返回id不能为空！')
 if ($${nodeId}.quantity > 0) throw new Error('数量必须大于等于零！')
+
+如果报错了，那么整个流程将被终止。
 
 return {
   id: $${nodeId}.id,

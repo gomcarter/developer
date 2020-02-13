@@ -15,6 +15,7 @@
       <span class="simple running"></span><span>-执行中</span>&#12288;
       <span class="simple success"></span><span>-执行成功</span>&#12288;
       <span class="simple failed"></span><span>-执行失败</span>
+      <span class="simple ignore"></span><span>-不执行</span>
     </div>
     <el-container>
       <el-main class="container" :style="{width: width * 0.6 + 'px', height: height + 'px'}">
@@ -222,6 +223,11 @@ export default {
             radius: 4,
             fill: 'red',
             stroke: '#4063ff'
+          },
+          ignore: {
+            radius: 4,
+            fill: 'darkgray',
+            stroke: '#4063ff'
           }
         },
         defaultNode: {
@@ -299,10 +305,13 @@ export default {
       })
 
       this.setState(null, 'waiting')
+
       this.runLevel(0)
     },
     runLevel (level) {
       if (level >= this.model.length) {
+        this.log('执行完毕！')
+        this.log('')
         return
       }
 
@@ -312,11 +321,30 @@ export default {
       let error = false
 
       toBeRunning.forEach(node => {
+        const model = node.getModel()
+        const data = model.data
+
+        // 如果被标记不执行则跳过下游线路
+        if (!data.shouldRun) {
+          this.log(`节点【${model.id}】不执行`)
+          this.setState(node, ['ignore'])
+          count++
+          return
+        }
+
+        // 上游线
+        const preEdges = node.getEdges().filter(e => e.getTarget() === node)
+        if (level !== 0 && preEdges.filter(e => e.getSource().getModel().data.shouldRun).length === 0) {
+          this.log(`上游节点未存在执行节点，本节点【${model.id}】不执行`)
+          this.setState(node, ['ignore'])
+          // 上游没有一个可执行的，那么本节点也不执行
+          count++
+          return
+        }
+
         // 下游节点和线
         const edges = node.getEdges().filter(e => e.getSource() === node)
         this.setState(edges.concat(node), ['selected', 'running'])
-        const model = node.getModel()
-        const data = model.data
 
         // 条件
         if (model.shape === 'diamond') {
@@ -324,28 +352,34 @@ export default {
           // 有脚本，则按照脚本重新赋值
           try {
             this.log('条件判断结果：')
-            const condition = new Function(data.javascript) || []
+            const condition = new Function(data.javascript)() || []
             this.log('执行路线：' + condition.join(','))
-            // 看线的下游不在condition内的，标记不执行
-            edges.filter(e => !condition.indexOf(e.getTarget().getModel().id) >= 0)
-              .forEach(e => {
-                const m = e.getTarget().getModel()
-                if (!m.data) {
-                  m.data = { shouldRun : false }
-                } else {
-                  m.data.shouldRun = false
-                }
-                this.setState([e], ['selected', 'running'], false)
-              })
+            if (condition.length > 0) {
+              // 找出下游不在condition中的线路， 然后把这些线路的终点节点标记不执行
+              edges.filter(e => !(condition.indexOf(e.getModel().id) >= 0)).forEach(e => {
+                  const m = e.getTarget().getModel()
+                  if (!m.data) {
+                    m.data = { shouldRun : false }
+                  } else {
+                    m.data.shouldRun = false
+                  }
+                  this.setState([e], ['selected', 'running'], false)
+                })
 
-            // // 入线
-            // const entry = node.getEdges().filter(e => e.getTarget() === node)
-            // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
-            //   .forEach(e => {
-            //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
-            //   })
+              // // 入线
+              // const entry = node.getEdges().filter(e => e.getTarget() === node)
+              // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
+              //   .forEach(e => {
+              //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
+              //   })
+            }
+            this.setState(edges.concat(node), ['selected', 'running'], false)
+            this.setState(node, ['success'], true)
+            this.log('')
+            count++
+
           } catch (e) {
-            this.log(`脚本处理出错：${e.message}`, 'error')
+            this.log(`条件脚本处理出错：${e.message}`, 'error')
             this.log('')
 
             this.setState(edges.concat(node), ['selected', 'running'], false)
@@ -353,10 +387,6 @@ export default {
             error = true
           }
         } else {
-          if (!data.shouldRun) {
-            count++
-            return
-          }
           this.log(`开始执行节点：${model.label}（$${model.id}）`)
           this.buildXhr(data)
             .then((d) => {
@@ -368,11 +398,17 @@ export default {
                 if (data.javascript) {
                   // 有脚本，则按照脚本重新赋值
                   try {
-                    window['$' + model.id] = new Function(data.javascript)
-                    this.log('脚本处理后结果：')
-                    this.log(window['$' + model.id], 'json')
+                    const mapped = new Function(data.javascript);
+                    if (mapped) {
+                      window['$' + model.id] = mapped
+                      this.log('脚本处理后本节点结果：')
+                      this.log(window['$' + model.id], 'json')
+                    } else {
+                      this.log('脚本未对结果做任何处理，本节点结果为')
+                      this.log(window['$' + model.id], 'json')
+                    }
                   } catch (e) {
-                    this.log(`脚本处理出错：${e.message}`, 'error')
+                    this.log(`数据转换脚本处理出错：${e.message}`, 'error')
                     this.log('')
 
                     this.setState(edges.concat(node), ['selected', 'running'], false)
@@ -389,11 +425,9 @@ export default {
 
                   this.setState(edges.concat(node), ['selected', 'running'], false)
                   this.setState(node, ['success'], true)
-
                   this.log('')
+                  count++
                 }
-
-                count++
               } else {
                 this.log('执行结果出错：')
                 this.log(d.data, 'json')
@@ -418,11 +452,15 @@ export default {
       const timer = setInterval(() => {
         if (error) {
           clearInterval(timer)
+          this.log("支持完毕，执行过程中发生了错误！")
+          this.log('')
         }
 
         if (totalCount <= count) {
-          this.runLevel(level + 1)
+          count = 0
           clearInterval(timer)
+          // 执行下一层
+          this.runLevel(level + 1)
         }
       }, 100)
     },
