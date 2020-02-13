@@ -1,15 +1,18 @@
 package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.TestCaseDto;
+import com.gomcarter.developer.entity.TestCase;
 import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.TestCaseParam;
 import com.gomcarter.developer.params.TestCaseQueryParam;
 import com.gomcarter.developer.service.TestCaseService;
+import com.gomcarter.frameworks.base.common.CustomDateUtils;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,5 +58,20 @@ public class DeveloperTestCaseController {
     @GetMapping(value = "{id}", name = "获取测试用例详情")
     TestCaseDto get(@Notes("主键") @PathVariable("id") Long id) {
         return this.testCaseService.detail(id);
+    }
+
+    @DeleteMapping(value = "{id}", name = "删除测试用例")
+    void delete(@PathVariable Long id) {
+        this.testCaseService.delete(id);
+    }
+
+    @PostMapping(value = "copy/{id}", name = "复制测试用例")
+    void copy(@PathVariable Long id) {
+        TestCase testCase = this.testCaseService.getById(id);
+
+        testCase.setId(null)
+                .setName(testCase.getName() + "（复制于 + " + CustomDateUtils.toString(new Date()) + "）");
+
+        this.testCaseService.insert(testCase);
     }
 }

@@ -89,4 +89,8 @@ public class TestCaseService {
             throw new RuntimeException("不存在用例：" + id);
         }
     }
+
+    public void delete(Long id) {
+        this.testCaseMapper.deleteById(id);
+    }
 }
