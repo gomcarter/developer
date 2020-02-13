@@ -354,25 +354,23 @@ export default {
             this.log('条件判断结果：')
             const condition = new Function(data.javascript)() || []
             this.log('执行路线：' + condition.join(','))
-            if (condition.length > 0) {
-              // 找出下游不在condition中的线路， 然后把这些线路的终点节点标记不执行
-              edges.filter(e => !(condition.indexOf(e.getModel().id) >= 0)).forEach(e => {
-                  const m = e.getTarget().getModel()
-                  if (!m.data) {
-                    m.data = { shouldRun : false }
-                  } else {
-                    m.data.shouldRun = false
-                  }
-                  this.setState([e], ['selected', 'running'], false)
-                })
+            // 找出下游不在condition中的线路， 然后把这些线路的终点节点标记不执行
+            edges.filter(e => !(condition.indexOf(e.getModel().id) >= 0)).forEach(e => {
+                const m = e.getTarget().getModel()
+                if (!m.data) {
+                  m.data = { shouldRun : false }
+                } else {
+                  m.data.shouldRun = false
+                }
+                this.setState([e], ['selected', 'running'], false)
+              })
 
-              // // 入线
-              // const entry = node.getEdges().filter(e => e.getTarget() === node)
-              // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
-              //   .forEach(e => {
-              //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
-              //   })
-            }
+            // // 入线
+            // const entry = node.getEdges().filter(e => e.getTarget() === node)
+            // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
+            //   .forEach(e => {
+            //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
+            //   })
             this.setState(edges.concat(node), ['selected', 'running'], false)
             this.setState(node, ['success'], true)
             this.log('')

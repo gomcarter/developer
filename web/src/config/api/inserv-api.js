@@ -232,6 +232,24 @@ export const testCaseListApi = async (params) => {
 }
 
 /**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---删除
+ */
+export const deleteTestCaseApi = async (id) => {
+  const res = await xhr.delete(`${INSERV_URL}developer/testCase/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---复制
+ */
+export const copyTestCaseApi = async (id) => {
+  const res = await xhr.post(`${INSERV_URL}developer/testCase/copy/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
 * @author gomcarter 2019-02-28
 * @returns 流程控制---用例列表
 */

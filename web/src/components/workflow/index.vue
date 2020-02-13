@@ -67,7 +67,7 @@ export default {
               label: '判断条件',
               x: this.contextMenu.event.x,
               y: this.contextMenu.event.y,
-              id: G6.Util.uniqueId()
+              id: this.uuid()
             })
 
             this.graph.setItemState(node, 'pending', true)
@@ -96,7 +96,7 @@ export default {
           handler: () => {
             const ev = this.contextMenu.event
             const node = ev.item
-            const id = G6.Util.uniqueId()
+            const id = this.uuid()
             this.edge = this.graph.addItem('edge', {
               id,
               label: id,
@@ -115,6 +115,18 @@ export default {
   },
   computed: {},
   methods: {
+    uuid () {
+      const nodes = this.graph.getNodes() || []
+      if (nodes.length === 0) {
+        return 'g0'
+      } else {
+        const sorted = nodes.map(n => n.getModel().id)
+          .filter(s => s !== 'main')
+          .sort()
+        const maxId = sorted[sorted.length - 1].replace('g', '')
+        return 'g' + (+maxId + 1)
+      }
+    },
     render () {
       this.graph = new G6.Graph({
         container: this.$el.querySelectorAll('.flow-container')[0],
@@ -135,7 +147,7 @@ export default {
         },
         defaultNode: {
           shape: 'rect',
-          size: [120, 50],
+          size: [140, 50],
           label: '新增节点',
           style: {
             radius: 4,
@@ -157,7 +169,7 @@ export default {
         }
       })
 
-      const data = Object.assign({nodes: [{ id: 'main', shape: 'rect', label: '主节点', x: this.width / 2, y: 50 }]}, this.dataList)
+      const data = Object.assign({nodes: [{ id: this.uuid(), shape: 'rect', label: '主节点', x: this.width / 2, y: 50 }]}, this.dataList)
       this.graph.data(data)
       this.graph.render()
 
@@ -177,7 +189,7 @@ export default {
         shape: 'rect',
         x: event.x,
         y: event.y,
-        id: G6.Util.uniqueId()
+        id: this.uuid()
       })
 
       this.graph.setItemState(node, 'pending', true)
@@ -317,7 +329,7 @@ export default {
       }
 
       model.data = node
-      model.label = name
+      model.label = '（' + model.id + '）' + name
       // 更新节点，以及清除节点pending状态
       this.graph.updateItem(this.editingNode, model)
       this.graph.setItemState(this.editingNode, 'pending', false)

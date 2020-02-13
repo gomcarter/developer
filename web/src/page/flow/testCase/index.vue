@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { testCaseCountApi, testCaseListApi } from '@/config/api/inserv-api'
+import { testCaseCountApi, testCaseListApi, copyTestCaseApi, deleteTestCaseApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -40,23 +40,35 @@ export default {
       columns: [
         {field: 'id', header: '用例id', sort: 'id', width: 200},
         {field: 'name', header: '用例名称', sort: 'name', width: 200},
-        {field: 'mark', header: '备注', sort: 'mark', width: 400},
+        // {field: 'mark', header: '备注', sort: 'mark', width: 400},
         {field: 'userName', header: '操作人', sort: 'user_name', width: 200},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
           header: '操作',
-          width: 160,
+          width: 360,
           actions: [
             {
-              text: '编辑',
+              text: '【编辑】',
               handler: (row) => {
                 this.$router.push(`/flow/testCase/edit/${row.id}`)
               }
             },
             {
-              text: '执行',
+              text: '【复制】',
+              handler: (row) => {
+                this.copy(row.id)
+              }
+            },
+            {
+              text: '【删除】',
+              handler: (row) => {
+                this.delete(row.id)
+              }
+            },
+            {
+              text: '【执行】',
               handler: (row) => {
                 this.$router.push(`/flow/testCase/run/${row.id}`)
               }
@@ -67,6 +79,24 @@ export default {
     }
   },
   methods: {
+    delete (id) {
+      this.$confirm('删除将无法恢复，确认删除吗？', '提示', {type: 'warning'}).then(() => {
+        deleteTestCaseApi(id)
+          .then(() => {
+            this.$success('删除成功！')
+            this.search()
+          })
+      })
+    },
+    copy (id) {
+      this.$confirm('复制将产生一条新的记录，确认吗？', '提示', {type: 'info'}).then(() => {
+        copyTestCaseApi(id)
+          .then(() => {
+            this.$success('复制成功！')
+            this.search()
+          })
+      })
+    },
     search () {
       this.params = removeBlank(this.filter)
     },
