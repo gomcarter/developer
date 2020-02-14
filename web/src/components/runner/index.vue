@@ -38,7 +38,7 @@
 import G6 from '@antv/g6'
 import { xhr } from '@/config/api/http'
 import { functionListApi } from '@/config/api/inserv-api'
-import { toQueryString } from '@/config/utils'
+import { toQueryString, sleep } from '@/config/utils'
 
 export default {
   props: {
@@ -320,7 +320,7 @@ export default {
       let count = 0
       let error = false
 
-      toBeRunning.forEach(node => {
+      toBeRunning.forEach(async node => {
         const model = node.getModel()
         const data = model.data
 
@@ -346,6 +346,11 @@ export default {
         const edges = node.getEdges().filter(e => e.getSource() === node)
         this.setState(edges.concat(node), ['selected', 'running'])
 
+        if (data.sleep > 0) {
+          this.log(`休眠${data.sleep}秒之后运行`)
+          await sleep(data.sleep * 1000)
+          this.log(`休眠结束，开始运行`)
+        }
         // 条件
         if (model.shape === 'diamond') {
           // 执行脚本

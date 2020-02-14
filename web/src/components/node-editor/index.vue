@@ -26,6 +26,9 @@
         <el-form-item label="接口地址:">
           <div>{{node.url}}</div>
         </el-form-item>
+        <el-form-item label="休眠" >
+          <el-input v-model="node.sleep" style="display: inline-block; width: 100px" placeholder="0"></el-input>&#12288;秒之后运行
+        </el-form-item>
         <el-form-item label="header:">
           <el-button type="primary" icon="el-icon-plus" @click="addHeader()" circle size="small"></el-button>
           <el-form v-if="node.headers">
@@ -36,7 +39,7 @@
             </el-form-item>
           </el-form>
         </el-form-item>
-        <el-form-item label="接口参数:">
+        <el-form-item label="接口参数:"><el-button type="primary" icon="el-icon-plus" @click="addParams()" circle size="small"></el-button>
           <el-form v-if="node.parameters && node.parameters.length > 0" class="params-form">
             <el-form-item label="" v-for="(param, index) in node.parameters" :key="index">
               <el-input placeholder="请输入参数名" class="param-key" v-model="param.key"></el-input>=
@@ -45,7 +48,6 @@
               </el-input>
               <el-input v-else :placeholder="param.comment || ''"  class="param-value" v-model="param.defaults" :name="param.key">
               </el-input>
-              <el-button type="primary" icon="el-icon-plus" @click="addParams()" circle size="small"></el-button>
               <el-button type="danger" icon="el-icon-delete" @click="delParam(index)" circle size="small"></el-button>
             </el-form-item>
           </el-form>
@@ -93,6 +95,7 @@ export default {
     return {
       nodeId: null,
       node: {
+        sleep: 0,
         interfaceId: null,
         interfaceName: null,
         functionId: null,
@@ -129,6 +132,7 @@ export default {
       this.node.url = selection.url
       this.node.method = selection.method
       this.node.java = selection.java
+      this.node.sleep = selection.sleep
       this.node.parameters = generateParameters(selection.parameters)
       if (selection.returns) {
         this.node.returns = JSON.parse(selection.returns)
@@ -161,6 +165,7 @@ export default {
       this.node.javascript = data.javascript
       this.node.java = data.java
       this.node.url = data.url
+      this.node.sleep = data.sleep
       this.node.method = data.method
 
       if (data.returns) {

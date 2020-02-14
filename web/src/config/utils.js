@@ -638,3 +638,11 @@ export const generateReturns = (node) => {
     return `${node.comment ? node.comment + '； ' : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
   }
 }
+
+export const sleep = (millisecond) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      resolve()
+    }, millisecond)
+  })
+}
