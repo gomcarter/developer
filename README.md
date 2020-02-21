@@ -26,7 +26,6 @@ b，启动开发者中心设置系统参数，如：
 
 `java -jar -Dnacos.server.addr=http://nacos.server:8848  developer-1.0.0.jar &`
 
-
 **2，导入mysql表结构**
 
 sql：<a href="https://github.com/gomcarter/developer/blob/master/developer/developer.sql" target="_blank">developer.sql</a>
@@ -100,6 +99,7 @@ read.jdbc.password=PASSWORD
 </dependency>
 ```
 见：<a href="https://mvnrepository.com/artifact/com.gomcarter.frameworks/interfaces-starter" target="_blank">mvn 中央仓库地址</a>
+
 
 使用规范：
 ```
@@ -187,7 +187,23 @@ b，执行用例
     response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, 其他支持携带的header");
 ```
 
-### 三、帮助
+### 三、自行编译打包
+考虑到可能适用其他配置中心，如apollo，diamond，或者不使用，下面将自行打包
+```
+具体操作如下（以本地模式示例）：
+1，将pom.xml中 
+    <artifactId>config-center-nacos</artifactId> 修改为：
+    <artifactId>config-center-local</artifactId>  或
+    <artifactId>config-center-apollo</artifactId>  或
+    <artifactId>config-center-diamond</artifactId>
+    当然如果还有其他的配置中心，可自行参照 https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
+    
+2，建一个database.properties将上面（二中第3部：配置数据库连接）内容存放于此，假设此文件就放在resource下
+3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
+4，编译打包即可
+```
+
+### 四、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 
