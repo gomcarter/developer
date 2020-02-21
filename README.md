@@ -174,6 +174,18 @@ a，配置用例
 b，执行用例
 ![image](https://upload-images.jianshu.io/upload_images/19189438-6b662ff6191c4588.png)
 
+##### 注：要使用接口自动化测试，接口需要支持跨域访问（可以在测试环境开启）：
+```
+    String o = request.getHeader("Origin");
+    // 允许跨域访问
+    response.setHeader("Access-Control-Allow-Origin", o);
+    // 跨域带cookie
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    // 支持的http method
+    response.addHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS, TRACE");
+    // 支持http请求携带的header头
+    response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, 其他支持携带的header");
+```
 
 ### 三、帮助
 
