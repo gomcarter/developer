@@ -196,7 +196,7 @@ b，执行用例
     <artifactId>config-center-local</artifactId>  或
     <artifactId>config-center-apollo</artifactId>  或
     <artifactId>config-center-diamond</artifactId>
-    当然如果还有其他的配置中心，可自行参照 https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
+    当然如果还有其他的配置中心，可自行实现，参照：https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
     
 2，建一个database.properties将上面（二中第3部：配置数据库连接）内容存放于此，假设此文件就放在resource下
 3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
