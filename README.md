@@ -28,7 +28,7 @@ b，启动开发者中心设置系统参数，如：
 
 **2，导入mysql表结构**
 
-sql：<a href="https://github.com/gomcarter/developer/blob/master/developer/developer.sql" target="_blank">developer.sql</a>
+sql：<a href="https://github.com/gomcarter/developer/blob/master/java/developer.sql" target="_blank">developer.sql</a>
 
 
 **3，配置数据库连接**
