@@ -124,7 +124,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
 # 默认密码 admin123
-insert into user (username, name, password, random) values ('admin','admin','05a0cb737ec0e7f5e4da71b4424d7904','12647858');
+insert into user (username, name, password, random) values ('admin','admin','dacfab860b226140f3338df0875b9bf8','56174386');
 
 CREATE TABLE `setting_of_user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',

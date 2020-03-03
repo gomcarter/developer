@@ -97,10 +97,4 @@ public class PasswordUtils {
     public static String random() {
         return String.format("%d", Math.abs(new Random().nextInt()) % 99999999);
     }
-
-    public static void main(String[] args) {
-        String random = random();
-        System.out.println(random);
-        System.out.println(encrypt("3e27f65cdf23407d9c3a72297567c5fa", random));
-    }
 }
