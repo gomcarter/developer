@@ -153,26 +153,32 @@ http://xserver.com/endpoint3/zzz
 
 endpoint1,endpoint2,endpoint3用来区分哪个端提供的接口，所以对接口的设计有要求， 如图：
 
-![image](https://upload-images.jianshu.io/upload_images/19189438-aeda91cbb1640585.png)
+![image](https://user-images.githubusercontent.com/16378826/75749398-aed83200-5d5c-11ea-9991-539029c7edff.png)
 
 b，配置java模块：意思其实就是 java 项目，配置这个 java 项目的信息
 
-![image](https://upload-images.jianshu.io/upload_images/19189438-58f2e07a1a67112f.png)
+![image](https://user-images.githubusercontent.com/16378826/75749379-a3850680-5d5c-11ea-810e-635d020af72c.png)
 
 c，接口详情
-![image](https://upload-images.jianshu.io/upload_images/19189438-d53d8b03f5eedba4.png)
-![image](https://upload-images.jianshu.io/upload_images/19189438-8d3fcf8bf096b014.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75749340-8cdeaf80-5d5c-11ea-91af-3de2f321ced0.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75749320-7e909380-5d5c-11ea-9aca-6fe515578f10.png)
 
 d，接口测试
-![image](https://upload-images.jianshu.io/upload_images/19189438-43d9d3c47fc2e755.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75749279-6c165a00-5d5c-11ea-9ca2-f2d9f609f617.png)
 
 ### 二、接口自动化测试
 a，配置用例
-![image](https://upload-images.jianshu.io/upload_images/19189438-906197ada8af7a95.png)
-![image](https://upload-images.jianshu.io/upload_images/19189438-37eb222b999cf3f8.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75749177-2ce80900-5d5c-11ea-8368-0f03ce8c7efc.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75749238-530da900-5d5c-11ea-8b4d-f505f23930d2.png)
 
 b，执行用例
-![image](https://upload-images.jianshu.io/upload_images/19189438-6b662ff6191c4588.png)
+
+![image](https://user-images.githubusercontent.com/16378826/75000401-312d4000-5499-11ea-8438-0282a96bc689.png)
 
 ##### 注：要使用接口自动化测试，接口需要支持跨域访问（可以在测试环境开启）：
 ```
@@ -202,8 +208,16 @@ b，执行用例
 3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
 4，编译打包即可
 ```
+### 四、用户管理
+自带用户管理
 
-### 四、帮助
+![image](https://user-images.githubusercontent.com/16378826/75749078-e98d9a80-5d5b-11ea-9ad7-61a6e2416e3d.png)
+
+连接外部登录
+
+![image](https://user-images.githubusercontent.com/16378826/75749118-03c77880-5d5c-11ea-8a62-b65fb3cda07f.png)
+
+### 五、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 
