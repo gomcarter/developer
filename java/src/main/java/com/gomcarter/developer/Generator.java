@@ -27,7 +27,7 @@ public class Generator {
         /*
          * 数据库连接地址
          */
-        CodeGenerator.DB_URL = "jdbc:mysql://mysql_ip:3306/developer?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&useSSL=false";
+        CodeGenerator.DB_URL = "jdbcurl";
         /*
          * 数据库用户
          */
