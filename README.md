@@ -202,8 +202,16 @@ b，执行用例
 3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
 4，编译打包即可
 ```
+### 四、用户管理
+自带用户管理
 
-### 四、帮助
+![image](https://upload-images.jianshu.io/upload_images/19189438-90a1bff17cb95d99.png)
+
+连接外部登录
+
+![image](https://upload-images.jianshu.io/upload_images/19189438-bed1c8f73341e455.png)
+
+### 五、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 
