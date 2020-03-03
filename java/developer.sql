@@ -108,3 +108,29 @@ CREATE TABLE `mark` (
   PRIMARY KEY (`id`),
   KEY `fk_interfaces_id` (`fk_interfaces_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口备注';
+
+CREATE TABLE `user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `username` varchar(200) DEFAULT NULL COMMENT '登录账户名',
+  `name` varchar(200) DEFAULT NULL COMMENT '姓名',
+  `mail` varchar(200) DEFAULT NULL COMMENT '邮箱',
+  `cellphone` varchar(20) DEFAULT NULL COMMENT '联系电话',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `random` varchar(10) NOT NULL COMMENT '随机数',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+# 默认密码 admin123
+insert into user (username, name, password, random) values ('admin','admin','05a0cb737ec0e7f5e4da71b4424d7904','12647858');
+
+CREATE TABLE `setting_of_user` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `remote` tinyint(1) DEFAULT NULL COMMENT '是否使用远程登录: 1-调用远程登录接口；2-使用本地user数据库',
+  `url` varchar(200) DEFAULT NULL COMMENT '远程登录地址',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户设置表';

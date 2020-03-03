@@ -3,6 +3,7 @@ package com.gomcarter.developer.dto;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
 import java.util.Date;
 
 /**
@@ -34,12 +35,12 @@ public class FunctionDto {
     @Notes("脚本备注")
     private String mark;
     /**
-     * 
+     *
      */
     @Notes("")
     private Date createTime;
     /**
-     * 
+     *
      */
     @Notes("")
     private Date modifyTime;

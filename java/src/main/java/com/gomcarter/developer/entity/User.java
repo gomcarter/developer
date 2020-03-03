@@ -1,6 +1,8 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -8,44 +10,45 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
- * @author gomcarter on 2020-01-10 14:40:23
+ * @author gomcarter on 2020-03-02 10:16:26
  */
 @Data
 @Accessors(chain = true)
-public class TestCaseItem {
+public class User {
+
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
     /**
-     * 排序值，值相等：则是并行接口；不相等的：小的先执行，大的后执行
+     * 登录账户名
      */
-    private Integer sort;
+    private String username;
     /**
-     * 具体接口名称
+     * 姓名
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String name;
     /**
-     * 接口hash值，可以是历史版本
+     * 邮箱
      */
-    private String hash;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String mail;
     /**
-     * 接口更新了，是否取最新接口
+     * 联系电话
      */
-    private Boolean autoRefresh;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String cellphone;
     /**
-     * 入参处理器，存储javascript脚本，对入参进行赋值，校验等等操作
+     * 密码
      */
-    private String paramHandler;
+    private String password;
     /**
-     * 结果处理器，存储javascript脚本，对当前接口返回数据进行校验、转换等等操作
+     * 随机数
      */
-    private String resultHandler;
-    /**
-     * 接口用例外键
-     */
-    private Long fkTestCaseId;
+    private String random;
     /**
      *
      */

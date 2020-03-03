@@ -1,14 +1,13 @@
 package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.MarkDto;
-import com.gomcarter.developer.entity.Mark;
 import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.MarkParam;
 import com.gomcarter.developer.service.MarkService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @RequestMapping("developer/mark")
 public class DeveloperMarkController {
 
-    @Autowired
+    @Resource
     private MarkService markService;
 
     @GetMapping(value = "/{interfaceId}", name = "通过接口id获取备注列表")

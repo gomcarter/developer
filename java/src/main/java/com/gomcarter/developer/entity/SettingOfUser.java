@@ -1,6 +1,8 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -8,11 +10,11 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
- * @author gomcarter on 2020-01-06 10:09:59
+ * @author gomcarter on 2020-03-02 10:29:14
  */
 @Data
 @Accessors(chain = true)
-public class Function {
+public class SettingOfUser {
 
     /**
      * 主键
@@ -20,19 +22,15 @@ public class Function {
     @TableId(type = IdType.AUTO)
     private Long id;
 
-
     /**
-     * 函数名称
+     * 是否使用远程登录: 1-调用远程登录接口；2-使用本地user数据库
      */
-    private String name;
+    private Boolean remote;
     /**
-     * javascript脚本
+     * 远程登录地址
      */
-    private String script;
-    /**
-     * 脚本备注
-     */
-    private String mark;
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String url;
     /**
      *
      */

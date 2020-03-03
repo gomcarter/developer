@@ -5,7 +5,6 @@ import com.gomcarter.developer.dto.InterfacesDto;
 import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
-import com.gomcarter.developer.entity.InterfacesVersioned;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.ArgsParam;
 import com.gomcarter.developer.params.InterfacesQueryParam;

@@ -11,7 +11,6 @@ import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.InterfacesVersionedParam;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.pager.Pageable;
-import com.gomcarter.frameworks.base.streaming.Streamable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

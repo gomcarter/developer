@@ -1,14 +1,13 @@
 package com.gomcarter.developer.service;
 
-import com.gomcarter.frameworks.base.common.AssertUtils;
-import com.gomcarter.frameworks.base.common.CollectionUtils;
-import com.gomcarter.frameworks.base.pager.Pageable;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.gomcarter.developer.dao.MarkMapper;
 import com.gomcarter.developer.entity.Mark;
+import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.pager.Pageable;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
 @Service
 public class MarkService {
 
-    @Autowired
+    @Resource
     private MarkMapper markMapper;
 
     public void insert(Mark mark) {

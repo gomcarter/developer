@@ -4,8 +4,6 @@ import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
-
 /**
  * @author gomcarter on 2020-02-10 16:05:03
  */

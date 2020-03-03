@@ -2,9 +2,9 @@ package com.gomcarter.developer.controller.publics;
 
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("publics/interfaces")
 public class PublicsInterfacesController {
 
-    @Autowired
+    @Resource
     private InterfacesService interfacesService;
 
     @PostMapping(value = "", name = "生成接口")
