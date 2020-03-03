@@ -1,6 +1,9 @@
 HELP.md
 target/
 logs/
+node_modules/
+**/.DS_Store
+
 ~/
 !**/src/main/**
 !**/src/test/**
