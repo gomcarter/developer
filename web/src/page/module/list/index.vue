@@ -16,7 +16,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <h4 class="title">JAVA项目列表</h4>
+    <h4 class="title">后端项目列表</h4>
     <hr/>
     <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
   </div>

@@ -21,19 +21,24 @@ const router = new Router({
       }
     },
     { // 接口管理
-      path: '/manage/list',
-      name: 'manageList',
-      component: r => require.ensure([], (require) => { r(require('@/page/manage')) }, 'manageList')
+      path: '/interfaces/list',
+      name: 'interfacesList',
+      component: r => require.ensure([], (require) => { r(require('@/page/interfaces')) }, 'interfacesList')
     },
     { // 接口管理---详情
-      path: '/manage/list/view/:id',
-      name: 'manageListView',
-      component: r => require.ensure([], (require) => { r(require('@/page/manage/view')) }, 'manageListView')
+      path: '/interfaces/view/:id',
+      name: 'interfacesView',
+      component: r => require.ensure([], (require) => { r(require('@/page/interfaces/view')) }, 'interfacesView')
+    },
+    { // 接口管理---详情
+      path: '/interfaces/edit',
+      name: 'interfacesEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/interfaces/edit')) }, 'interfacesEdit')
     },
     { // 接口管理---详情
       path: '/customer/interfaces/:id',
       name: 'customerInterfaces',
-      component: r => require.ensure([], (require) => { r(require('@/page/manage/customer')) }, 'customerInterfaces'),
+      component: r => require.ensure([], (require) => { r(require('@/page/interfaces/customer')) }, 'customerInterfaces'),
       meta: {
         menu: false
       }
@@ -113,6 +118,21 @@ const router = new Router({
       name: 'testCaseRun',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/run')) }, 'testCaseRun')
     },
+    { // 流程控制---用例列表
+      path: '/system/user',
+      name: 'user',
+      component: r => require.ensure([], (require) => { r(require('@/page/system/user')) }, 'user')
+    },
+    { // 流程控制---用例列表-新增
+      path: '/system/user/edit',
+      name: 'userAdd',
+      component: r => require.ensure([], (require) => { r(require('@/page/system/user/edit')) }, 'userAdd')
+    },
+    { // 流程控制---用例列表-编辑
+      path: '/system/user/edit/:id',
+      name: 'userEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/system/user/edit')) }, 'userEdit')
+    },
     // 中转
     {
       path: '/transfer/:data',
@@ -127,7 +147,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path.indexOf('/manage/list') >= 0) {
+  if (to.path.indexOf('/interfaces/view') >= 0) {
     next()
   } else if (to.meta.menu !== false && to.path !== '/login' && !isLogin()) {
     next({ path: '/login?redirect=' + encodeURIComponent(to.path) })
