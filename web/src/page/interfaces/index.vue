@@ -5,13 +5,17 @@
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
         <el-form-item label="接口名称">
-          <el-input v-model="filter.name" placeholder="请输入接口名称" />
+          <el-input v-model="filter.name" placeholder="请输入接口名称" ></el-input>
         </el-form-item>
         <el-form-item label="控制器">
-          <el-input v-model="filter.controller" placeholder="请输入控制器" />
+          <el-input v-model="filter.controller" placeholder="请输入控制器" ></el-input>
         </el-form-item>
         <el-form-item label="URL">
-          <el-input v-model="filter.url" placeholder="请输入URL" />
+          <el-input v-model="filter.url" placeholder="请输入URL" ></el-input>
+        </el-form-item>
+        <el-form-item label="是否废弃">
+          <v-selector :data="{true: '是', false: '否'}" :onSelectionChanged="(d) => filter.deprecated = (d[0] || {}).id"
+                      placeholder="请选择是否废弃"></v-selector>
         </el-form-item>
         <el-form-item label="前端项目">
           <v-selector
@@ -22,12 +26,12 @@
             :url="endListApi"
           ></v-selector>
         </el-form-item>
-        <el-form-item label="java项目">
+        <el-form-item label="后端项目">
           <v-selector
             :id="'id'" :text="'name'"
             :onSelectionChanged="(d) => filter.javaId = (d[0] || {}).id"
             :filterable="true" :remote="true"
-            placeholder="请选择java项目（可输入名称进行搜索）"
+            placeholder="请选择后端项目（可输入名称进行搜索）"
             :url="javaListApi"
           ></v-selector>
         </el-form-item>
@@ -39,20 +43,20 @@
     </div>
     <h4 class="title">接口列表</h4>
     <hr/>
-    <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" />
+    <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar" />
 
     <v-dialog ref="newAddDialog"
               title="更新接口"
               :ok="addInterfaces">
       <el-form slot="body" :model="form" label-width="7em" ref="addForm">
-        <el-form-item prop="javaId" label="选择java项目" required
-                      :rules="[{ required: true, message: '请选择一个java项目', trigger: ['blur', 'change'] }]">
+        <el-form-item prop="javaId" label="选择后端项目" required
+                      :rules="[{ required: true, message: '请选择一个后端项目', trigger: ['blur', 'change'] }]">
           <v-selector  :onSelectionChanged="(d) => form.javaId = (d[0] || {}).id"
                        :id="'id'" :text="'name'"
                        :filterable="true" :remote="true"
-                       :load="[form.javaId]" placeholder="请选择一个java项目（可输入商品名称进行搜索）"
+                       :load="[form.javaId]" placeholder="请选择一个后端项目（可输入商品名称进行搜索）"
                        :url="javaListApi"/>
-          <el-input v-model="form.javaId" style="display: none" />
+          <el-input v-model="form.javaId" style="display: none" ></el-input>
         </el-form-item>
       </el-form>
     </v-dialog>
@@ -75,6 +79,7 @@ export default {
       filter: {
         id: null,
         name: null,
+        deprecated: null,
         url: null,
         controller: null,
         javaId: null,
@@ -83,6 +88,11 @@ export default {
       dataUrl: interfacesListApi,
       countUrl: interfacesCountApi,
       params: {},
+      toolbar: [{
+        title: '添加接口',
+        icon: 'el-icon-plus',
+        handler: () => this.$router.push('/interfaces/edit')
+      }],
       columns: [
         {field: 'id', header: '序号', sort: 'id', width: 90},
         {field: 'name', header: '接口名称', sort: 'name', width: 200},
@@ -91,7 +101,7 @@ export default {
         {field: 'controller', header: '控制器', sort: 'controller', width: 200},
         {field: 'url', header: 'URL地址', sort: 'url', width: 120},
         {field: 'end', header: '前端项目', sort: 'fk_end_id', width: 160},
-        {field: 'java', header: 'java模块', sort: 'fk_java_id', width: 120},
+        {field: 'java', header: '后端项目', sort: 'fk_java_id', width: 120},
         {field: 'modifyTime', header: '更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
@@ -99,7 +109,7 @@ export default {
           width: 130,
           html: true,
           actions: [{
-            text: (row) => `<a href="#/manage/list/view/${row.id}" target="_blank">查看</a>`,
+            text: (row) => `<a href="#/interfaces/view/${row.id}" target="_blank">查看</a>`,
             handler: (row) => {}
           }, {
             text: '删除',
