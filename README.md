@@ -16,15 +16,15 @@
 
 **2，导入mysql表结构**
 
-需要mysql5.7版本及以上
-
-SQL文件：<a href="https://github.com/gomcarter/developer/blob/master/java/developer.sql" target="_blank">戳这里</a>
+需要mysql5.7版本及以上，SQL文件：<a href="https://github.com/gomcarter/developer/blob/master/java/developer.sql" target="_blank">戳这里</a>
 
 
 **3，配置数据库连接**
 
 nacos 的 public 中配置：
+
 dataId： DEVELOPER
+
 group：  MYSQL
 
 content内容：
