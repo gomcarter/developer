@@ -1,5 +1,5 @@
-import {xhr} from '@/config/api/http'
-import {INSERV_URL} from '@/config/api/env'
+import { xhr } from '@/config/api/http'
+import { INSERV_URL } from '@/config/api/env'
 
 /**
  * @author gomcarter on 2019-02-13
@@ -29,7 +29,7 @@ export const deleteInterfaces = async (id) => {
  * @returns 接口管理
  */
 export const interfacesCountApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/interfaces/count`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/interfaces/count`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
@@ -37,7 +37,7 @@ export const interfacesCountApi = async (params) => {
  * @returns 接口管理
  */
 export const interfacesListApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/interfaces/list`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/interfaces/list`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -46,7 +46,7 @@ export const interfacesListApi = async (params) => {
  * @returns 接口管理
  */
 export const interfacesSimpleListApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/interfaces/simple/list`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/interfaces/simple/list`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -72,7 +72,7 @@ export const interfacesVersionedListApi = async (interfacesId) => {
  * @returns 接口历史
  */
 export const interfacesVersionedSimpleListApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/versioned/simple/list`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/versioned/simple/list`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -90,7 +90,7 @@ export const getInterfacesHeadersApi = async (id) => {
  * @returns 接口管理---新增项目
  */
 export const endListApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/end/list`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/end/list`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -134,7 +134,7 @@ export const getEndApi = async (id) => {
  * @returns 模块管理---模块列表-模块数量
  */
 export const javaCountApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/java/count`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/java/count`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 /**
@@ -167,7 +167,7 @@ export const getJavaApi = async (id) => {
  * @returns 模块管理---列表
  */
 export const javaListApi = async (params) => {
-  const res = await xhr.get(`${INSERV_URL}developer/java/list`, {params})
+  const res = await xhr.get(`${INSERV_URL}developer/java/list`, { params })
   return res.data.success ? res.data.extra : Promise.reject(new Error())
 }
 
@@ -250,9 +250,9 @@ export const copyTestCaseApi = async (id) => {
 }
 
 /**
-* @author gomcarter 2019-02-28
-* @returns 流程控制---用例列表
-*/
+ * @author gomcarter 2019-02-28
+ * @returns 流程控制---用例列表
+ */
 export const testCaseCountApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/testCase/count`, {
     params: params
@@ -265,7 +265,7 @@ export const testCaseCountApi = async (params) => {
  * @returns 流程控制---新增
  */
 export const createTestCaseApi = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params, {type: 'json'})
+  const res = await xhr.post(`${INSERV_URL}developer/testCase`, params, { type: 'json' })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -274,7 +274,7 @@ export const createTestCaseApi = async (params) => {
  * @returns 流程控制---编辑
  */
 export const updateTestCaseApi = async (id, params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/testCase/${id}`, params, {type: 'json'})
+  const res = await xhr.post(`${INSERV_URL}developer/testCase/${id}`, params, { type: 'json' })
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -301,6 +301,96 @@ export const getInterfaceMarkApi = async (interfaceId) => {
  * @returns 流程控制---新增
  */
 export const addInterfaceMarkApi = async (interfaceId, mark) => {
-  const res = await xhr.post(`${INSERV_URL}developer/mark/${interfaceId}`, {mark: mark})
+  const res = await xhr.post(`${INSERV_URL}developer/mark/${interfaceId}`, { mark: mark })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:28
+ * @returns 用户列表
+ */
+export const userListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/user/list`, { params })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 用户列表计算总数
+ */
+export const userCountApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/user/count`, { params })
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 删除用户
+ */
+export const deleteUserApi = async (id) => {
+  const res = await xhr.delete(`${INSERV_URL}developer/user/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 新增用户
+ */
+export const addUserApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/user`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 获取用户
+ */
+export const getUserApi = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/user/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 修改用户
+ */
+export const updateUserApi = async (id, params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/user/${id}`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 修改用户
+ */
+export const updatePasswordApi = async (oldPassword, password) => {
+  const res = await xhr.put(`${INSERV_URL}developer/user/password`, {oldPassword, password})
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 获取用户配置
+ */
+export const getUserSettingApi = async () => {
+  const res = await xhr.get(`${INSERV_URL}developer/user/setting`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 修改用户配置
+ */
+export const updateUserSettingApi = async (params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/user/setting`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2020年03月02日15:56:31
+ * @returns 获取用户配置
+ */
+export const testRemoteLoginApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}publics/user/test/login`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }

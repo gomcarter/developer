@@ -33,22 +33,31 @@
             欢迎，{{username}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-<!--            <el-dropdown-item @click="forgetPassword">修改密码</el-dropdown-item>-->
-            <el-dropdown-item @click="doLogout">退出登录</el-dropdown-item>
+            <el-dropdown-item>
+              <div @click="forgetPassword">修改密码</div>
+            </el-dropdown-item>
+            <el-dropdown-item>
+              <div @click="doLogout">退出登录</div>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
-    <v-dialog ref="forget" title="修改密码">
-      <el-form slot="body">
-        <el-form-item label="当前密码:" label-width="6em">
-          <el-input></el-input>
+    <v-dialog ref="forgetDialog" title="修改密码" :ok="savePassword">
+      <el-form slot="body" :model="forget" ref="forgetForm" label-width="6em" >
+        <el-form-item label="原密码" prop="oldPassword" :rules="[{ required: true, message: '请输入原密码', trigger: ['blur', 'change'] }]">
+          <el-input v-model="forget.oldPassword"></el-input>
         </el-form-item>
-        <el-form-item label="修改密码:" label-width="6em">
-          <el-input></el-input>
+        <el-form-item label="新密码" prop="newPassword" :rules="[
+                      { required: true, message: '请输入新密码', trigger: ['blur', 'change'] }
+                      ]">
+          <el-input v-model="forget.newPassword" placeholder="请输入新密码，长度随便设，只要你记得住"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码:" label-width="6em">
-          <el-input></el-input>
+        <el-form-item label="确认密码" prop="confirmPassword" :rules="[
+                      { required: true, message: '再输入一次新密码', trigger: ['blur', 'change'] },
+                      { validator: (rule, value, callback) => callback(value !== forget.newPassword ? '两次密码输入不一致，请重新输入' : undefined), trigger: ['blur', 'change']}
+                      ]">
+          <el-input v-model="forget.confirmPassword" placeholder="再输入一次新密码，要和新密码一样哟"></el-input>
         </el-form-item>
       </el-form>
     </v-dialog>
@@ -56,8 +65,9 @@
 </template>
 <script>
 import Logo from '@/assets/img/qa.png'
-import {getPictureUrl} from '@/config/utils'
-import {logout, user} from '@/config/login'
+import { getPictureUrl } from '@/config/utils'
+import { logout, user } from '@/config/login'
+import { getUserSettingApi, updatePasswordApi } from '@/config/api/inserv-api'
 
 export default {
   name: 'frame',
@@ -71,18 +81,18 @@ export default {
       rule: [],
       items: [],
       timer: null,
-      toRunSet: []
+      toRunSet: [],
+      remote: null,
+      notice: '当前已开启外部登录，修改密码功能被禁用！',
+      forget: {
+        oldPassword: null,
+        newPassword: null,
+        confirmPassword: null
+      }
     }
   },
   computed: {},
   methods: {
-    // 阻止冒泡
-    // stopproPagation () {
-    //   try {
-    //     window.event.cancelBubble = true
-    //   } catch (e) {
-    //   }
-    // },
     doLogout () {
       this.$confirm('确定要退出吗？', '提示', {type: 'warning'}).then(() => {
         // this.stopBadge()
@@ -91,7 +101,39 @@ export default {
       })
     },
     forgetPassword () {
-      this.$refs.forget.open()
+      if (this.remote == null) {
+        getUserSettingApi()
+          .then((d) => {
+            this.remote = d.remote || false
+            if (this.remote) {
+              this.$alert(this.notice, '提示', {type: 'error'})
+            } else {
+              this.$refs.forgetDialog.open()
+            }
+          })
+          .catch(() => {
+            this.$alert('读取配置数据失败！', '提示', {type: 'error'})
+          })
+      } else if (this.remote) {
+        this.$alert(this.notice, '提示', {type: 'error'})
+      } else {
+        this.$refs.forgetDialog.open()
+      }
+    },
+    savePassword () {
+      this.$refs.forgetForm.validate((valid) => {
+        if (valid) {
+          updatePasswordApi(this.forget.oldPassword, this.forget.newPassword)
+            .then(() => {
+              this.forget.oldPassword = null
+              this.forget.newPassword = null
+              this.forget.confirmPassword = null
+
+              this.$success('密码修改成功！')
+              this.$refs.forgetDialog.close()
+            })
+        }
+      })
     },
     initMenu () {
       this.items = [
@@ -105,8 +147,8 @@ export default {
           open: false,
           subItems: [
             {link: '/project/list', name: '前端项目', selected: false},
-            {link: '/module/list', name: 'JAVA项目', selected: false},
-            {link: '/manage/list', name: '接口列表', selected: false}
+            {link: '/module/list', name: '后端项目', selected: false},
+            {link: '/interfaces/list', name: '接口列表', selected: false}
           ]
         },
         {
@@ -115,6 +157,13 @@ export default {
           subItems: [
             {link: '/flow/function', name: '自定义函数', selected: false},
             {link: '/flow/testCase', name: '用例列表', selected: false}
+          ]
+        },
+        {
+          name: '系统管理',
+          open: false,
+          subItems: [
+            {link: '/system/user', name: '用户管理', selected: false}
           ]
         }
         // {
