@@ -59,10 +59,6 @@ public class Interfaces {
      */
     private String parameters;
     /**
-     * mock数据
-     */
-    private String mock;
-    /**
      * 数据那个java项目
      */
     private Long fkJavaId;

@@ -111,8 +111,7 @@ public class InterfacesService {
                         .setMethod(api.getMethod())
                         .setName(api.getName())
                         .setReturns(returns)
-                        .setParameters(parameters)
-                        .setMock(api.getMock());
+                        .setParameters(parameters);
 
                 this.insert(interfaces);
                 success++;
@@ -132,7 +131,6 @@ public class InterfacesService {
                         .setName(api.getName())
                         .setReturns(returns)
                         .setParameters(parameters)
-                        .setMock(api.getMock())
                 );
 
                 success++;

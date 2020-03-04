@@ -60,10 +60,6 @@ public class InterfacesVersioned {
      */
     private String parameters;
     /**
-     * mock数据
-     */
-    private String mock;
-    /**
      * 属于哪个java项目
      */
     private Long fkJavaId;

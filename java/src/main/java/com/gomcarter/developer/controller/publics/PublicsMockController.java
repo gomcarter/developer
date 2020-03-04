@@ -29,13 +29,13 @@ public class PublicsMockController {
     @GetMapping(value = "{hash}", name = "测试")
     Object mock(@PathVariable("hash") String hash) {
         // 先从当前版本找，没找到就去历史版本找，找不到就是null
-        String mock = Optional.ofNullable(interfacesService.getByHash(hash)).map(Interfaces::getMock)
-                .orElse(Optional.ofNullable(interfacesVersionedService.getByHash(hash)).map(InterfacesVersioned::getMock).orElse(null));
+        String returns = Optional.ofNullable(interfacesService.getByHash(hash)).map(Interfaces::getReturns)
+                .orElse(Optional.ofNullable(interfacesVersionedService.getByHash(hash)).map(InterfacesVersioned::getReturns).orElse(null));
 
-        if (mock == null) {
+        if (returns == null) {
             return null;
         }
 
-        return MockUtils.mock(mock);
+        return MockUtils.mock(returns);
     }
 }
