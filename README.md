@@ -157,7 +157,14 @@ d，接口测试
 ![image](https://user-images.githubusercontent.com/16378826/75749118-03c77880-5d5c-11ea-8a62-b65fb3cda07f.png)
 
 
-### 五、帮助
+### 五、mock
+
+自动生成mock地址，调用mock地址将返回mock数据
+
+![image](https://user-images.githubusercontent.com/16378826/75869106-12895a80-5e44-11ea-8a63-3032086ae753.png)
+
+
+### 六、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 或者 qq： 506598720
