@@ -394,3 +394,12 @@ export const testRemoteLoginApi = async (params) => {
   const res = await xhr.post(`${INSERV_URL}publics/user/test/login`, params)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
+
+export const mockUrl = (hash) => {
+  if (INSERV_URL === '/') {
+    return window.location.origin + '/publics/mock/' + hash
+  } else {
+    // local模式
+    return 'http:' + INSERV_URL + 'publics/mock/' + hash
+  }
+}

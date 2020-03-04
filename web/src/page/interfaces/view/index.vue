@@ -32,6 +32,7 @@
       <el-form-item label="测试环境地址:"><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></el-form-item>
       <el-form-item label="预发环境地址:"><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></el-form-item>
       <el-form-item label="线上环境地址:"><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></el-form-item>
+      <el-form-item label="mock接口:"><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></el-form-item>
       <el-form-item label="创建时间:">{{formatDate(data.createTime)}}</el-form-item>
       <el-form-item label="更新时间:">{{formatDate(data.modifyTime)}}</el-form-item>
       <el-form-item label="接口参数:">
@@ -76,7 +77,7 @@
 </template>
 
 <script>
-import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi } from '@/config/api/inserv-api'
+import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
 import { user } from '@/config/login'
 
@@ -84,6 +85,7 @@ export default {
   name: 'interfacesDetail',
   data () {
     return {
+      mockUrl,
       data: null,
       formatDate,
       returns: null,

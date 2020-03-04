@@ -4,6 +4,9 @@
     <hr/>
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
+        <el-form-item label="接口编号">
+          <el-input v-model="filter.id" placeholder="请输入接口编号" ></el-input>
+        </el-form-item>
         <el-form-item label="接口名称">
           <el-input v-model="filter.name" placeholder="请输入接口名称" ></el-input>
         </el-form-item>
@@ -94,7 +97,7 @@ export default {
         handler: () => this.$router.push('/interfaces/edit')
       }],
       columns: [
-        {field: 'id', header: '序号', sort: 'id', width: 90},
+        {field: 'id', header: '编号', sort: 'id', width: 90},
         {field: 'name', header: '接口名称', sort: 'name', width: 200},
         {field: 'method', header: 'METHOD', sort: 'method', width: 80},
         {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
