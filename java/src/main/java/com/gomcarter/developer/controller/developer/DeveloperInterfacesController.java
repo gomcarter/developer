@@ -143,6 +143,7 @@ public class DeveloperInterfacesController {
                         .setDeprecated(s.getDeprecated())
                         .setCreateTime(s.getCreateTime())
                         .setModifyTime(s.getModifyTime())
+                        .setMock(s.getMock())
                 )
                 .collect(Collectors.toList());
     }

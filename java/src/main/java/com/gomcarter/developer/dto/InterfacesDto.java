@@ -49,4 +49,7 @@ public class InterfacesDto {
 
     @Notes(value = "更新时间", notNull = true)
     private Date modifyTime;
+
+    @Notes("mock 数据")
+    private String mock;
 }

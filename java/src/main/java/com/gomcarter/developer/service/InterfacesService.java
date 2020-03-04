@@ -77,8 +77,8 @@ public class InterfacesService {
         this.interfacesMapper.setDeprecatedByJavaId(javaId);
 
         Integer success = 0;
-        for (ApiInterface s : interfaceList) {
-            String url = s.getUrl();
+        for (ApiInterface api : interfaceList) {
+            String url = api.getUrl();
             String prefix = Arrays.stream(url.split("/"))
                     .filter(StringUtils::isNotBlank)
                     .findFirst()
@@ -89,53 +89,56 @@ public class InterfacesService {
                 end = endService.insertOrGetDefault();
             }
 
-            String returns = JsonMapper.buildNonNullMapper().toJson(s.getReturns());
-            String parameters = JsonMapper.buildNonNullMapper().toJson(s.getParameters());
+            String returns = JsonMapper.buildNonNullMapper().toJson(api.getReturns());
+            String parameters = JsonMapper.buildNonNullMapper().toJson(api.getParameters());
             String hash = MD5.getInstance().getMD5String(
                     StringUtils.join(new String[]{
-                            url, javaId.toString(), end.getId().toString(), s.isDeprecated() + "",
-                            s.getMark(), s.getMethod(), s.getName(), returns, parameters, s.getController()
+                            url, javaId.toString(), end.getId().toString(), api.isDeprecated() + "",
+                            api.getMark(), api.getMethod(), api.getName(), returns, parameters, api.getController()
                     }, ","));
 
-            Interfaces interfaces = this.interfacesMapper.getByUrl(url, s.getMethod());
+            Interfaces interfaces = this.interfacesMapper.getByUrl(url, api.getMethod());
             // 如果接口没有发生变化，那么对应的hash就是一样的，应该不插入这个接口
             if (interfaces == null) {
                 interfaces = new Interfaces()
                         .setUrl(url)
-                        .setController(s.getController())
+                        .setController(api.getController())
                         .setFkJavaId(javaId)
                         .setHash(hash)
-                        .setDeprecated(s.isDeprecated())
+                        .setDeprecated(api.isDeprecated())
                         .setFkEndId(end.getId())
-                        .setMark(s.getMark())
-                        .setMethod(s.getMethod())
-                        .setName(s.getName())
+                        .setMark(api.getMark())
+                        .setMethod(api.getMethod())
+                        .setName(api.getName())
                         .setReturns(returns)
-                        .setParameters(parameters);
+                        .setParameters(parameters)
+                        .setMock(api.getMock());
 
                 this.insert(interfaces);
                 success++;
             } else if (!hash.equals(interfaces.getHash())) {
                 // 插入历史版本
-                this.interfacesVersionedService.insert(interfaces, s.isDeprecated());
+                this.interfacesVersionedService.insert(interfaces, api.isDeprecated());
 
                 // 已经存在接口，那么看hash是否改变，改变了就修改，没改变就不修改
                 this.update(interfaces.setUrl(url)
                         .setFkJavaId(javaId)
                         .setHash(hash)
-                        .setController(s.getController())
-                        .setDeprecated(s.isDeprecated())
+                        .setController(api.getController())
+                        .setDeprecated(api.isDeprecated())
                         .setFkEndId(end.getId())
-                        .setMark(s.getMark())
-                        .setMethod(s.getMethod())
-                        .setName(s.getName())
+                        .setMark(api.getMark())
+                        .setMethod(api.getMethod())
+                        .setName(api.getName())
                         .setReturns(returns)
-                        .setParameters(parameters));
+                        .setParameters(parameters)
+                        .setMock(api.getMock())
+                );
 
                 success++;
             } else {
                 // 接口没有任何变化
-                this.update(interfaces.setDeprecated(s.isDeprecated()));
+                this.update(interfaces.setDeprecated(api.isDeprecated()));
             }
         }
         return success;

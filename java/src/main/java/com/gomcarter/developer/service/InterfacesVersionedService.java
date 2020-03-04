@@ -136,4 +136,8 @@ public class InterfacesVersionedService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public InterfacesVersioned getByHash(String hash) {
+        return this.interfacesVersionedMapper.getByHash(hash);
+    }
 }

@@ -48,14 +48,14 @@ public class PublicsUserController {
         BaseApi api = new BaseApi() {
             @Override
             protected Map<String, String> getUrlRouter() {
-                return new HashMap<String, String>() {{
+                return new HashMap<String, String>(1, 1) {{
                     put("url", url);
                 }};
             }
         };
         api.init();
 
-        Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>(2, 1);
         params.put("username", username);
         params.put("password", password);
         JsonData data = api.httpExecute(Method.POST, "url", JsonData.class, params, null);
@@ -85,7 +85,7 @@ public class PublicsUserController {
                 .setToken(UserHolder.login(username));
     }
 
-    @PostMapping(value = "login2", name = "登录")
+    @PostMapping(value = "login2", name = "登录2")
     LoginUser login2(@RequestParam String username, @RequestParam String password) throws Exception {
         R r = new R();
         r.validate = this.userService.validate(username, password);
