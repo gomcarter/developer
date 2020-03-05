@@ -17,6 +17,9 @@
 .history {
   color: #888d;
   font-style: italic;
+  & a {
+    color: inherit;
+  }
 }
 
 .user, .mark, .date {

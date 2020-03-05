@@ -4,46 +4,61 @@
       <el-button v-if="versioned.length > 0" type="primary" circle icon="el-icon-timer" title="查看历史版本" size="small" @click="listVersioned"></el-button></h4>
     <hr/>
     <el-form v-if="data" label-width="9em">
-      <el-form-item label="接口名称:">
+      <el-form-item label="接口名称：">
         <div>{{data.name}}<b v-if="data.deprecated" style="color:red">（已废弃）</b></div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.name}}<b v-if="currentVersioned.deprecated" style="color:red">（已废弃）</b></div>
       </el-form-item>
-      <el-form-item label="控制器:">
+      <el-form-item label="控制器：">
         <div>{{data.controller}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.controller}}</div>
       </el-form-item>
-      <el-form-item label="访问类型:">
+      <el-form-item label="访问类型：">
         <div>{{data.method}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.method}}</div>
       </el-form-item>
-      <el-form-item label="所属项目:">
+      <el-form-item label="所属项目：">
         <div>{{data.end.name}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.end.name}}</div>
       </el-form-item>
-      <el-form-item label="header参数说明:">
-        <div><i style="color:red;">header名:{{data.end.header}}<br>{{data.end.mark}}</i></div>
-        <div class="history" v-if="currentVersioned"><i>header名:{{currentVersioned.end.header}}<br>{{currentVersioned.end.mark}}</i></div>
+      <el-form-item label="header参数说明：">
+        <div><i style="color:red;">header名：{{data.end.header}}<br>{{data.end.mark}}</i></div>
+        <div class="history" v-if="currentVersioned"><i>header名：{{currentVersioned.end.header}}<br>{{currentVersioned.end.mark}}</i></div>
       </el-form-item>
-      <el-form-item label="所属模块:">
+      <el-form-item label="所属模块：">
         <div>{{data.java.name}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.java.name}}</div>
       </el-form-item>
-      <el-form-item label="开发环境地址:"><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></el-form-item>
-      <el-form-item label="测试环境地址:"><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></el-form-item>
-      <el-form-item label="预发环境地址:"><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></el-form-item>
-      <el-form-item label="线上环境地址:"><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></el-form-item>
-      <el-form-item label="mock接口:"><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></el-form-item>
-      <el-form-item label="创建时间:">{{formatDate(data.createTime)}}</el-form-item>
-      <el-form-item label="更新时间:">{{formatDate(data.modifyTime)}}</el-form-item>
-      <el-form-item label="接口参数:">
+      <el-form-item label="开发地址：">
+        <div><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></div>
+        <span>mock地址：<a :href="`${data.java.devDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.devDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+      </el-form-item>
+      <el-form-item label="测试地址：">
+        <div><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></div>
+        <span>mock地址：<a :href="`${data.java.testDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.testDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+      </el-form-item>
+      <el-form-item label="预发地址：">
+        <div><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></div>
+        <span>mock地址：<a :href="`${data.java.prevDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.prevDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+      </el-form-item>
+      <el-form-item label="生产地址：">
+        <div><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></div>
+        <span>mock地址：<a :href="`${data.java.onlineDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.onlineDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+      </el-form-item>
+      <el-form-item label="备用mock地址：">
+        <div><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></div>
+        <div class="history" v-if="currentVersioned"><a :href="mockUrl(currentVersioned.hash)" target="_blank">{{mockUrl(currentVersioned.hash)}}</a></div>
+      </el-form-item>
+      <el-form-item label="创建时间：">{{formatDate(data.createTime)}}</el-form-item>
+      <el-form-item label="更新时间：">{{formatDate(data.modifyTime)}}</el-form-item>
+      <el-form-item label="接口参数：">
         <v-parameter :json="parameters || []"></v-parameter>
         <v-parameter class="history" v-if="currentVersioned" :json="versionedParameters || []"></v-parameter>
       </el-form-item>
-      <el-form-item label="接口说明:">
+      <el-form-item label="接口说明：">
         <div v-html="(data.mark || '无')"></div>
         <div class="history" v-if="currentVersioned" v-html="(currentVersioned.mark || '无')"></div>
       </el-form-item>
-      <el-form-item label="返回值:">
+      <el-form-item label="返回值：">
         <div v-if="currentVersioned">
           <v-jsonformatter v-if="generatedReturns" :json="generatedReturns" style="width: 48%;display: inline-block;"></v-jsonformatter>
           <v-jsonformatter class="history" v-if="currentVersioned && versionedGeneratedReturns" style="width: 48%;display: inline-block;"
@@ -53,10 +68,10 @@
           <v-jsonformatter v-if="generatedReturns" :json="generatedReturns"></v-jsonformatter>
         </div>
       </el-form-item>
-      <!--<el-form-item label="返回值数据结构:">-->
+      <!--<el-form-item label="返回值数据结构：">-->
         <!--<v-jsonformatter :json="returns"></v-jsonformatter>-->
       <!--</el-form-item>-->
-      <el-form-item label="备注:">
+      <el-form-item label="备注：">
         <el-button type="primary" @click="addMark" icon="el-icon-plus">添加备注</el-button>
         <div v-if="marks && marks.length > 0" v-for="(m, i) of marks" v-bind:key="i">
           <span class="user">[{{m.user === username ? '我' : m.user }}]</span>&#12288;

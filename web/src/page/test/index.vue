@@ -219,9 +219,7 @@ export default {
       }
       res.then(r => {
         this.result = r.data
-      }).catch(e => {
-        console.log(e)
-      })
+      }).catch(() => {})
     },
     addParams () {
       let obj = {key: '', value: '', type: ''}

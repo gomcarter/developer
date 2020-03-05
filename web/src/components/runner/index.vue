@@ -393,9 +393,9 @@ export default {
           this.log(`开始执行节点：${model.label}（$${model.id}）`)
           this.buildXhr(data)
             .then((d) => {
-              if (d.data.success) {
+              if (d.data.success != false) {
                 // 赋值
-                window['$' + model.id] = d.data.extra
+                window['$' + model.id] = d.data
                 this.log(`返回结果：`)
                 this.log(window['$' + model.id], 'json')
                 if (data.javascript) {
@@ -432,6 +432,7 @@ export default {
                   count++
                 }
               } else {
+                // 我们自己的框架，这段代码有效，别人的未必
                 this.log('执行结果出错：')
                 this.log(d.data, 'json')
                 this.log('')
