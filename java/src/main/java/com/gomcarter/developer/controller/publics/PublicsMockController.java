@@ -4,7 +4,7 @@ import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.InterfacesVersioned;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.developer.service.InterfacesVersionedService;
-import com.gomcarter.developer.utils.MockUtils;
+import com.gomcarter.frameworks.interfaces.utils.MockUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
