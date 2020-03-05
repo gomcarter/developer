@@ -161,7 +161,7 @@ d，接口测试
 
 自动生成mock地址，调用mock地址将返回mock数据
 
-![image](https://user-images.githubusercontent.com/16378826/75869106-12895a80-5e44-11ea-8a63-3032086ae753.png)
+![image](https://user-images.githubusercontent.com/16378826/75968793-eb489100-5f08-11ea-9f20-98521b22af50.png)
 
 
 ### 六、帮助
