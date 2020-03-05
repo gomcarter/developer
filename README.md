@@ -16,7 +16,7 @@ nacos（默认）：
     b，设置系统参数：
         java -jar -Dnacos.server.addr=http://nacos.server:8848  developer-1.0.0.jar &
 
-其他配置中心：
+其他配置中心（需自行下载源码打包）：
 
     考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式下载源码自行打包
     
