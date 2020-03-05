@@ -19,6 +19,7 @@ nacos（默认）：
 其他配置中心（需自行下载源码打包）：
 
     考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式下载源码自行打包
+    只需下载java目录下的代码即可：https://github.com/gomcarter/developer/tree/master/java
     
     具体操作如下（以本地模式示例）：
     1，将pom.xml中 
