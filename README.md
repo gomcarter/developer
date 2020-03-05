@@ -1,10 +1,13 @@
 # developer #
 ### 一、快速开始：
 
-**1，安装部署 nacos**
-参考：https://nacos.io/zh-cn/docs/what-is-nacos.html
+**1，部署配置中心（非必须）**
 
-安装完成之后，假设 nacos 地址为：  http://nacos.server:8848   有两种方式，让开发者中心连接到 nacos：
+nacos（默认）：
+
+    参考：https://nacos.io/zh-cn/docs/what-is-nacos.html
+
+    安装完成之后，假设 nacos 地址为：  http://nacos.server:8848   有两种方式，让开发者中心连接到 nacos：
 
     a，设置环境变量：
         // 设置 nacos 服务地址
@@ -12,6 +15,22 @@
 
     b，设置系统参数：
         java -jar -Dnacos.server.addr=http://nacos.server:8848  developer-1.0.0.jar &
+
+其他配置中心：
+
+    考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式下载源码自行打包
+    
+    具体操作如下（以本地模式示例）：
+    1，将pom.xml中 
+        <artifactId>config-center-nacos</artifactId> 修改为：
+        <artifactId>config-center-local</artifactId> —— 本地配置模式
+        <artifactId>config-center-apollo</artifactId> —— apollo
+        <artifactId>config-center-diamond</artifactId> —— diamond
+        当然如果还有其他的配置中心，可自行实现，参照：https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
+
+    2，建一个database.properties将上面（二中第3步：配置数据库连接）内容存放于此，假设此文件就放在resource下
+    3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
+    4，编译打包即可
 
 
 **2，导入mysql表结构**
@@ -70,7 +89,9 @@ content内容：
 
 **4，启动服务**
 
-    java -jar developer-1.0.0.jar &
+下载jar包：https://github.com/gomcarter/developer/releases
+
+    java -jar developer-${version}.jar &
 
     日志文件在：${jar包所在目录}/logs/developer/developer.log
 
@@ -130,24 +151,7 @@ d，接口测试
     response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, 其他支持携带的header");
 
 
-### 三、自行编译打包
-
-考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式自行打包
-    
-    具体操作如下（以本地模式示例）：
-    1，将pom.xml中 
-        <artifactId>config-center-nacos</artifactId> 修改为：
-        <artifactId>config-center-local</artifactId> —— 本地配置模式
-        <artifactId>config-center-apollo</artifactId> —— apollo
-        <artifactId>config-center-diamond</artifactId> —— diamond
-        当然如果还有其他的配置中心，可自行实现，参照：https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
-
-    2，建一个database.properties将上面（二中第3步：配置数据库连接）内容存放于此，假设此文件就放在resource下
-    3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
-    4，编译打包即可
-
-
-### 四、用户管理
+### 三、用户管理
 **1，自带用户管理**
 
 ![image](https://user-images.githubusercontent.com/16378826/75749078-e98d9a80-5d5b-11ea-9ad7-61a6e2416e3d.png)
@@ -157,14 +161,14 @@ d，接口测试
 ![image](https://user-images.githubusercontent.com/16378826/75749118-03c77880-5d5c-11ea-8a62-b65fb3cda07f.png)
 
 
-### 五、mock
+### 四、mock
 
 自动生成mock地址，调用mock地址将返回mock数据
 
 ![image](https://user-images.githubusercontent.com/16378826/75968793-eb489100-5f08-11ea-9f20-98521b22af50.png)
 
 
-### 六、帮助
+### 五、帮助
 
 如需帮助请联系：gomcarter@vip.qq.com
 或者 qq： 506598720
