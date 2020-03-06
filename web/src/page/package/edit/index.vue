@@ -49,7 +49,7 @@ import { getInterfacesApi, endListApi, javaListApi } from '@/config/api/inserv-a
 import { formatDate, generateReturns } from '@/config/utils'
 
 export default {
-  name: 'interfacesDetail',
+  name: 'packageEdit',
   data () {
     return {
       endListApi,

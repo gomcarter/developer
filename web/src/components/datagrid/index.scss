@@ -56,7 +56,7 @@
 }
 
 .datagrid-header-check {
-  width: 20px;
+  width: 30px;
   text-align: center;
 }
 
@@ -107,6 +107,7 @@
 
 .datagrid-row-expander-all, .datagrid-row-expander {
   cursor: pointer;
+  width: 46px;
 
   span {
     display: inline-block;

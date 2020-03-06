@@ -1,5 +1,5 @@
 <template>
-  <table class="datagrid-container datagrid-frame" :style="{'width': width || 'auto'}">
+  <table class="datagrid-container datagrid-frame" :style="{'width': width ? width + 'px' : 'auto'}">
     <thead class="datagrid-header">
     <tr class="datagrid-title" v-if=" (title||'').trim().length > 0">
       <th :colspan="columns.length + checkable + (+!!children)">
@@ -8,16 +8,16 @@
     </tr>
     <tr class="datagrid-toolbar" v-if="toolbar && toolbar.length > 0">
       <th :colspan="columns.length + checkable + (+!!children)">
-        <el-button type="primary" v-for="(item, index) in toolbar" @click="item.handler()" :key="index" :icon="item.icon"
-                   class="datagrid-toolbar-button">{{ item.title }}</el-button>
+        <el-button type="primary" v-for="(item, index) in toolbar" @click="item.handler && item.handler()" :key="index" :icon="item.icon"
+                   class="datagrid-toolbar-button" :disabled="(item.disabled && item.disabled()) || t*0 !== 0">{{ item.title }}</el-button>
       </th>
     </tr>
     <tr class="datagrid-header-row" v-if="columns != null  && columns.length > 0">
-      <td class="datagrid-row-expander-all" v-if="children">
+      <th class="datagrid-row-expander-all" v-if="children">
         <span :class="{'el-icon-plus': !expandAll, 'el-icon-minus': expandAll}" @click="expandAllToggle"></span>
-      </td>
+      </th>
       <th class="datagrid-header-check" v-if="checkable">
-        <input type="checkbox" v-if="!singleCheck && t" :disabled="(this.data || []).length === 0" v-model="checkAll" class="datagrid-checkbox">
+        <el-checkbox v-model="checkAll" v-if="!singleCheck && t" :disabled="(this.data || []).length === 0"></el-checkbox>
       </th>
       <th class="datagrid-header-cell" v-for="(column, index) in columns" :key="index"
           :style="{ width: column.width > 0 ? (column.width + 'px') : 'auto'}"
@@ -28,16 +28,16 @@
       </th>
     </tr>
     </thead>
-    <tbody class="datagrid-body">
+    <tbody class="datagrid-body" >
     <template v-for="(row, rowIndex) in data"
               v-if="onBeforeRenderRow == null || onBeforeRenderRow(row, rowIndex) !== false">
       <tr class="datagrid-body-row" @dblclick="expandRowToggle(row)" :key="'r_' + rowIndex">
         <td class="datagrid-row-expander" v-if="children">
-          <span :class="{'el-icon-plus': !row.$expanded + t * 0, 'el-icon-minus': !!row.$expanded + t * 0}"
+          <span :class="{'el-icon-plus': !row.$expanded, 'el-icon-minus': !!row.$expanded}"
                 @click="expandRowToggle(row)"></span>
         </td>
         <td class="datagrid-row-check" v-if="checkable">
-          <input type="checkbox" :checked="row.$checked + t * 0" @click="onRowCheckClicked(row)" class="datagrid-checkbox">
+          <el-checkbox v-model="row.$checked" @change="onRowCheckChanged(row)"></el-checkbox>
         </td>
 
         <td class="datagrid-body-td" v-for="(col, colIndex) in columns"
@@ -58,7 +58,7 @@
           </div>
         </td>
       </tr>
-      <tr class="datagrid-body-row-child" :key="'d_' + rowIndex" v-if="children && (row.$expanded +  t * 0)" >
+      <tr class="datagrid-body-row-child" :key="'d_' + rowIndex" v-if="children && row.$expanded" >
         <td class="datagrid-body-td" v-if="children"></td>
         <td class="datagrid-body-td" v-if="checkable"></td>
         <td class="datagrid-body-td" :colspan="columns.length">
@@ -94,7 +94,7 @@
 * title:String        - title，默认没有
 * sortBy:String       - 按什么字段排序，默认不排序
 * orderBy:String      - ASC（正序）/DESC（倒序）排序，默认不排序
-* toolbar:Array       - 工具栏，格式为：{title:'toolbar',handler(){ doSomething }}
+* toolbar:Array       - 工具栏，格式为：{title:'toolbar',disabled: () => {}, handler: () => { doSomething }}
 * dataUrl:String      - 数据请求的url路径，不设置则不请求数据
 * countUrl:String     - 数据条数请求的url路径，当pageable为true时有效，不设置则不请求总条数（分页不起效）
 * params:String       - 请求参数，当改变时，自动请求数据
@@ -117,11 +117,14 @@
 *                     -}
 *
 * api:
-* getCheckedData()    - 返回checked的数据
+* getSelected()       - 返回checked的数据
 * reload()            - 刷新
+* clearSelections()   - 清除选择项
 *
 * 回调：
-* onSelected(row)               - 用户选择一行时，回调此方法。
+* onSelected(row)               - 用户选择一行时，回调此方法，参数：选中行。
+* onUnSelected(row)             - 用户取消选择一行时，回调此方法，参数：取消选中行。
+* onSelectionChanged(row)       - 选择项发生变化时，回调此方法，参数：选中行。
 * onBeforeLoad(params)          - 在即将请求远程数据数据之前触发此事件，params是参数，return false将取消加载数据
 * onLoadSuccess(data)           - 在请求远程数据完毕时触发此事件，data是请求回来的数据，return false将取消渲染列表
 * onBeforeRenderRow(row, index) - 在渲染某一行数据之前触发此事件，row是该行数据，index是数据第几行，return false将需要渲染该行数据
@@ -129,10 +132,12 @@
 <script>
 import pager from '@/components/pager'
 import { Loading } from 'element-ui'
+import md5 from 'js-md5'
 
 export default {
   props: {
     width: null,
+    height: null,
     // 子节点
     children: {
       type: Object,
@@ -209,6 +214,18 @@ export default {
     onBeforeRenderRow: {
       type: Function,
       default: null
+    },
+    onSelected: {
+      type: Function,
+      default: null
+    },
+    onUnSelected: {
+      type: Function,
+      default: null
+    },
+    onSelectionChanged: {
+      type: Function,
+      default: null
     }
   },
   data () {
@@ -227,6 +244,7 @@ export default {
       order: null,
       requestParams: {},
       data: [],
+      selected: {},
       // 参数是否已经改变，如果没改变，就不需要去重新请求总条数
       paramsChanged: true
     }
@@ -240,7 +258,7 @@ export default {
     // 修改参数，datagrid将重新拉取数据
     this.requestParams = Object.assign(p, o, this.params)
 
-    this.data = this.loadData
+    this.formatData(this.loadData)
   },
   computed: {
     checkAll: {
@@ -248,7 +266,32 @@ export default {
         return this.data && this.data.length > 0 && this.data.filter(s => !s.$checked).length === 0
       },
       set (checked) {
-        this.data.forEach(s => this.$set(s, '$checked', checked))
+        let changed = false
+        this.data.forEach(s => {
+          if (s.$checked !== checked) {
+            this.$set(s, '$checked', checked)
+            if (checked) {
+              this.selected[s.$hash] = s
+              if (this.onSelected) {
+                this.onSelected(s)
+              }
+            } else {
+              delete this.selected[s.$hash]
+
+              if (this.onUnSelected) {
+                this.onUnSelected(s)
+              }
+            }
+
+            changed = true
+          }
+        })
+        if (changed) {
+          this.t = this.t + 1
+          if (this.onSelectionChanged) {
+            this.onSelectionChanged(this.getSelected())
+          }
+        }
       }
     }
   },
@@ -262,7 +305,7 @@ export default {
       this.page = 1
     },
     loadData () {
-      this.data = this.loadData
+      this.formatData(this.loadData)
     },
     requestParams () {
       // 重新请求数据
@@ -272,33 +315,77 @@ export default {
     }
   },
   methods: {
-    onRowCheckClicked (row) {
-      if (this.singleCheck) {
-        this.data.forEach(s => {
-          s.$checked = false
-        })
+    clearSelections () {
+      this.data.forEach(s => {
+        s.$checked = false
+      })
+      Object.entries(this.selected).forEach(s => delete this.selected[s[0]])
+      if (this.onSelectionChanged) {
+        this.onSelectionChanged([])
       }
-      row.$checked = true
+      this.t = this.t + 1
+    },
+    formatData (input) {
+      // 清空原来数据
+      this.data.length = 0;
+      // 把新数据加入
+      (input || []).forEach(s => {
+        if (this.checkable) {
+          s.$hash = md5(JSON.stringify(s))
+          s.$checked = !!this.selected[s.$hash]
+        }
+        this.data.push(s)
+      })
+      this.t += 1
+    },
+    onRowCheckChanged (row) {
+      if (row.$checked) {
+        // 勾中，如果是单选，需要把其他选中的删除
+        if (this.singleCheck) {
+          this.data.forEach(s => {
+            if (row.$hash !== s.$hash) {
+              if (s.$checked && this.onUnSelected) {
+                this.onUnSelected(row)
+              }
+
+              s.$checked = false
+            }
+          })
+
+          // 清空所有 selected
+          Object.entries(this.selected).forEach(s => delete this.selected[s[0]])
+        }
+        this.selected[row.$hash] = row
+
+        if (this.onSelected) {
+          this.onSelected(row)
+        }
+      } else {
+        delete this.selected[row.$hash]
+
+        if (this.onUnSelected) {
+          this.onUnSelected(row)
+        }
+      }
       this.t += 1
 
-      if (this.onSelected) {
-        this.onSelected(row)
+      if (this.onSelectionChanged) {
+        this.onSelectionChanged(this.getSelected())
       }
     },
     expandAllToggle () {
       this.expandAll = !this.expandAll
       this.data.map(r => {
-        r.$expanded = this.expandAll
+        this.$set(r, '$expanded', this.expandAll)
       })
-      this.t += 1
     },
     expandRowToggle (row) {
-      row.$expanded = !row.$expanded
+      this.$set(row, '$expanded', !row.$expanded)
+      // row.$expanded = !row.$expanded
       this.expandAll = this.data && this.data.length > 0 && this.data.filter(s => !s.$expanded).length === 0
-      this.t += 1
     },
-    getCheckedData () {
-      return (this.data || []).filter(s => s.$checked)
+    getSelected () {
+      return Object.entries(this.selected).map(s => s[1])
     },
     reload () {
       this.paramsChanged = true
@@ -354,7 +441,7 @@ export default {
             if (this.onLoadSuccess != null && this.onLoadSuccess(res) === false) {
               return
             }
-            this.data = res
+            this.formatData(res)
             this.expandAll = false
           }).catch(() => {
             loading.close()

@@ -43,35 +43,50 @@ const router = new Router({
         menu: false
       }
     },
+    { // 接口管理
+      path: '/package/list',
+      name: 'packageList',
+      component: r => require.ensure([], (require) => { r(require('@/page/package')) }, 'packageList')
+    },
+    { // 接口管理---详情
+      path: '/package/edit/:id',
+      name: 'packageEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/package/edit')) }, 'packageEdit')
+    },
+    { // 接口管理---详情
+      path: '/package/view/:id',
+      name: 'packageView',
+      component: r => require.ensure([], (require) => { r(require('@/page/package/view')) }, 'packageView')
+    },
     { // 项目管理
-      path: '/project/list',
-      name: 'projectList',
-      component: r => require.ensure([], (require) => { r(require('@/page/project/list')) }, 'projectList')
+      path: '/consumer/list',
+      name: 'consumerList',
+      component: r => require.ensure([], (require) => { r(require('@/page/consumer/list')) }, 'consumerList')
     },
     { // 项目管理---编辑
-      path: '/project/list/edit/:id',
-      name: 'projectListeEitId',
-      component: r => require.ensure([], (require) => { r(require('@/page/project/edit')) }, 'projectListeEit')
+      path: '/consumer/list/edit/:id',
+      name: 'consumer',
+      component: r => require.ensure([], (require) => { r(require('@/page/consumer/edit')) }, 'consumerListEdit')
     },
     { // 项目管理---新增
-      path: '/project/list/edit',
-      name: 'projectListeEit',
-      component: r => require.ensure([], (require) => { r(require('@/page/project/edit')) }, 'projectListeEit')
+      path: '/consumer/list/edit',
+      name: 'consumerListEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/consumer/edit')) }, 'consumerListEdit')
     },
     { // 模块管理
-      path: '/module/list',
-      name: 'moduleList',
-      component: r => require.ensure([], (require) => { r(require('@/page/module/list')) }, 'moduleList')
+      path: '/provider/list',
+      name: 'providerList',
+      component: r => require.ensure([], (require) => { r(require('@/page/provider/list')) }, 'providerList')
     },
     { // 模块管理---编辑
-      path: '/module/list/edit/:id',
-      name: 'moduleListeEitId',
-      component: r => require.ensure([], (require) => { r(require('@/page/module/edit')) }, 'moduleListeEit')
+      path: '/provider/list/edit/:id',
+      name: 'providerListEditId',
+      component: r => require.ensure([], (require) => { r(require('@/page/provider/edit')) }, 'providerListEdit')
     },
     { // 模块管理---新增
-      path: '/module/list/edit',
-      name: 'moduleListeEit',
-      component: r => require.ensure([], (require) => { r(require('@/page/module/edit')) }, 'moduleListeEit')
+      path: '/provider/list/edit',
+      name: 'providerListEdit',
+      component: r => require.ensure([], (require) => { r(require('@/page/provider/edit')) }, 'providerListEdit')
     },
     { // 接口测试
       path: '/test',

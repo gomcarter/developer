@@ -49,6 +49,7 @@
 
 <script>
 import { addEndApi, getEndApi, updateEndApi } from '@/config/api/inserv-api'
+
 export default {
   data () {
     return {
@@ -97,7 +98,7 @@ export default {
                   back: '返回编辑',
                   buttons: [{
                     text: '去列表',
-                    link: '/project/list'
+                    link: '/consumer/list'
                   }]
                 })
               }).catch((err) => {
@@ -109,7 +110,7 @@ export default {
                   back: '继续添加',
                   buttons: [{
                     text: '去列表',
-                    link: '/project/list'
+                    link: '/consumer/list'
                   }]
                 })
               }).catch((err) => {

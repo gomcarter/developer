@@ -121,7 +121,7 @@ export default {
   },
   methods: {
     claimVersioned () {
-      const current = this.$refs.dg.getCheckedData()
+      const current = this.$refs.dg.getSelected()
       if (current != null && current.length > 0) {
         this.currentVersioned = current[0]
 

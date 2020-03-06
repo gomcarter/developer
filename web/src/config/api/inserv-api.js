@@ -10,17 +10,8 @@ export const loginApi = async (params) => {
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
-/**
- * @author gomcarter 2019-02-26
- * @returns 接口管理---接口列表-新增
- */
-export const addInterfaces = async (params) => {
-  const res = await xhr.post(`${INSERV_URL}developer/interfaces`, params)
-  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
-}
-
 export const deleteInterfaces = async (id) => {
-  const res = await xhr.post(`${INSERV_URL}developer/interfaces/delete/${id}`)
+  const res = await xhr.delete(`${INSERV_URL}developer/interfaces/${id}`)
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }
 
@@ -402,4 +393,29 @@ export const mockUrl = (hash) => {
     // local模式
     return 'http:' + INSERV_URL + 'publics/mock/' + hash
   }
+}
+
+export const packageListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/packaged/list`, {params})
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+export const packageCountApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/packaged/count`, {params})
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+export const getPackageApi = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/packaged/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+export const addPackageApi = async (params) => {
+  const res = await xhr.post(`${INSERV_URL}developer/packaged`, params)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+export const deletePackageApi = async (id) => {
+  const res = await xhr.delete(`${INSERV_URL}developer/packaged/${id}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
 }

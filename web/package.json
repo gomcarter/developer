@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.9.1",
+    "js-md5": "^0.7.3",
     "vue": "^2.5.2",
     "vue-clipboard2": "^0.2.1",
     "vue-quill-editor": "^3.0.6",

@@ -146,9 +146,10 @@ export default {
           name: '接口管理',
           open: false,
           subItems: [
-            {link: '/project/list', name: '前端项目', selected: false},
-            {link: '/module/list', name: '后端项目', selected: false},
-            {link: '/interfaces/list', name: '接口列表', selected: false}
+            {link: '/consumer/list', name: '前端项目列表', selected: false},
+            {link: '/provider/list', name: '后端服务列表', selected: false},
+            {link: '/interfaces/list', name: '接口列表', selected: false},
+            {link: '/package/list', name: '打包列表', selected: false}
           ]
         },
         {

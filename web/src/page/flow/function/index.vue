@@ -39,8 +39,8 @@ export default {
       }],
       columns: [
         {field: 'name', header: '规则名称', sort: 'name', width: 200},
-        {field: 'script', header: '脚本', sort: 'script', width: 600},
-        {field: 'mark', header: '备注', sort: 'mark', width: 500},
+        {field: 'script', header: '脚本', sort: 'script', width: 500},
+        {field: 'mark', header: '备注', sort: 'mark', width: 400},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
