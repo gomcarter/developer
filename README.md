@@ -19,6 +19,7 @@ nacos（默认）：
 其他配置中心（需自行下载源码打包）：
 
     考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式下载源码自行打包
+    只需下载java目录下的代码即可：https://github.com/gomcarter/developer/tree/master/java
     
     具体操作如下（以本地模式示例）：
     1，将pom.xml中 
@@ -28,7 +29,7 @@ nacos（默认）：
         <artifactId>config-center-diamond</artifactId> —— diamond
         当然如果还有其他的配置中心，可自行实现，参照：https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
 
-    2，建一个database.properties将上面（二中第3步：配置数据库连接）内容存放于此，假设此文件就放在resource下
+    2，建一个database.properties将上面（下面第3步：配置数据库连接）内容存放于此，假设此文件就放在resource下
     3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
     4，编译打包即可
 
