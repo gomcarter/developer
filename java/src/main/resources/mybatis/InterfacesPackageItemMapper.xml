@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author gomcarter on 2020-03-06 14:08:36 -->
+<mapper namespace="com.gomcarter.developer.dao.InterfacesPackageItemMapper">
+    <resultMap type="com.gomcarter.developer.entity.InterfacesPackageItem" id="interfacesPackageItemMap">
+        <id column="id" property="id"/>
+            <result column="interfaces_id" property="interfacesId"/>
+            <result column="interfaces_package_id" property="interfacesPackageId"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+    <insert id="batchInsert">
+        INSERT INTO interfaces_package_item
+        (`interfaces_package_id`,`interfaces_id`)
+        VALUES
+        <foreach collection="interfacesIdList" item="_interface_id_" index="index" separator=",">
+            (#{packageId},#{_interface_id_})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPackageId">
+        delete from interfaces_package_item where interfaces_package_id = ${packageId}
+    </delete>
+    <!-- //@NotReplaceableEnd  -->
+</mapper>

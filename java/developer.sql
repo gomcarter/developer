@@ -53,6 +53,27 @@ CREATE TABLE `interfaces` (
   KEY `fk_end_id` (`fk_end_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口';
 
+CREATE TABLE `interfaces_package` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `name` varchar(50) DEFAULT NULL COMMENT '打包名称',
+  `mark` text COMMENT '详细描述：如返回值说明，接口的一些说明等',
+  `test_case_id` bigint(20) DEFAULT NULL COMMENT '绑定一个test_case id',
+  `user_name` varchar(225) DEFAULT NULL COMMENT '用户名称（谁建的）',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口打包';
+
+CREATE TABLE `interfaces_package_item` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `interfaces_id` bigint(20) DEFAULT NULL COMMENT 'interfaces id',
+  `interfaces_package_id` bigint(20) DEFAULT NULL COMMENT 'package id',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modify_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `interfaces_package_id` (`interfaces_package_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口打包行';
+
 CREATE TABLE `interfaces_versioned` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `hash` varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
