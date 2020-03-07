@@ -30,19 +30,19 @@
       </el-form-item>
       <el-form-item label="开发地址：">
         <div><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="`${data.java.devDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.devDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+        <span>mock地址：<a :href="originMockUrl(data.java.devDomain, data.url)" target="_blank">{{originMockUrl(data.java.devDomain, data.url)}}</a></span>
       </el-form-item>
       <el-form-item label="测试地址：">
         <div><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="`${data.java.testDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.testDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+        <span>mock地址：<a :href="originMockUrl(data.java.testDomain, data.url)" target="_blank">{{originMockUrl(data.java.testDomain, data.url)}}</a></span>
       </el-form-item>
       <el-form-item label="预发地址：">
         <div><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="`${data.java.prevDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.prevDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+        <span>mock地址：<a :href="originMockUrl(data.java.prevDomain, data.url)" target="_blank">{{originMockUrl(data.java.prevDomain, data.url)}}</a></span>
       </el-form-item>
       <el-form-item label="生产地址：">
         <div><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="`${data.java.onlineDomain}/_mock?url=${encodeURIComponent(data.url)}`" target="_blank">{{`${data.java.onlineDomain}/_mock?url=${encodeURIComponent(data.url)}`}}</a></span>
+        <span>mock地址：<a :href="originMockUrl(data.java.onlineDomain, data.url)" target="_blank">{{originMockUrl(data.java.onlineDomain, data.url)}}</a></span>
       </el-form-item>
       <el-form-item label="备用mock地址：">
         <div><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></div>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl } from '@/config/api/inserv-api'
+import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl, originMockUrl } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
 import { user } from '@/config/login'
 
@@ -101,6 +101,7 @@ export default {
   data () {
     return {
       mockUrl,
+      originMockUrl,
       data: null,
       formatDate,
       returns: null,

@@ -7,11 +7,13 @@
         {{form.name}}
       </el-form-item>
       <el-form-item style="margin-left: -3em;">
-        <v-runner ref='runner' :width="width" :height="height" style="line-height: 20px; "></v-runner>
+        <v-runner ref='runner' :width="width" :height="height" style="line-height: 20px; "
+                  :finished="finished" :prepared="finished"></v-runner>
       </el-form-item>
       <el-form-item>
         <el-button type="info" @click="$router.go(-1)" icon="el-icon-back">返回</el-button>
-        <el-button type="success" @click="run" icon="el-icon-magic-stick">测试</el-button>
+        <el-button type="success" @click="run(false)" :icon="disabled?'el-icon-loading':'el-icon-magic-stick'" :disabled="disabled">运行</el-button>
+        <el-button type="success" @click="run(true)" :icon="disabled?'el-icon-loading':'el-icon-video-camera-solid'" :disabled="disabled">mock运行</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -25,7 +27,7 @@ export default {
     return {
       width: 1000,
       height: 618,
-      disabled: false,
+      disabled: true,
       functionListApi,
       id: this.$route.params.id,
       form: {
@@ -58,8 +60,12 @@ export default {
         })
       }
     },
-    run () {
-      this.$refs.runner.run()
+    run (mock) {
+      this.disabled = true
+      this.$refs.runner.run(mock)
+    },
+    finished () {
+      this.disabled = false
     }
   },
   components: {
@@ -69,9 +75,7 @@ export default {
     'v-workflow': () => import('@/components/workflow')
   },
   mounted () {
-    window.that = this
-    this.width = this.$el.clientWidth
-    console.log(this.$el.clientWidth)
+    this.width = this.$el.clientWidth - 100
     this.init()
   }
 }

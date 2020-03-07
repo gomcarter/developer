@@ -12,6 +12,7 @@
 <script>
 import G6 from '@antv/g6'
 import { functionListApi, interfacesSimpleListApi, interfacesVersionedSimpleListApi } from '@/config/api/inserv-api'
+import { constructExecutableDataModel } from '@/config/utils'
 
 export default {
   props: {
@@ -122,8 +123,10 @@ export default {
       } else {
         const sorted = nodes.map(n => n.getModel().id)
           .filter(s => s !== 'main')
-          .sort()
-        const maxId = sorted[sorted.length - 1].replace('g', '')
+          .map(s => parseInt(s.replace('g', '')))
+          .concat((this.graph.getEdges() || []).map(n => n.getModel().id).map(s => parseInt(s.replace('g', ''))))
+          .sort((a, b) => a - b)
+        const maxId = sorted[sorted.length - 1] || 0
         return 'g' + (+maxId + 1)
       }
     },
@@ -169,11 +172,11 @@ export default {
         }
       })
 
-      const data = Object.assign({nodes: [{ id: this.uuid(), shape: 'rect', label: '主节点', x: this.width / 2, y: 50 }]}, this.dataList)
+      const data = Object.assign({nodes: [{ id: this.uuid(), shape: 'rect', label: '主节点', x: this.width / 2, y: 100 }]}, this.dataList)
       this.graph.data(data)
       this.graph.render()
 
-      if (!this.dataList) {
+      if (this.dataList == null || Object.entries(this.dataList).length === 0) {
         this.graph.getNodes().forEach(n => this.graph.setItemState(n, 'pending', true))
       }
     },
@@ -414,10 +417,34 @@ export default {
       const nodes = this.graph.getNodes().map(s => s.getModel())
       const edges = this.graph.getEdges().map(s => s.getModel())
       return { nodes, edges }
+    },
+    beautify () {
+      const model = constructExecutableDataModel(this.graph)
+
+      for (let i = 0; i < model.length; i++) {
+        if (model[i].length > 5) {
+          this.$alert('无法美化！', '提示', {type: 'info'})
+          return
+        }
+      }
+
+      const base = 190
+      for (let i = 0; i < model.length; i++) {
+        const level = model[i]
+        const deltaX = (this.width - base * 2) / level.length
+        for (let j = 0; j < level.length; j++) {
+          const item = level[j]
+          const model = item.getModel()
+          model.x = base + deltaX / 2 + deltaX * j - 60
+          model.y = 100 + 150 * i
+          this.graph.updateItem(item, model)
+        }
+      }
+
+      this.graph.render()
     }
   },
   mounted () {
-    window.that = this
     // 先注册，再初始化，再绑定事件
     // 初始化边动画
     this.registerEdge()

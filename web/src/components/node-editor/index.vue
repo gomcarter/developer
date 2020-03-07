@@ -72,7 +72,7 @@ return {
   id: $${nodeId}.id,
   name: $${nodeId}.name,
   quantity: $${nodeId}.quantity
-}`" :rows="15" type="textarea" v-model="node.javascript">
+}`" :rows="18" type="textarea" v-model="node.javascript">
           </el-input>
         </el-form-item>
       </el-form>
@@ -98,7 +98,6 @@ export default {
         sleep: 0,
         interfaceId: null,
         interfaceName: null,
-        functionId: null,
         history: false,
         hash: null,
         method: null,
@@ -157,7 +156,6 @@ export default {
       // load
       this.node.interfaceId = data.interfaceId
       this.node.interfaceName = data.interfaceName
-      this.node.functionId = data.functionId
       this.node.history = data.history || false
       this.node.hash = data.hash
       this.node.headers = data.headers || []

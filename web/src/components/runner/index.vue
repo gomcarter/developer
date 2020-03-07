@@ -10,7 +10,7 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <div>
+    <div style="margin: 10px 0">
       <span class="simple waiting"></span><span>-等待执行</span>&#12288;
       <span class="simple running"></span><span>-执行中</span>&#12288;
       <span class="simple success"></span><span>-执行成功</span>&#12288;
@@ -37,8 +37,8 @@
 <script>
 import G6 from '@antv/g6'
 import { xhr } from '@/config/api/http'
-import { functionListApi } from '@/config/api/inserv-api'
-import { toQueryString, sleep } from '@/config/utils'
+import { functionListApi, originMockUrl } from '@/config/api/inserv-api'
+import { toQueryString, sleep, constructExecutableDataModel } from '@/config/utils'
 
 export default {
   props: {
@@ -49,6 +49,14 @@ export default {
     height: {
       type: Number,
       default: 618
+    },
+    finished: {
+      type: Function,
+      default: () => {}
+    },
+    prepared: {
+      type: Function,
+      default: () => {}
     }
   },
   data () {
@@ -73,72 +81,19 @@ export default {
       this.graph.data(this.workflow)
       this.graph.render()
 
-      this.constructExecutableDataModel()
-
-      // 初始化预制参数
-      this.initPresetParams()
-    },
-    /**
-     * 对节点进行编排，编排成这样 [[node1,node2 ...], [node3,node4...]] 将node分层，方便依次执行这些节点。
-     */
-    constructExecutableDataModel () {
       this.log('初始化运行流程：')
-      this.model = []
-      // 遍历节点找到最顶端的节点设置为level 1， 往下一层level 2， 以此类推，把所有节点分层
-      // 然后最后执行时就从第一层开始执行，到最后一层。
-      const nodes = this.graph.getNodes()
-      nodes.forEach(n => { n.getModel().mark = 0 })
-      const totalCounts = nodes.length
-
-      // 第一层怎么找: 存在任何一个节点只有出没有入的节点
-      let currentNodes = nodes.filter(n => n.getEdges().filter(e => e.getSource() !== n).length === 0)
-      let count = currentNodes.length
-      if (count === 0) {
-        // 如果没有找到首节点，证明产生了回环，那么随便选一个节点作为 currentNodes
-        currentNodes = [nodes[0]]
-        count++
-      }
-      this.model.push(currentNodes)
-      // 标记节点已经被修改
-      currentNodes.forEach(n => { n.getModel().mark = n.getModel().mark + 1 })
-      // currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
-
-      // 第二层开始：入口是上一层的下层节点，而且（如果一个节点存在多个入口，如又是第二层又是第三层，那么要取第三层）
-      while (count < totalCounts) {
-        currentNodes = this.graph.getEdges()
-          .filter(e => {
-            const isPreLevelChildren = currentNodes.indexOf(e.getSource()) >= 0
-            if (isPreLevelChildren) {
-              const target = e.getTarget()
-              const targetIsMe = target.getEdges().filter(n => n.getTarget() === target)
-              target.getModel().mark = target.getModel().mark + 1
-              if (targetIsMe.length === target.getModel().mark) {
-                return true
-              }
-            }
-            return false
-          })
-          .map(e => e.getTarget())
-
-        if (currentNodes.length === 0) {
-          // 没有找到则从剩下的node中随便取一个
-          currentNodes = [nodes.filter(n => n.getModel().mark === false)[0]]
-          count++
-        } else {
-          count += currentNodes.length
-        }
-
-        // 表示已处理
-        this.model.push(currentNodes)
-      }
-
+      this.model = constructExecutableDataModel(this.graph)
       // logs
       let index = 1
       this.model.forEach(m => {
         this.log(index + ' => ' + m.map(mm => `${mm.getModel().label}（$${mm.getModel().id}）`).join('，'))
         index++
       })
+
+      this.log('运行流程初始化完毕')
       this.log('')
+      // 初始化预制参数
+      this.initPresetParams()
     },
     registerEdge () {
       // lineDash 的差值，可以在后面提供 util 方法自动计算
@@ -266,20 +221,28 @@ export default {
       // 2，拿出非固定值，请求获取到function，再通过function获取到最新的值
       const functionPresetParams = this.presetParams.filter(s => !s.fix)
       const functionIdList = functionPresetParams.map(s => s.functionId)
-      functionListApi({idList: functionIdList})
-        .then(r => {
-          const map = {}
-          r.forEach(c => {
-            /* eslint-disable */
-            map[c.id] = Function(c.script)()
-          })
+      if (functionIdList.length > 0) {
+        functionListApi({idList: functionIdList})
+          .then(r => {
+            const map = {}
+            r.forEach(c => {
+              /* eslint-disable */
+              map[c.id] = Function(c.script)()
+            })
 
-          functionPresetParams.forEach(s => {
-            window['$' + s.key] = map[s.functionId]
-            this.log('$' + s.key + ' => ' + window['$' + s.key])
+            functionPresetParams.forEach(s => {
+              window['$' + s.key] = map[s.functionId]
+              this.log('$' + s.key + ' => ' + window['$' + s.key])
+            })
+            this.log('预置参数初始化完毕')
+            this.log('')
+            this.prepared && this.prepared()
           })
-          this.log('')
-        })
+      } else {
+        this.log('预置参数初始化完毕')
+        this.log('')
+        this.prepared && this.prepared()
+      }
     },
     clearState (node) {
       node = node == null ? this.graph.getNodes() : (node instanceof Array ? node : [node])
@@ -297,7 +260,11 @@ export default {
       state = state instanceof Array ? state : [state]
       node.forEach(n => state.forEach(s => this.graph.setItemState(n, s, bool)))
     },
-    run () {
+    /**
+     * 默认 mock = false
+     * @param mock
+     */
+    run (mock = false) {
       this.log('开始执行：')
       this.clearState()
       this.graph.getNodes().forEach(n => {
@@ -306,12 +273,18 @@ export default {
 
       this.setState(null, 'waiting')
 
-      this.runLevel(0)
+      if (mock !== undefined && mock !== true) {
+        mock = false
+      }
+
+      this.runLevel(0, mock)
     },
-    runLevel (level) {
+    runLevel (level, mock) {
       if (level >= this.model.length) {
         this.log('执行完毕！')
         this.log('')
+
+        this.finished && this.finished()
         return
       }
 
@@ -391,7 +364,7 @@ export default {
           }
         } else {
           this.log(`开始执行节点：${model.label}（$${model.id}）`)
-          this.buildXhr(data)
+          this.buildXhr(data, mock)
             .then((d) => {
               if (d.data.success != false) {
                 // 赋值
@@ -456,24 +429,25 @@ export default {
       const timer = setInterval(() => {
         if (error) {
           clearInterval(timer)
-          this.log("支持完毕，执行过程中发生了错误！")
+          this.log("执行完毕，执行过程中发生了错误！")
           this.log('')
+          this.finished && this.finished()
         }
 
         if (totalCount <= count) {
           count = 0
           clearInterval(timer)
           // 执行下一层
-          this.runLevel(level + 1)
+          this.runLevel(level + 1, mock)
         }
       }, 100)
     },
-    buildXhr (model) {
+    buildXhr (model, mock) {
       let params
       let method = model.method.toLowerCase()
       let res
       let obj = {}
-      let url = model.java[this.env] + model.url
+      let url = mock ? originMockUrl(model.java[this.env], model.url) : (model.java[this.env] + model.url)
       let bodyParams
       if (model.parameters.length > 0) {
         model.parameters.forEach(p => {

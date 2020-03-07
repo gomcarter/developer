@@ -10,13 +10,13 @@
         <el-input v-model="data.prefix" placeholder="输入项目前缀" />
       </el-form-item>
       <el-form-item label="jar包地址:" class="min_width">
-        <el-input v-model="data.jarUrl" placeholder="输入项目前缀" />
+        <el-input v-model="data.jarUrl" placeholder="输入jar包地址，比如maven仓库的地址" />
       </el-form-item>
       <el-form-item label="类名:" class="min_width">
-        <el-input v-model="data.kls" placeholder="输入项目前缀" />
+        <el-input v-model="data.kls" placeholder="输入类名" />
       </el-form-item>
       <el-form-item label="方法:" prop="method" class="min_width">
-        <el-input v-model="data.method" placeholder="输入项目前缀" />
+        <el-input v-model="data.method" placeholder="输入方法，此方法必须是静态方法" />
       </el-form-item>
       <el-form-item label="参数:" >
         <div  v-if="args && args.length > 0" v-for="(arg, index) in args" :key="index">

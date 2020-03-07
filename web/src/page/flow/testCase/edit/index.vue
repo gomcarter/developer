@@ -30,22 +30,15 @@
           </el-form-item>
         </el-form>
       </el-form-item>
-<!--      <el-form-item label="备注:">-->
-<!--        <el-input v-model="form.mark" type="textarea" rows="5" placeholder="请输入备注信息"></el-input>-->
-<!--      </el-form-item>-->
-      <el-form-item label="配置流程:" label-width="8em" v-if="id">
-        <div class="container" :style="{width: width + 2 + 'px', height: height + 2 + 'px'}">
+      <el-form-item label="配置流程:" label-width="8em">
+        <div class="container" :style="{width: width + 2 + 'px'}">
           <v-workflow ref="workflow" v-if="form.workflow" :data-list="form.workflow" :width="width" :height="height"></v-workflow>
         </div>
       </el-form-item>
-      <el-form-item label="配置流程:" label-width="8em" v-else>
-        <div class="container" :style="{width: width + 2 + 'px', height: height + 2 + 'px'}">
-          <v-workflow ref="workflow" :width="width" :height="height"></v-workflow>
-        </div>
-      </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">提交</el-button>
         <el-button type="info" @click="$router.go(-1)" icon="el-icon-back">返回</el-button>
+        <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">提交</el-button>
+        <el-button type="success" @click="beautify" icon="el-icon-s-grid">美化</el-button>
         <el-button type="success" @click="test" icon="el-icon-magic-stick">测试</el-button>
       </el-form-item>
     </el-form>
@@ -60,20 +53,21 @@
 </template>
 
 <script>
-import { createTestCaseApi, getTestCaseDetailApi, updateTestCaseApi, functionListApi } from '@/config/api/inserv-api'
+import { createTestCaseApi, getTestCaseDetailApi, updateTestCaseApi, functionListApi, getPackageApi, interfacesSimpleListApi } from '@/config/api/inserv-api'
+import { getUrlHashParams } from '@/config/utils'
 
 export default {
   data () {
     return {
       width: 1000,
-      height: 1000,
+      height: 800,
       title: '新增用例',
       disabled: false,
       functionListApi,
       id: this.$route.params.id,
+      packageId: null,
       form: {
         name: null,
-        mark: null,
         workflow: null
       },
       presetParams: []
@@ -87,19 +81,6 @@ export default {
     },
     delPresetParams (i) {
       this.presetParams.splice(i, 1)
-    },
-    init () {
-      if (this.id) {
-        this.title = '修改用例'
-        getTestCaseDetailApi(this.id).then((res) => {
-          this.form.name = res.name
-          this.form.mark = res.mark
-          this.form.workflow = JSON.parse(res.workflow)
-          this.presetParams = JSON.parse(res.presetParams)
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
     },
     save () {
       this.$refs.edit.validate((valid) => {
@@ -148,8 +129,8 @@ export default {
       return {
         workflow: JSON.stringify(this.$refs.workflow.workflow()),
         name: this.form.name,
-        mark: this.form.mark,
-        presetParams: JSON.stringify(this.presetParams)
+        presetParams: JSON.stringify(this.presetParams),
+        packageId: this.packageId
       }
     },
     test () {
@@ -164,6 +145,9 @@ export default {
     },
     runTest () {
       this.$refs.runner.run()
+    },
+    beautify () {
+      this.$refs.workflow.beautify()
     }
   },
   components: {
@@ -173,7 +157,75 @@ export default {
     'v-workflow': () => import('@/components/workflow')
   },
   mounted () {
-    this.init()
+    const { packageId } = getUrlHashParams()
+    if (packageId) {
+      this.disabled = true
+      this.packageId = packageId
+      getPackageApi(packageId)
+        .then((res) => {
+          this.form.name = res.name
+
+          interfacesSimpleListApi({rows: 1000, idList: res.interfacesIdList})
+            .then((res) => {
+              // 加载接口
+              if (res && res.length > 0) {
+                const nodes = []
+                const base = this.width / 2 - 200
+                for (let i = 0; i < res.length; ++i) {
+                  const face = res[i]
+                  let name = face.name
+                  if (name.length > 16) {
+                    name = name.substr(0, 8) + '\r\n' + name.substr(8, 7) + '...'
+                  } else if (name.length > 8) {
+                    name = name.substr(0, 8) + '\r\n' + name.substr(8, name.length)
+                  }
+
+                  // load
+                  const data = {
+                    interfaceId: face.id,
+                    interfaceName: name,
+                    history: false,
+                    hash: face.hash,
+                    headers: [],
+                    javascript: null,
+                    java: face.java,
+                    url: face.url,
+                    sleep: null,
+                    returns: JSON.parse(face.returns),
+                    method: face.method,
+                    parameters: JSON.parse(face.parameters)
+                  }
+
+                  const id = 'g' + i
+                  const node = {
+                    id: id,
+                    shape: 'rect',
+                    label: '（' + id + '）' + name,
+                    x: base + (i % 3) * 190,
+                    y: (parseInt(i / 3) + 1) * 100,
+                    data
+                  }
+                  nodes.push(node)
+                }
+                this.form.workflow = {nodes}
+              } else {
+                this.form.workflow = {}
+              }
+
+              this.disabled = false
+            })
+          // this.form.workflow = JSON.parse(res.workflow)
+        })
+    } else if (this.id) {
+      this.title = '修改用例'
+      getTestCaseDetailApi(this.id).then((res) => {
+        this.form.name = res.name
+        this.form.workflow = JSON.parse(res.workflow)
+        this.presetParams = JSON.parse(res.presetParams)
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
   }
 }
 </script>

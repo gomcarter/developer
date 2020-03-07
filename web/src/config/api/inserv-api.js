@@ -395,6 +395,10 @@ export const mockUrl = (hash) => {
   }
 }
 
+export const originMockUrl = (domain, url) => {
+  return `${domain}/_mock?url=${encodeURIComponent(url)}`
+}
+
 export const packageListApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/packaged/list`, {params})
   return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))

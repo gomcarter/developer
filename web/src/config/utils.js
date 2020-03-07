@@ -264,25 +264,6 @@ export const download = (content, filename) => {
 }
 
 /**
- * bIsPcOrPhone
- * return
- true: pc
- false: phone
- */
-export const bIsPcOrPhone = () => {
-  const sUserAgent = navigator.userAgent.toLowerCase()
-  const bIsIpad = sUserAgent.match(/ipad/i) == 'ipad'
-  const bIsIphoneOs = sUserAgent.match(/iphone os/i) == 'iphone os'
-  const bIsMidp = sUserAgent.match(/midp/i) == 'midp'
-  const bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == 'rv:1.2.3.4'
-  const bIsUc = sUserAgent.match(/ucweb/i) == 'ucweb'
-  const bIsAndroid = sUserAgent.match(/android/i) == 'android'
-  const bIsCE = sUserAgent.match(/windows ce/i) == 'windows ce'
-  const bIsWM = sUserAgent.match(/windows mobile/i) == 'windows mobile'
-  return !(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM)
-}
-
-/**
  * 全屏
  */
 export const fullScreen = (el) => {
@@ -293,6 +274,7 @@ export const fullScreen = (el) => {
 
   return
 }
+
 /**
  * 退出全屏
  */
@@ -645,4 +627,60 @@ export const sleep = (millisecond) => {
       resolve()
     }, millisecond)
   })
+}
+
+/**
+ * 对节点进行编排，编排成这样 [[node1,node2 ...], [node3,node4...]] 将node分层，方便依次执行这些节点。
+ */
+export const constructExecutableDataModel = (graph) => {
+  const model = []
+  // 遍历节点找到最顶端的节点设置为level 1， 往下一层level 2， 以此类推，把所有节点分层
+  // 然后最后执行时就从第一层开始执行，到最后一层。
+  const nodes = graph.getNodes()
+  nodes.forEach(n => { n.getModel().mark = 0 })
+  const totalCounts = nodes.length
+
+  // 第一层怎么找: 存在任何一个节点只有出没有入的节点
+  let currentNodes = nodes.filter(n => n.getEdges().filter(e => e.getSource() !== n).length === 0)
+  let count = currentNodes.length
+  if (count === 0) {
+    // 如果没有找到首节点，证明产生了回环，那么随便选一个节点作为 currentNodes
+    currentNodes = [nodes[0]]
+    count++
+  }
+  model.push(currentNodes)
+  // 标记节点已经被修改
+  currentNodes.forEach(n => { n.getModel().mark = n.getModel().mark + 1 })
+  // currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
+
+  // 第二层开始：入口是上一层的下层节点，而且（如果一个节点存在多个入口，如又是第二层又是第三层，那么要取第三层）
+  while (count < totalCounts) {
+    currentNodes = graph.getEdges()
+      .filter(e => {
+        const isPreLevelChildren = currentNodes.indexOf(e.getSource()) >= 0
+        if (isPreLevelChildren) {
+          const target = e.getTarget()
+          const targetIsMe = target.getEdges().filter(n => n.getTarget() === target)
+          target.getModel().mark = target.getModel().mark + 1
+          if (targetIsMe.length === target.getModel().mark) {
+            return true
+          }
+        }
+        return false
+      })
+      .map(e => e.getTarget())
+
+    if (currentNodes.length === 0) {
+      // 没有找到则从剩下的node中随便取一个
+      currentNodes = [nodes.filter(n => n.getModel().mark === false)[0]]
+      count++
+    } else {
+      count += currentNodes.length
+    }
+
+    // 表示已处理
+    model.push(currentNodes)
+  }
+
+  return model
 }

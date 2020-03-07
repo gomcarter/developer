@@ -6,7 +6,7 @@
           <el-input v-model="node.sleep" style="display: inline-block; width: 100px" placeholder="0"></el-input>&#12288;秒之后运行
         </el-form-item>
         <el-form-item label="条件处理脚本:">
-          <el-input :placeholder="`${hasSource?'您可以使用（'+ source.map(s => '$' + s).join('，') + '）来获取上游返回值':''}，
+          <el-input :placeholder="`${hasSource?'您可以使用（'+ source.map(s => '$' + s).join('，') + '）来获取上游返回值，':''}
 ${hasTarget? '并选择[' + target.map(t => ' \'' + t + '\' ').join(',') + ']中任意一个或者多个作为返回值，表示下游执行哪条线路' : ''}
 如不做任何处理，下游每条分支都将被运行，没有下游则说明都不执行，举例：
 
