@@ -19,18 +19,15 @@
         <el-input v-model="data.method" placeholder="输入方法，此方法必须是静态方法" />
       </el-form-item>
       <el-form-item label="参数:" >
-        <div  v-if="args && args.length > 0" v-for="(arg, index) in args" :key="index">
+        <el-button type="primary" icon="el-icon-plus" @click="addArgs()" circle size="small"></el-button>
+        <div v-if="args && args.length > 0" style="margin: 10px 0" v-for="(arg, index) in args" :key="index">
           <el-input placeholder="请输入参数名" class="half_min_width" v-model="arg.key">
             <template slot="prepend"><span class="table_title">参数类名</span></template>
           </el-input>
           <el-input placeholder="请输入参数值" class="hole_min_width" v-model="arg.value">
             <template slot="prepend"><span class="table_title">参数值</span></template>
           </el-input>
-          <el-button type="primary" icon="el-icon-plus" @click="addArgs()" circle size="small"></el-button>
           <el-button type="danger" icon="el-icon-delete" @click="deleteArgs(index)" circle size="small"></el-button>
-        </div>
-        <div v-else>
-          <el-button type="primary" icon="el-icon-plus" @click="addArgs()" circle size="small"></el-button>
         </div>
       </el-form-item>
       <el-form-item label="Header:" class="min_width">
