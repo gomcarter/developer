@@ -59,19 +59,13 @@ public class DeveloperInterfacesController {
         if (StringUtils.isBlank(end.getJarUrl())) {
             return null;
         }
-        URL url = new URL(end.getJarUrl());
-        URLClassLoader classLoader = new URLClassLoader(new URL[]{url}, Thread.currentThread().getContextClassLoader());
-        Class<?> kls = classLoader.loadClass(end.getKls());
         List<ArgsParam> argsList = JsonMapper.buildNonNullMapper().fromJsonToList(end.getArgs(), ArgsParam.class);
-
-        Class[] classes = new Class[argsList.size()];
-        int i = 0;
-        for (ArgsParam args : argsList) {
-            classes[i++] = args.getKey();
+        try {
+            Method method = EndService.getMethod(end);
+            return new Pair<>(end.getHeader(), method.invoke(null, argsList.stream().map(ArgsParam::getValue).toArray()));
+        } catch (Exception e) {
+            return null;
         }
-
-        Method method = kls.getMethod(end.getMethod(), classes);
-        return new Pair<>(end.getHeader(), method.invoke(null, argsList.stream().map(ArgsParam::getValue).toArray()));
     }
 
     @DeleteMapping(value = "{id}", name = "删除接口")

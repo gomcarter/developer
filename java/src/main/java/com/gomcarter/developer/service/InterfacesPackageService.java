@@ -87,4 +87,8 @@ public class InterfacesPackageService {
 
         this.interfacesPackageItemService.update(id, interfacesIdList);
     }
+
+    public void updateTestCaseId(Long id, Long testCaseId) {
+        this.update(this.getById(id).setTestCaseId(testCaseId));
+    }
 }

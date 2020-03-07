@@ -23,6 +23,9 @@ public class TestCaseService {
     @Resource
     private TestCaseMapper testCaseMapper;
 
+    @Resource
+    private InterfacesPackageService interfacesPackageService;
+
     public TestCase insert(TestCase testCase) {
         testCaseMapper.insert(testCase);
         return testCase;
@@ -66,13 +69,18 @@ public class TestCaseService {
     }
 
     public void create(String userName, TestCaseParam testCaseParam) {
-        this.insert(new TestCase()
+        TestCase testCase = new TestCase()
                 .setName(testCaseParam.getName())
                 .setPresetParams(testCaseParam.getPresetParams())
                 .setMark(testCaseParam.getMark())
                 .setUserName(userName)
-                .setWorkflow(testCaseParam.getWorkflow())
-        );
+                .setWorkflow(testCaseParam.getWorkflow());
+
+        this.insert(testCase);
+
+        if (testCaseParam.getPackageId() != null) {
+            interfacesPackageService.updateTestCaseId(testCaseParam.getPackageId(), testCase.getId());
+        }
     }
 
     public void update(Long id, String userName, TestCaseParam testCaseParam) {

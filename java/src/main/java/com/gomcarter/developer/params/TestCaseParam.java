@@ -26,4 +26,7 @@ public class TestCaseParam {
 
     @Notes("详细接口配置")
     private String workflow;
+
+    @Notes("接口打包id")
+    private Long packageId;
 }
