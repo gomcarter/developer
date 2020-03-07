@@ -34,29 +34,29 @@
       <div class="filters">
         <el-form :inline="true" :model="filter" label-width="6em">
           <el-form-item label="编号">
-            <el-input v-model="filter.id" placeholder="请输入编号" ></el-input>
+            <el-input v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="账号">
-            <el-input v-model="filter.username" placeholder="请输入账号" ></el-input>
+            <el-input v-model="filter.username" placeholder="请输入账号" @keypress.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="姓名">
-            <el-input v-model="filter.name" placeholder="请输入姓名" ></el-input>
+            <el-input v-model="filter.name" placeholder="请输入姓名" @keypress.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="filter.mail" placeholder="请输入邮箱" ></el-input>
+            <el-input v-model="filter.mail" placeholder="请输入邮箱" @keypress.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="联系电话">
-            <el-input v-model="filter.cellphone" placeholder="请输入联系电话" ></el-input>
+            <el-input v-model="filter.cellphone" placeholder="请输入联系电话" @keypress.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="创建时间">
-            <el-date-picker v-model="filter.createTimeGE" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker v-model="filter.createTimeGE" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" @keypress.enter.native="search"></el-date-picker>
             至
-            <el-date-picker v-model="filter.createTimeLE" value-format="yyyy-MM-dd" type="date"  placeholder="选择日期"></el-date-picker>
+            <el-date-picker v-model="filter.createTimeLE" value-format="yyyy-MM-dd" type="date"  placeholder="选择日期" @keypress.enter.native="search"></el-date-picker>
           </el-form-item>
           <el-form-item label="修改时间">
-            <el-date-picker v-model="filter.modifyTimeGE" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
+            <el-date-picker v-model="filter.modifyTimeGE" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" @keypress.enter.native="search"></el-date-picker>
             至
-            <el-date-picker v-model="filter.modifyTimeLE" value-format="yyyy-MM-dd" type="date"  placeholder="选择日期"></el-date-picker>
+            <el-date-picker v-model="filter.modifyTimeLE" value-format="yyyy-MM-dd" type="date"  placeholder="选择日期" @keypress.enter.native="search"></el-date-picker>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>

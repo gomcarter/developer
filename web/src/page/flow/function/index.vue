@@ -3,9 +3,9 @@
     <h4 class="title">筛选条件</h4>
     <hr/>
     <div class="filters">
-      <el-form :inline="true" :model="filter" label-width="6em">
+      <el-form :inline="true" :model="filter" label-width="6em" @submit.native.prevent>
         <el-form-item label="规则名称">
-          <el-input v-model="filter.name" placeholder="请输入规则名称" />
+          <el-input v-model="filter.name" placeholder="请输入规则名称" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>

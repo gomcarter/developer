@@ -5,10 +5,10 @@
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
         <el-form-item label="序号">
-          <el-input v-model="filter.id" placeholder="请输入序号" />
+          <el-input v-model="filter.id" placeholder="请输入序号" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item label="模块名称">
-          <el-input v-model="filter.name" placeholder="请输入模块名称" />
+          <el-input v-model="filter.name" placeholder="请输入模块名称" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="search" icon="el-icon-search">搜索</el-button>
