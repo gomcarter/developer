@@ -26,7 +26,20 @@ body {
 
 // body { overflow: -moz-scrollbars-none; }
 #app {
+  min-width: 1000px;
   @include wh(100%, 100%)
+}
+
+@media only screen and (max-width: 640px) {
+  .header {
+    position: relative !important;
+  }
+
+  .index_more .index_chunk {
+    margin: 0 !important;
+    padding: 30px 30px 55px !important;
+
+  }
 }
 
 table {
