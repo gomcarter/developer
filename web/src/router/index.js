@@ -162,7 +162,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path.indexOf('/interfaces/view') >= 0) {
+  if (to.path.indexOf('/public') >= 0) {
     next()
   } else if (to.meta.menu !== false && to.path !== '/login' && !isLogin()) {
     next({ path: '/login?redirect=' + encodeURIComponent(to.path) })
