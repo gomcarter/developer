@@ -4,19 +4,19 @@
     <hr/>
     <el-form :model="data" ref="edit" label-width="8em" >
       <el-form-item label="项目名称:"  :rules="[{ required: true, message: '请输入项目名称', trigger: ['blur', 'change'] }]" prop="name" class="min_width">
-        <el-input v-model="data.name" placeholder="输入项目名称" />
+        <el-input v-model="data.name" placeholder="输入项目名称" ></el-input>
       </el-form-item>
       <el-form-item label="项目前缀:"  :rules="[{ required: true, message: '请输入项目前缀', trigger: ['blur', 'change'] }]" prop="prefix" class="min_width">
-        <el-input v-model="data.prefix" placeholder="输入项目前缀" />
+        <el-input v-model="data.prefix" placeholder="输入项目前缀" ></el-input>
       </el-form-item>
       <el-form-item label="jar包地址:" class="min_width">
-        <el-input v-model="data.jarUrl" placeholder="输入jar包地址，比如maven仓库的地址" />
+        <el-input v-model="data.jarUrl" placeholder="输入jar包地址，比如maven仓库的地址" ></el-input>
       </el-form-item>
       <el-form-item label="类名:" class="min_width">
-        <el-input v-model="data.kls" placeholder="输入类名" />
+        <el-input v-model="data.kls" placeholder="输入类名" ></el-input>
       </el-form-item>
       <el-form-item label="方法:" prop="method" class="min_width">
-        <el-input v-model="data.method" placeholder="输入方法，此方法必须是静态方法" />
+        <el-input v-model="data.method" placeholder="输入方法，此方法必须是静态方法" ></el-input>
       </el-form-item>
       <el-form-item label="参数:" >
         <el-button type="primary" icon="el-icon-plus" @click="addArgs()" circle size="small"></el-button>
@@ -31,10 +31,10 @@
         </div>
       </el-form-item>
       <el-form-item label="Header:" class="min_width">
-        <el-input v-model="data.header" placeholder="输入header名" />
+        <el-input v-model="data.header" placeholder="输入header名" ></el-input>
       </el-form-item>
       <el-form-item label="备注:"  class="min_width">
-        <el-input v-model="data.mark" placeholder="输入header参数说明" />
+        <el-input v-model="data.mark" placeholder="输入header参数说明" ></el-input>
       </el-form-item>
       <el-form-item >
         <el-button type="primary" @click="add" icon="el-icon-success">提交</el-button>

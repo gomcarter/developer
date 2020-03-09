@@ -52,6 +52,15 @@ export const getInterfacesApi = async (id) => {
 
 /**
  * @author gomcarter 2019-02-14
+ * @returns 接口管理---公共详情
+ */
+export const getPublicsInterfacesApi = async (key) => {
+  const res = await xhr.get(`${INSERV_URL}publics/interfaces/${key}`)
+  return res.data.success ? res.data.extra : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-14
  * @returns 接口历史
  */
 export const interfacesVersionedListApi = async (interfacesId) => {
@@ -393,6 +402,10 @@ export const mockUrl = (hash) => {
     // local模式
     return 'http:' + INSERV_URL + 'publics/mock/' + hash
   }
+}
+
+export const publicUrl = (key) => {
+  return window.location.origin + '#/public/' + key
 }
 
 export const originMockUrl = (domain, url) => {

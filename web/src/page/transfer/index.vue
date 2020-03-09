@@ -4,8 +4,8 @@
     <hr>
     <div class="container">
       <div class="result-container">
-        <span v-if="data.result" class="el-icon-circle-check-outline success"></span>
-        <span v-else class="el-icon-circle-close-outline failed"></span>
+        <span v-if="data.result" class="el-icon-success success"></span>
+        <span v-else class="el-icon-error failed"></span>
       </div>
       <br/>
       <br/>

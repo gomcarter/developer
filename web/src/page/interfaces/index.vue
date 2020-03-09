@@ -113,8 +113,8 @@ export default {
         {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
         {field: 'controller', header: '控制器', sort: 'controller', width: 200},
         {field: 'url', header: 'URL', sort: 'url', width: 120},
-        {field: 'java', header: '后端服务', sort: 'fk_java_id', width: 120},
-        {field: 'end', header: '前端项目', sort: 'fk_end_id', width: 160},
+        {field: 'java.name', header: '后端服务', sort: 'fk_java_id', width: 120},
+        {field: 'end.name', header: '前端项目', sort: 'fk_end_id', width: 160},
         {field: 'modifyTime', header: '更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',

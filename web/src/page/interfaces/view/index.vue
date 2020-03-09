@@ -48,15 +48,18 @@
         <div><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></div>
         <div class="history" v-if="currentVersioned"><a :href="mockUrl(currentVersioned.hash)" target="_blank">{{mockUrl(currentVersioned.hash)}}</a></div>
       </el-form-item>
+      <el-form-item label="开放地址：">
+        <div><a :href="publicUrl(data.publicId)" target="_blank">{{publicUrl(data.publicId)}}</a></div>
+      </el-form-item>
       <el-form-item label="创建时间：">{{formatDate(data.createTime)}}</el-form-item>
       <el-form-item label="更新时间：">{{formatDate(data.modifyTime)}}</el-form-item>
-      <el-form-item label="接口参数：">
-        <v-parameter :json="parameters || []"></v-parameter>
-        <v-parameter class="history" v-if="currentVersioned" :json="versionedParameters || []"></v-parameter>
-      </el-form-item>
       <el-form-item label="接口说明：">
         <div v-html="(data.mark || '无')"></div>
         <div class="history" v-if="currentVersioned" v-html="(currentVersioned.mark || '无')"></div>
+      </el-form-item>
+      <el-form-item label="接口参数：">
+        <v-parameter :json="parameters || []"></v-parameter>
+        <v-parameter class="history" v-if="currentVersioned" :json="versionedParameters || []"></v-parameter>
       </el-form-item>
       <el-form-item label="返回值：">
         <div v-if="currentVersioned">
@@ -92,7 +95,8 @@
 </template>
 
 <script>
-import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl, originMockUrl } from '@/config/api/inserv-api'
+import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl,
+  originMockUrl, publicUrl } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
 import { user } from '@/config/login'
 
@@ -100,6 +104,7 @@ export default {
   name: 'interfacesDetail',
   data () {
     return {
+      publicUrl,
       mockUrl,
       originMockUrl,
       data: null,

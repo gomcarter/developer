@@ -22,6 +22,7 @@
   background-size: 100% 100%;
   width: 100%;
   height: 60px;
+
   & h3 {
     display: inline-block;
     margin: 0;
@@ -40,17 +41,59 @@
   display: inline-block;
 }
 
+.container {
+  width: 100%;
+  text-align: center;
+  padding: 50% 0;
+}
+
+.result-container {
+  display: inline-block;
+  .success {
+    line-height: 30px;
+    font-size: 50px;
+  }
+  .failed {
+    line-height: 30px;
+    font-size: 50px;
+    color: red;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-family: "黑体", serif;
+}
+
+.subtitle {
+  font-size: 16px;
+  margin: 25px 0 50px 0;
+}
+
 @media only screen and (max-width: 640px) {
+  #app {
+    background: #fff;
+  }
+
   .customer .header {
     height: 50px;
+
     & h3 {
       font-size: 20px;
       top: -18px;
     }
   }
 
+  .customer .index_more {
+    background: #fff;
+  }
+
   .customer .index_more .index_chunk {
-    margin: 50px 0;
+    margin: 50px 0 0 0;
     padding: 10px 0px 0px;
   }
   .customer .el-form-item__label {
@@ -60,6 +103,13 @@
   }
   .customer .el-form-item__content {
     margin-left: 1em !important;
+    margin-right: 1em !important;
+    word-break: break-all;
+  }
+
+  .json-container {
+    padding: 0 20px !important;
+    min-height: auto !important;
   }
 }
 

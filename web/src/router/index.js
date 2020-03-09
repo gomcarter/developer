@@ -35,10 +35,10 @@ const router = new Router({
       name: 'interfacesEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/interfaces/edit')) }, 'interfacesEdit')
     },
-    { // 接口管理---详情
-      path: '/customer/interfaces/:id',
-      name: 'customerInterfaces',
-      component: r => require.ensure([], (require) => { r(require('@/page/interfaces/customer')) }, 'customerInterfaces'),
+    { // 公共接口详情
+      path: '/public/:key',
+      name: 'publicInterfacesDetail',
+      component: r => require.ensure([], (require) => { r(require('@/page/interfaces/customer')) }, 'publicInterfacesDetail'),
       meta: {
         menu: false
       }
