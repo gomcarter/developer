@@ -1,7 +1,6 @@
 package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.InterfacesDetailDto;
-import com.gomcarter.developer.dto.InterfacesDto;
 import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
@@ -14,7 +13,6 @@ import com.gomcarter.developer.service.JavaService;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
-import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
@@ -22,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,41 +104,13 @@ public class DeveloperInterfacesController {
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
-    List<InterfacesDto> list(@Notes("查询参数") InterfacesQueryParam params, @Notes("分页器") DefaultPager pager) {
-        List<Interfaces> interfacesList = interfacesService.query(params, pager);
-        if (CollectionUtils.isEmpty(interfacesList)) {
-            return new ArrayList<>();
-        }
-
-        Map<Long, Java> javaMap = Streamable.valueOf(javaService.getByIdList(interfacesList.stream().map(Interfaces::getFkJavaId).collect(Collectors.toSet())))
-                .uniqueGroupby(Java::getId)
-                .collect();
-
-        Map<Long, End> endMap = Streamable.valueOf(endService.getByIdList(interfacesList.stream().map(Interfaces::getFkEndId).collect(Collectors.toSet())))
-                .uniqueGroupby(End::getId)
-                .collect();
-
-        return interfacesList.stream()
-                .map(s -> new InterfacesDto()
-                        .setId(s.getId())
-                        .setHash(s.getHash())
-                        .setName(s.getName())
-                        .setUrl(s.getUrl())
-                        .setController(s.getController())
-                        .setMethod(s.getMethod())
-                        .setMark(s.getMark())
-                        .setJava(javaMap.get(s.getFkJavaId()).getName())
-                        .setEnd(endMap.get(s.getFkEndId()).getName())
-                        .setDeprecated(s.getDeprecated())
-                        .setCreateTime(s.getCreateTime())
-                        .setModifyTime(s.getModifyTime())
-                )
-                .collect(Collectors.toList());
+    List<InterfacesDetailDto> list(@Notes("查询参数") InterfacesQueryParam params, @Notes("分页器") DefaultPager pager) {
+        return this.interfacesService.list(params, pager);
     }
 
     @GetMapping(value = "{id}", name = "获取接口详情")
     InterfacesDetailDto detail(@Notes("查询参数") @PathVariable Long id) {
-        return this.interfacesService.list(new InterfacesQueryParam().setId(id), new DefaultPager(1, 1)).get(0);
+        return this.interfacesService.detail(id);
     }
 
     @GetMapping(value = "count", name = "获取接口地址列表总数")

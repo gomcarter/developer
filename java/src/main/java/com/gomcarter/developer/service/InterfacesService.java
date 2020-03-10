@@ -10,9 +10,11 @@ import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.params.InterfacesQueryParam;
 import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.common.BlowfishUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
+import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.apache.commons.lang3.StringUtils;
@@ -150,6 +152,38 @@ public class InterfacesService {
         this.interfacesMapper.deleteById(id);
     }
 
+//    public List<InterfacesDetailDto> list() {
+//        List<Interfaces> interfacesList = interfacesService.query(params, pager);
+//        if (CollectionUtils.isEmpty(interfacesList)) {
+//            return new ArrayList<>();
+//        }
+//
+//        Map<Long, Java> javaMap = Streamable.valueOf(javaService.getByIdList(interfacesList.stream().map(Interfaces::getFkJavaId).collect(Collectors.toSet())))
+//                .uniqueGroupby(Java::getId)
+//                .collect();
+//
+//        Map<Long, End> endMap = Streamable.valueOf(endService.getByIdList(interfacesList.stream().map(Interfaces::getFkEndId).collect(Collectors.toSet())))
+//                .uniqueGroupby(End::getId)
+//                .collect();
+//
+//        return interfacesList.stream()
+//                .map(s -> new InterfacesDto()
+//                        .setId(s.getId())
+//                        .setHash(s.getHash())
+//                        .setName(s.getName())
+//                        .setUrl(s.getUrl())
+//                        .setController(s.getController())
+//                        .setMethod(s.getMethod())
+//                        .setMark(s.getMark())
+//                        .setJava(javaMap.get(s.getFkJavaId()).getName())
+//                        .setEnd(endMap.get(s.getFkEndId()).getName())
+//                        .setDeprecated(s.getDeprecated())
+//                        .setCreateTime(s.getCreateTime())
+//                        .setModifyTime(s.getModifyTime())
+//                )
+//                .collect(Collectors.toList());
+//    }
+
     public List<InterfacesDetailDto> list(InterfacesQueryParam param, Pageable pager) {
         List<Interfaces> interfacesList = this.query(param, pager);
 
@@ -165,9 +199,16 @@ public class InterfacesService {
                     Java java = javaMap.get(s.getFkJavaId());
                     End end = endMap.get(s.getFkEndId());
 
+                    String publicId = null;
+                    try {
+                        publicId = BlowfishUtils.encrypt(String.valueOf(s.getId()), s.getHash()) + "|" + s.getHash();
+                    } catch (Exception ignore) {
+                    }
+
                     return new InterfacesDetailDto()
                             .setId(s.getId())
-                            .setInterfacesId(s.getFkEndId())
+                            .setPublicId(publicId)
+                            .setInterfacesId(s.getId())
                             .setController(s.getController())
                             .setHash(s.getHash())
                             .setName(s.getName())
@@ -196,5 +237,10 @@ public class InterfacesService {
                             .setModifyTime(s.getModifyTime());
                 })
                 .collect(Collectors.toList());
+    }
+
+    public InterfacesDetailDto detail(Long id) {
+        List<InterfacesDetailDto> list = this.list(new InterfacesQueryParam().setId(id), new DefaultPager(1, 1));
+        return CollectionUtils.isEmpty(list) ? null : list.get(0);
     }
 }

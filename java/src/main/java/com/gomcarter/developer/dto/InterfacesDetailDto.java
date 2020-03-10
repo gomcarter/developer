@@ -17,6 +17,9 @@ public class InterfacesDetailDto {
     @Notes(value = "主键：接口id或者历史版本id", notNull = true)
     private Long id;
 
+    @Notes(value = "公共id，可用于发给外部人员", notNull = true)
+    private String publicId;
+
     @Notes(value = "接口id", notNull = true)
     private Long interfacesId;
 
