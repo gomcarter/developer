@@ -24,7 +24,8 @@
           @click="onHeaderClicked(column)">
         {{ column.header }}
         <span :class="{'el-icon-caret-top' : sort === column.sort && (order ||'').toUpperCase() === 'ASC',
-            'el-icon-caret-bottom': sort === column.sort && (order ||'').toUpperCase() === 'DESC'}"></span>
+            'el-icon-caret-bottom': sort === column.sort && (order ||'').toUpperCase() === 'DESC',
+            'el-icon-d-caret': column.sort && sort !== column.sort}"></span>
       </th>
     </tr>
     </thead>
@@ -66,7 +67,7 @@
                       :pageable="children.pageable" :title="children.title" :sortBy="children.sortBy"
                       :orderBy="children.orderBy" :toolbar="children.toolbar" :columns="children.columns"
                       :data-url="children.dataUrl" :loadData="children.loadData" :onBeforeLoad="children.onBeforeLoad"
-                      :count-url="children.countUrl" :params="children.params(row, rowIndex)" ></v-datagrid>
+                      :count-url="children.countUrl" :params="(children.params && children.params(row, rowIndex)) || {}" ></v-datagrid>
         </td>
       </tr>
     </template>

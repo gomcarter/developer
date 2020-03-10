@@ -55,9 +55,10 @@
   white-space: nowrap;
 }
 
-.datagrid-header-check {
+.datagrid-header-check, .datagrid-row-check{
   width: 30px;
   text-align: center;
+  padding-left: 10px;
 }
 
 .datagrid-body {
