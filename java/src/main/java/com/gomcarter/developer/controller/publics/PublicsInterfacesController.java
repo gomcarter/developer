@@ -23,12 +23,6 @@ public class PublicsInterfacesController {
     @Resource
     private InterfacesService interfacesService;
 
-    /**
-     * TODO: 安全性问题
-     * @param javaId
-     * @param interfaceList
-     * @return
-     */
     @PostMapping(value = "", name = "生成接口")
     public Integer insert(@RequestParam Long javaId, @RequestBody List<ApiInterface> interfaceList) {
         return this.interfacesService.insert(javaId, interfaceList);

@@ -10,11 +10,11 @@ import com.gomcarter.developer.params.InterfacesQueryParam;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.developer.service.JavaService;
+import com.gomcarter.developer.utils.Pair;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
