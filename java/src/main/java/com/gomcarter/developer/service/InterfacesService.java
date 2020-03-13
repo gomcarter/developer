@@ -1,6 +1,5 @@
 package com.gomcarter.developer.service;
 
-import com.alibaba.nacos.client.config.utils.MD5;
 import com.gomcarter.developer.dao.InterfacesMapper;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.dto.InterfacesDetailDto;
@@ -18,6 +17,7 @@ import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -93,11 +93,11 @@ public class InterfacesService {
 
             String returns = JsonMapper.buildNonNullMapper().toJson(api.getReturns());
             String parameters = JsonMapper.buildNonNullMapper().toJson(api.getParameters());
-            String hash = MD5.getInstance().getMD5String(
+            String hash = new Md5Hash(
                     StringUtils.join(new String[]{
                             url, javaId.toString(), end.getId().toString(), api.isDeprecated() + "",
                             api.getMark(), api.getMethod(), api.getName(), returns, parameters, api.getController()
-                    }, ","));
+                    }, ",")).toHex();
 
             Interfaces interfaces = this.interfacesMapper.getByUrl(url, api.getMethod());
             // 如果接口没有发生变化，那么对应的hash就是一样的，应该不插入这个接口
