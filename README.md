@@ -151,6 +151,7 @@ d，接口测试
     // 支持http请求携带的header头
     response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, 其他支持携带的header");
 
+    注：当然在nginx配置跨域访问也可以
 
 ### 三、用户管理
 **1，自带用户管理**
