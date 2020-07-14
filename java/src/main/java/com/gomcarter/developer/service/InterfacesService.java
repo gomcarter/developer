@@ -12,9 +12,9 @@ import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.BlowfishUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
-import com.gomcarter.frameworks.base.mapper.JsonMapper;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
+import com.gomcarter.frameworks.config.mapper.JsonMapper;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -75,9 +75,6 @@ public class InterfacesService {
         Java java = javaService.getById(javaId);
         AssertUtils.notNull(java, new CustomException("java项目不正确"));
 
-        // 先把所有接口置为废弃。
-        this.interfacesMapper.setDeprecatedByJavaId(javaId);
-
         Integer success = 0;
         for (ApiInterface api : interfaceList) {
             String url = api.getUrl();
@@ -99,7 +96,7 @@ public class InterfacesService {
                             api.getMark(), api.getMethod(), api.getName(), returns, parameters, api.getController()
                     }, ",")).toHex();
 
-            Interfaces interfaces = this.interfacesMapper.getByUrl(url, api.getMethod());
+            Interfaces interfaces = this.interfacesMapper.getByUrl(javaId, url, api.getMethod());
             // 如果接口没有发生变化，那么对应的hash就是一样的，应该不插入这个接口
             if (interfaces == null) {
                 interfaces = new Interfaces()
@@ -136,9 +133,6 @@ public class InterfacesService {
                 );
 
                 success++;
-            } else {
-                // 接口没有任何变化
-                this.update(interfaces.setDeprecated(api.isDeprecated()));
             }
         }
         return success;
@@ -151,38 +145,6 @@ public class InterfacesService {
     public void delete(Long id) {
         this.interfacesMapper.deleteById(id);
     }
-
-//    public List<InterfacesDetailDto> list() {
-//        List<Interfaces> interfacesList = interfacesService.query(params, pager);
-//        if (CollectionUtils.isEmpty(interfacesList)) {
-//            return new ArrayList<>();
-//        }
-//
-//        Map<Long, Java> javaMap = Streamable.valueOf(javaService.getByIdList(interfacesList.stream().map(Interfaces::getFkJavaId).collect(Collectors.toSet())))
-//                .uniqueGroupby(Java::getId)
-//                .collect();
-//
-//        Map<Long, End> endMap = Streamable.valueOf(endService.getByIdList(interfacesList.stream().map(Interfaces::getFkEndId).collect(Collectors.toSet())))
-//                .uniqueGroupby(End::getId)
-//                .collect();
-//
-//        return interfacesList.stream()
-//                .map(s -> new InterfacesDto()
-//                        .setId(s.getId())
-//                        .setHash(s.getHash())
-//                        .setName(s.getName())
-//                        .setUrl(s.getUrl())
-//                        .setController(s.getController())
-//                        .setMethod(s.getMethod())
-//                        .setMark(s.getMark())
-//                        .setJava(javaMap.get(s.getFkJavaId()).getName())
-//                        .setEnd(endMap.get(s.getFkEndId()).getName())
-//                        .setDeprecated(s.getDeprecated())
-//                        .setCreateTime(s.getCreateTime())
-//                        .setModifyTime(s.getModifyTime())
-//                )
-//                .collect(Collectors.toList());
-//    }
 
     public List<InterfacesDetailDto> list(InterfacesQueryParam param, Pageable pager) {
         List<Interfaces> interfacesList = this.query(param, pager);
@@ -212,6 +174,7 @@ public class InterfacesService {
                             .setController(s.getController())
                             .setHash(s.getHash())
                             .setName(s.getName())
+                            .setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName())
                             .setUrl(s.getUrl())
                             .setMethod(s.getMethod())
                             .setReturns(s.getReturns())

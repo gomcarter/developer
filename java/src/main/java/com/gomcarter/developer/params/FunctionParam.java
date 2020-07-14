@@ -30,6 +30,10 @@ public class FunctionParam {
     @Condition(type = MatchType.LIKE)
     private String mark;
 
+    @Notes("username or is_public")
+    @Condition(type = MatchType.AND)
+    private CustomFunctionParam customFunctionParam;
+
     @Notes("创建时间大于这个时间")
     @Condition(field = "create_time", type = MatchType.GE)
     private Date createTimeGE;

@@ -2,6 +2,7 @@ package com.gomcarter.developer.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
+@TableName("custom_function")
 public class Function {
 
     /**
@@ -19,8 +21,6 @@ public class Function {
      */
     @TableId(type = IdType.AUTO)
     private Long id;
-
-
     /**
      * 函数名称
      */
@@ -28,11 +28,19 @@ public class Function {
     /**
      * javascript脚本
      */
-    private String script;
+    private String scriptText;
     /**
      * 脚本备注
      */
     private String mark;
+    /**
+     * 是否是公用的
+     */
+    private Boolean isPublic;
+    /**
+     * 创建者
+     */
+    private String userName;
     /**
      *
      */

@@ -2,6 +2,8 @@ package com.gomcarter.developer.controller.developer;
 
 import com.gomcarter.developer.dto.FunctionDto;
 import com.gomcarter.developer.entity.Function;
+import com.gomcarter.developer.holder.UserHolder;
+import com.gomcarter.developer.params.CustomFunctionParam;
 import com.gomcarter.developer.params.FunctionParam;
 import com.gomcarter.developer.service.FunctionService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
@@ -25,13 +27,20 @@ public class DeveloperFunctionController {
 
     @GetMapping(value = "list", name = "获取脚本列表")
     List<FunctionDto> list(FunctionParam params, DefaultPager pager) {
+        params.setCustomFunctionParam(new CustomFunctionParam()
+                .setUserName(UserHolder.name())
+                .setIsPublic(true)
+        );
+
         return this.functionService.query(params, pager)
                 .stream()
                 .map(s -> new FunctionDto()
                         .setId(s.getId())
+                        .setUserName(s.getUserName())
                         .setName(s.getName())
                         .setMark(s.getMark())
-                        .setScript(s.getScript())
+                        .setIsPublic(s.getIsPublic())
+                        .setScriptText(s.getScriptText())
                         .setCreateTime(s.getCreateTime())
                         .setModifyTime(s.getModifyTime())
                 )
@@ -45,26 +54,31 @@ public class DeveloperFunctionController {
 
     @PostMapping(value = "", name = "新增脚本")
     void insert(@Notes("脚本名称") @RequestParam String name,
-                       @Notes("javascript脚本") @RequestParam String script,
-                       @Notes("脚本备注") @RequestParam String mark) {
+                @Notes("javascript脚本") @RequestParam String scriptText,
+                @Notes("脚本备注") @RequestParam(required = false) String mark,
+                @Notes("脚本备注") @RequestParam(value = "isPublic", defaultValue = "false") Boolean isPublic) {
 
         functionService.insert(new Function()
                 .setName(name)
+                .setIsPublic(isPublic)
+                .setUserName(UserHolder.name())
                 .setMark(mark)
-                .setScript(script)
+                .setScriptText(scriptText)
         );
     }
 
     @PutMapping(value = "{id}", name = "修改脚本")
     void update(@Notes("主键") @PathVariable("id") Long id,
-                       @Notes("脚本名称") @RequestParam String name,
-                       @Notes("javascript脚本") @RequestParam String script,
-                       @Notes("脚本备注") @RequestParam String mark) {
+                @Notes("脚本名称") @RequestParam String name,
+                @Notes("javascript脚本") @RequestParam String scriptText,
+                @Notes("脚本备注") @RequestParam String mark,
+                @Notes("脚本备注") @RequestParam(value = "isPublic", defaultValue = "false") Boolean isPublic) {
         functionService.update(new Function()
                 .setId(id)
                 .setName(name)
                 .setMark(mark)
-                .setScript(script)
+                .setIsPublic(isPublic)
+                .setScriptText(scriptText)
         );
     }
 
@@ -75,9 +89,10 @@ public class DeveloperFunctionController {
                         .setId(s.getId())
                         .setName(s.getName())
                         .setMark(s.getMark())
-                        .setScript(s.getScript())
+                        .setUserName(s.getUserName())
+                        .setIsPublic(s.getIsPublic())
+                        .setScriptText(s.getScriptText())
                 )
                 .orElse(null);
     }
-
 }

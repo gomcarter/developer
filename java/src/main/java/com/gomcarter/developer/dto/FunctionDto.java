@@ -28,12 +28,19 @@ public class FunctionDto {
      * javascript脚本
      */
     @Notes("javascript脚本")
-    private String script;
+    private String scriptText;
     /**
      * 脚本备注
      */
     @Notes("脚本备注")
     private String mark;
+    /**
+     *
+     */
+    private Boolean isPublic;
+
+    private String userName;
+
     /**
      *
      */

@@ -1,20 +1,19 @@
 package com.gomcarter.developer.controller.developer;
 
+import com.gomcarter.developer.dto.EndAuthDto;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.entity.End;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.EndParam;
+import com.gomcarter.developer.service.EndAuthService;
 import com.gomcarter.developer.service.EndService;
-import com.gomcarter.frameworks.base.common.AssertUtils;
-import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -28,59 +27,39 @@ public class DeveloperEndController {
     @Resource
     EndService endService;
 
+    @Resource
+    EndAuthService endAuthService;
+
     @PostMapping(value = "", name = "新增前端项目")
     void list(@Notes("项目名称") @RequestParam String name,
               @Notes("对应前缀") @RequestParam String prefix,
-              @Notes("登录使用的jar包地址") String jarUrl,
-              @Notes("登录使用的类名") String kls,
-              @Notes("登录使用的方法") String method,
-              @Notes("登录使用的jar对应方法的参数: json字符串格式:[{\"key\":\"java.lang.Long\", \"value\": 6}], key是参数的类,value是对应的值") String args,
-              @Notes("header值是什么") String header,
+              @Notes("header") @RequestParam String header,
+              @Notes("配置") @RequestParam String config,
               @Notes("备注") String mark) throws Exception {
 
         End end = new End().setName(name)
                 .setPrefix(prefix)
-                .setJarUrl(jarUrl)
-                .setKls(kls)
-                .setMethod(method)
-                .setArgs(args)
+                .setConfig(config)
                 .setHeader(header)
                 .setMark(mark);
-
-        validate(end);
 
         endService.insert(end);
     }
 
-    private void validate(End end) throws Exception {
-        if (StringUtils.isNotBlank(end.getJarUrl())) {
-            Method m = EndService.getMethod(end);
-            AssertUtils.isTrue(Modifier.isStatic(m.getModifiers()), new CustomException(m.getName() + "不是静态方法，哥！"));
-        }
-    }
-
     @PutMapping(value = "{id}", name = "修改前端项目")
-    void list(@Notes("主键") @PathVariable("id") Long id,
-              @Notes("项目名称") @RequestParam String name,
-              @Notes("对应前缀") @RequestParam String prefix,
-              @Notes("登录使用的jar包地址") String jarUrl,
-              @Notes("登录使用的类名") String kls,
-              @Notes("登录使用的方法") String method,
-              @Notes("登录使用的jar对应方法的参数: json字符串格式:[{\"key\":\"java.lang.Long\", \"value\": 6}], key是参数的类,value是对应的值") String args,
-              @Notes("header值是什么") String header,
-              @Notes("备注") String mark) throws Exception {
+    void update(@Notes("主键") @PathVariable("id") Long id,
+                @Notes("项目名称") @RequestParam String name,
+                @Notes("对应前缀") @RequestParam String prefix,
+                @Notes("header") @RequestParam String header,
+                @Notes("配置") @RequestParam String config,
+                @Notes("备注") String mark) throws Exception {
 
-        End end = new End().setId(id)
+        End end = this.endService.getById(id)
                 .setName(name)
                 .setPrefix(prefix)
-                .setJarUrl(jarUrl)
-                .setKls(kls)
-                .setMethod(method)
-                .setArgs(args)
                 .setHeader(header)
+                .setConfig(config)
                 .setMark(mark);
-
-        validate(end);
 
         endService.update(end);
     }
@@ -88,6 +67,27 @@ public class DeveloperEndController {
     @GetMapping(value = "{id}", name = "获取前端项目详情")
     EndDto get(@Notes("主键") @PathVariable("id") Long id) {
         return this.list(new EndParam().setId(id), new DefaultPager()).get(0);
+    }
+
+    @PutMapping(value = "privates/{endId}", name = "绑定个人认证接口")
+    void putPrivatesAuthInterface(@PathVariable("endId") Long endId,
+                                  @Notes("配置") @RequestParam String config) throws Exception {
+        this.endAuthService.update(endId, UserHolder.name(), config);
+    }
+
+    @GetMapping(value = "privates/{endId}", name = "获取个人设置的认证接口")
+    EndAuthDto getPrivatesAuthInterface(@PathVariable("endId") Long endId) throws Exception {
+        return Optional.ofNullable(this.endAuthService.get(endId, UserHolder.name()))
+                .map(s -> new EndAuthDto()
+                        .setId(s.getId())
+                        .setConfig(s.getConfig()))
+                .orElse(
+                        Optional.ofNullable(this.endService.getById(endId))
+                                .map(s -> new EndAuthDto()
+                                        .setConfig(s.getConfig())
+                                        .setId(s.getId()))
+                                .orElse(null)
+                );
     }
 
     @GetMapping(value = "list", name = "获取接口地址列表")
@@ -98,12 +98,9 @@ public class DeveloperEndController {
                         .setId(s.getId())
                         .setName(s.getName())
                         .setPrefix(s.getPrefix())
-                        .setJarUrl(s.getJarUrl())
-                        .setKls(s.getKls())
-                        .setMethod(s.getMethod())
-                        .setArgs(s.getArgs())
                         .setHeader(s.getHeader())
                         .setMark(s.getMark())
+                        .setConfig(s.getConfig())
                         .setCreateTime(s.getCreateTime())
                 )
                 .collect(Collectors.toList());

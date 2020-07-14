@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gomcarter.developer.dao.EndMapper">
-    <resultMap type="com.gomcarter.developer.entity.End" id="endMap">
+<mapper namespace="com.gomcarter.developer.dao.EndAuthMapper">
+    <resultMap type="com.gomcarter.developer.entity.EndAuth" id="endMap">
         <id column="id" property="id"/>
-        <result column="name" property="name"/>
-        <result column="prefix" property="prefix"/>
+        <result column="user" property="user"/>
+        <result column="fk_end_id" property="fkEndId"/>
         <result column="config" property="config"/>
-        <result column="mark" property="mark"/>
         <result column="create_time" property="createTime"/>
         <result column="modify_time" property="modifyTime"/>
     </resultMap>
-
-    <select id="getByPrefix" resultMap="endMap">
-        SELECT * FROM `end` WHERE prefix = #{prefix}
-    </select>
-
 </mapper>

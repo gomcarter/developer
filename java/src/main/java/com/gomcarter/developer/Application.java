@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
  * @author gomcarter
  */
 @SpringBootApplication
-@EnableMybatis({"DEVELOPER", "MYSQL"})
+@EnableMybatis("./database.properties")
 public class Application {
 
     /**

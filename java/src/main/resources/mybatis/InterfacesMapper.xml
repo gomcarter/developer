@@ -32,7 +32,7 @@
     </select>
 
     <select id="getByUrl" resultMap="interfacesMap">
-      select * from interfaces where url = #{url} and method = #{method} order by id desc limit 1
+      select * from interfaces where fk_java_id = #{javaId} and url = #{url} and method = #{method} order by id desc limit 1
     </select>
 
 </mapper>

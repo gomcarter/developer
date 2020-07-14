@@ -9,37 +9,29 @@ import java.util.Date;
 
 /**
  * @author gomcarter
- *
  * @date 2019-06-17 16:41:01
  */
 @Data
 @Accessors(chain = true)
-public class End {
+public class EndAuth {
+
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
     /**
-     * 项目名称
+     * 哪个用户的
      */
-    private String name;
+    private String user;
     /**
-     * 前缀
+     * 前端项目id
      */
-    private String prefix;
-    /**
-     * 必备header
-     */
-    private String header;
+    private Long fkEndId;
     /**
      * 配置参数，json数据结构
      */
     private String config;
-    /**
-     * 备注
-     */
-    private String mark;
     /**
      *
      */

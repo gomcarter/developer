@@ -32,6 +32,9 @@ public class InterfacesDetailDto {
     @Notes(value = "接口名称", notNull = true)
     private String name;
 
+    @Notes(value = "拼接了端、服务的接口名称", notNull = true)
+    private String complexName;
+
     @Notes(value = "接口地址，域名后面的一截如：http://g.yiayo.com/platform/category中的platform/category", notNull = true)
     private String url;
 
