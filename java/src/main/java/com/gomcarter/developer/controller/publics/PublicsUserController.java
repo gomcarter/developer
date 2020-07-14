@@ -59,7 +59,7 @@ public class PublicsUserController {
         params.put("username", username);
         params.put("password", password);
         JsonData data = api.httpExecute(Method.POST, "url", JsonData.class, params, null);
-        r.validate = data.isSuccess();
+        r.validate = data.getCode() == 0;
         r.message = data.getMessage();
 
         api.destroy();
