@@ -3,12 +3,12 @@ package com.gomcarter.developer.controller;
 import com.gomcarter.developer.dto.EndAuthDto;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.entity.End;
-import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.EndParam;
 import com.gomcarter.developer.service.EndAuthService;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -72,12 +72,12 @@ public class DeveloperEndController {
     @PutMapping(value = "privates/{endId}", name = "绑定个人认证接口")
     void putPrivatesAuthInterface(@PathVariable("endId") Long endId,
                                   @Notes("配置") @RequestParam String config) throws Exception {
-        this.endAuthService.update(endId, UserHolder.name(), config);
+        this.endAuthService.update(endId, UserHolder.username(), config);
     }
 
     @GetMapping(value = "privates/{endId}", name = "获取个人设置的认证接口")
     EndAuthDto getPrivatesAuthInterface(@PathVariable("endId") Long endId) throws Exception {
-        return Optional.ofNullable(this.endAuthService.get(endId, UserHolder.name()))
+        return Optional.ofNullable(this.endAuthService.get(endId, UserHolder.username()))
                 .map(s -> new EndAuthDto()
                         .setId(s.getId())
                         .setConfig(s.getConfig()))

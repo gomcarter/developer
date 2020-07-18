@@ -1,11 +1,14 @@
 package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.SettingOfUserDto;
-import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.service.SettingOfUserService;
 import com.gomcarter.frameworks.base.common.AssertUtils;
-import com.gomcarter.frameworks.base.exception.NoPermissionException;
-import org.springframework.web.bind.annotation.*;
+import com.gomcarter.frameworks.base.exception.CustomException;
+import com.gomcarter.developer.holder.UserHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Optional;
@@ -22,7 +25,7 @@ public class DeveloperUserSettingController {
 
     @PutMapping(value = "", name = "开启或者关闭第三方登录功能")
     void update(boolean remote, String url) {
-        AssertUtils.isTrue(UserHolder.admin(), new NoPermissionException());
+        AssertUtils.isTrue(UserHolder.admin(), new CustomException("没有权限"));
 
         this.settingOfUserService.update(remote, url);
     }

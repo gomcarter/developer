@@ -14,7 +14,9 @@ import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
+import com.gomcarter.frameworks.base.streaming.Streamable;
 import com.gomcarter.frameworks.config.mapper.JsonMapper;
+import com.gomcarter.frameworks.interfaces.dto.ApiBean;
 import com.gomcarter.frameworks.interfaces.dto.ApiInterface;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
@@ -77,11 +79,12 @@ public class InterfacesService {
 
         Integer success = 0;
         for (ApiInterface api : interfaceList) {
-            String url = api.getUrl();
-            String prefix = Arrays.stream(url.split("/"))
+            List<String> words = Arrays.stream(api.getUrl().split("/"))
                     .filter(StringUtils::isNotBlank)
-                    .findFirst()
-                    .orElse(null);
+                    .collect(Collectors.toList());
+
+            String prefix = words.get(0);
+            String url = "/" + StringUtils.join(words, "/");
 
             End end = endService.getByPrefix(prefix);
             if (end == null) {
@@ -90,12 +93,8 @@ public class InterfacesService {
 
             String returns = JsonMapper.buildNonNullMapper().toJson(api.getReturns());
             String parameters = JsonMapper.buildNonNullMapper().toJson(api.getParameters());
-            String hash = new Md5Hash(
-                    StringUtils.join(new String[]{
-                            url, javaId.toString(), end.getId().toString(), api.isDeprecated() + "",
-                            api.getMark(), api.getMethod(), api.getName(), returns, parameters, api.getController()
-                    }, ",")).toHex();
 
+            String hash = this.hash(javaId, end.getId(), api);
             Interfaces interfaces = this.interfacesMapper.getByUrl(javaId, url, api.getMethod());
             // 如果接口没有发生变化，那么对应的hash就是一样的，应该不插入这个接口
             if (interfaces == null) {
@@ -114,11 +113,12 @@ public class InterfacesService {
 
                 this.insert(interfaces);
                 success++;
-            } else if (!hash.equals(interfaces.getHash())) {
-                // 插入历史版本
-                this.interfacesVersionedService.insert(interfaces, api.isDeprecated());
+            } else {
+                if (!hash.equals(interfaces.getHash())) {
+                    // hash是否改变，改变了就插入历史版本
+                    this.interfacesVersionedService.insert(interfaces, api.isDeprecated());
+                }
 
-                // 已经存在接口，那么看hash是否改变，改变了就修改，没改变就不修改
                 this.update(interfaces.setUrl(url)
                         .setFkJavaId(javaId)
                         .setHash(hash)
@@ -130,6 +130,7 @@ public class InterfacesService {
                         .setName(api.getName())
                         .setReturns(returns)
                         .setParameters(parameters)
+                        .setModifyTime(null)
                 );
 
                 success++;
@@ -137,6 +138,39 @@ public class InterfacesService {
         }
         return success;
     }
+
+    private String hash(Long javaId, Long endId, ApiInterface api) {
+        ApiBean returns = api.getReturns()
+                .setComment(null)
+                .setDefaults(null)
+                .setMock(null);
+        // 去除无关影响接口的一些值
+        clear(returns.getChildren());
+        List<ApiBean> parameters = api.getParameters();
+        // 去除无关影响接口的一些值
+        clear(parameters);
+
+        return new Md5Hash(
+                StringUtils.join(new String[]{
+                        javaId.toString(), endId.toString(),
+                        JsonMapper.buildNonNullMapper().toJson(returns),
+                        JsonMapper.buildNonNullMapper().toJson(parameters)
+                }, "_")).toHex();
+    }
+
+    private void clear(List<ApiBean> beans) {
+        if (beans != null) {
+            beans.forEach(c -> {
+                c.setComment(null)
+                        .setDefaults(null)
+                        .setMock(null);
+
+                clear(c.getChildren());
+            });
+
+        }
+    }
+
 
     public Interfaces getByHash(String hash) {
         return this.interfacesMapper.getByHash(hash);
@@ -174,7 +208,7 @@ public class InterfacesService {
                             .setController(s.getController())
                             .setHash(s.getHash())
                             .setName(s.getName())
-                            .setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName())
+                            .setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName() + "-【" + s.getUrl() + "】")
                             .setUrl(s.getUrl())
                             .setMethod(s.getMethod())
                             .setReturns(s.getReturns())
@@ -191,8 +225,8 @@ public class InterfacesService {
                             .setEnd(new EndDto()
                                     .setId(end.getId())
                                     .setName(end.getName())
-                                    .setHeader(end.getHeader())
                                     .setPrefix(end.getPrefix())
+                                    .setHeader(end.getHeader())
                                     .setMark(end.getMark())
                             )
                             .setDeprecated(s.getDeprecated())
@@ -205,5 +239,12 @@ public class InterfacesService {
     public InterfacesDetailDto detail(Long id) {
         List<InterfacesDetailDto> list = this.list(new InterfacesQueryParam().setId(id), new DefaultPager(1, 1));
         return CollectionUtils.isEmpty(list) ? null : list.get(0);
+    }
+
+    public Map<Long, Interfaces> getMapByIdList(Collection<Long> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return new HashMap<>();
+        }
+        return Streamable.valueOf(this.getByIdList(idList)).uniqueGroupby(Interfaces::getId).collect();
     }
 }

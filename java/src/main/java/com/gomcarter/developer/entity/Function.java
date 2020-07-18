@@ -1,8 +1,6 @@
 package com.gomcarter.developer.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -21,6 +19,8 @@ public class Function {
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
+
     /**
      * 函数名称
      */
@@ -32,18 +32,20 @@ public class Function {
     /**
      * 脚本备注
      */
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
     private String mark;
-    /**
-     * 是否是公用的
-     */
-    private Boolean isPublic;
-    /**
-     * 创建者
-     */
-    private String userName;
     /**
      *
      */
+    private Boolean isPublic;
+    /**
+     *
+     */
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    private String arguments;
+
+    private String userName;
+
     private Date createTime;
     /**
      *

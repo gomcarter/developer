@@ -1,6 +1,5 @@
 package com.gomcarter.developer.dao;
 
-
 import com.gomcarter.developer.entity.EndAuth;
 import com.gomcarter.frameworks.mybatis.mapper.BaseMapper;
 

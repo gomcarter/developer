@@ -2,12 +2,14 @@ package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.JavaMapper;
 import com.gomcarter.developer.entity.Java;
+import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import com.gomcarter.frameworks.base.streaming.Streamable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +48,9 @@ public class JavaService {
     }
 
     public Map<Long, Java> getMapByIdList(Collection<Long> idList) {
+        if (CollectionUtils.isEmpty(idList)) {
+            return new HashMap<>();
+        }
         return Streamable.valueOf(this.getByIdList(idList)).uniqueGroupby(Java::getId).collect();
     }
 }

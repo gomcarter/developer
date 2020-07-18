@@ -5,15 +5,18 @@
 <mapper namespace="com.gomcarter.developer.dao.UserMapper">
     <resultMap type="com.gomcarter.developer.entity.User" id="userMap">
         <id column="id" property="id"/>
-            <result column="username" property="username"/>
-            <result column="name" property="name"/>
-            <result column="mail" property="mail"/>
-            <result column="cellphone" property="cellphone"/>
-            <result column="password" property="password"/>
-            <result column="random" property="random"/>
-            <result column="create_time" property="createTime"/>
-            <result column="modify_time" property="modifyTime"/>
+        <result column="username" property="username"/>
+        <result column="name" property="name"/>
+        <result column="mail" property="mail"/>
+        <result column="cellphone" property="cellphone"/>
+        <result column="password" property="password"/>
+        <result column="random" property="random"/>
+        <result column="role_id" property="roleId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
     </resultMap>
+
+
     <!-- //@NotReplaceableStart -->
     <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
 

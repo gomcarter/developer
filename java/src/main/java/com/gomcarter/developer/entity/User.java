@@ -50,6 +50,10 @@ public class User {
      */
     private String random;
     /**
+     * 角色ID , 1002为普通用户，1001为项目经理，1000为管理员
+     */
+    private Integer roleId;
+    /**
      *
      */
     private Date createTime;

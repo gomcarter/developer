@@ -33,12 +33,12 @@ public class TestCase {
     /**
      * 预置参数
      */
-    @TableField(insertStrategy = FieldStrategy.IGNORED,  updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
     private String presetParams;
     /**
      * 备注
      */
-    @TableField(insertStrategy = FieldStrategy.IGNORED,  updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
     private String mark;
 
     @Notes("详细接口配置")

@@ -1,5 +1,6 @@
 package com.gomcarter.developer.params;
 
+import com.gomcarter.developer.dto.CustomFunctionDto;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import com.gomcarter.frameworks.mybatis.annotation.Condition;
 import com.gomcarter.frameworks.mybatis.annotation.MatchType;
@@ -30,9 +31,12 @@ public class FunctionParam {
     @Condition(type = MatchType.LIKE)
     private String mark;
 
+
     @Notes("username or is_public")
     @Condition(type = MatchType.AND)
-    private CustomFunctionParam customFunctionParam;
+    private CustomFunctionDto customFunctionDto;
+
+
 
     @Notes("创建时间大于这个时间")
     @Condition(field = "create_time", type = MatchType.GE)

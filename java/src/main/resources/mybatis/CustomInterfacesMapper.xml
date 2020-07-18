@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gomcarter.developer.dao.CustomInterfacesMapper">
+    <resultMap type="com.gomcarter.developer.entity.CustomInterfaces" id="customInterfacesMap">
+        <id column="id" property="id"/>
+        <result column="interfaces_id" property="interfacesId"/>
+        <result column="username" property="username"/>
+        <result column="create_time" property="createTime"/>
+        <result column="modify_time" property="modifyTime"/>
+        <result column="name" property="name"/>
+        <result column="url" property="url"/>
+        <result column="method" property="method"/>
+        <result column="deprecated" property="deprecated"/>
+        <result column="mark" property="mark"/>
+        <result column="returns" property="returns"/>
+        <result column="parameters" property="parameters"/>
+        <result column="fk_java_id" property="fkJavaId"/>
+        <result column="fk_end_id" property="fkEndId"/>
+        <result column="hash" property="hash"/>
+        <result column="cus_parameters" property="cusParameters"/>
+        <result column="javascript" property="javascript"/>
+    </resultMap>
+
+    <select id="getByInterfacesId" resultMap="customInterfacesMap">
+        select * from custom_interfaces where interfaces_id = #{interfacesId} and username =#{username}
+    </select>
+
+    <select id="getList" resultMap="customInterfacesMap">
+        <include refid="getList"/>
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        <include refid="getCount"/>
+    </select>
+
+
+    <sql id="getList">
+        SELECT a.hash,a.name,a.controller,a.url,a.method,a.deprecated,a.mark,a.returns,a.parameters,a.fk_java_id,a.fk_end_id,b.* FROM interfaces a inner JOIN custom_interfaces b ON a.id = b.interfaces_id
+        <where>
+            username=#{param.username}
+            <if test="param.id != null">
+                and b.id = #{param.id}
+            </if>
+            <if test="param.name != null">
+                and a.name = #{param.name}
+            </if>
+            <if test="param.controller != null">
+                and a.controller = #{param.controller}
+            </if>
+            <if test="param.deprecated != null">
+                and a.deprecated = #{param.deprecated}
+            </if>
+            <if test="param.url != null">
+                and a.url = #{param.url}
+            </if>
+            <if test="param.endId != null">
+                and a.fk_end_id = #{param.endId}
+            </if>
+            <if test="param.javaId != null">
+                and a.fk_java_id = #{param.javaId}
+            </if>
+        </where>
+    </sql>
+    <sql id="getCount">
+        SELECT count(b.id) FROM interfaces a inner JOIN custom_interfaces b ON a.id = b.interfaces_id
+        <where>
+            username=#{param.username}
+            <if test="param.id != null">
+                and b.id = #{param.id}
+            </if>
+            <if test="param.name != null">
+                and a.name = #{param.name}
+            </if>
+            <if test="param.controller != null">
+                and a.controller = #{param.controller}
+            </if>
+            <if test="param.deprecated != null">
+                and a.deprecated = #{param.deprecated}
+            </if>
+            <if test="param.url != null">
+                and a.url = #{param.url}
+            </if>
+            <if test="param.endId != null">
+                and a.fk_end_id = #{param.endId}
+            </if>
+            <if test="param.javaId != null">
+                and a.fk_java_id = #{param.javaId}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

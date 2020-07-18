@@ -23,7 +23,6 @@ public class TestCaseQueryParam {
     private String name;
 
     @Notes("用户名称（谁建的）")
-    @Condition(type = MatchType.LIKE)
     private String userName;
 
     @Notes("备注")

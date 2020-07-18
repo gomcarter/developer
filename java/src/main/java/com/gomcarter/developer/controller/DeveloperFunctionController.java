@@ -1,13 +1,15 @@
 package com.gomcarter.developer.controller;
 
+import com.gomcarter.developer.dto.CustomFunctionDto;
 import com.gomcarter.developer.dto.FunctionDto;
 import com.gomcarter.developer.entity.Function;
-import com.gomcarter.developer.holder.UserHolder;
-import com.gomcarter.developer.params.CustomFunctionParam;
 import com.gomcarter.developer.params.FunctionParam;
 import com.gomcarter.developer.service.FunctionService;
+import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -27,10 +29,9 @@ public class DeveloperFunctionController {
 
     @GetMapping(value = "list", name = "获取脚本列表")
     List<FunctionDto> list(FunctionParam params, DefaultPager pager) {
-        params.setCustomFunctionParam(new CustomFunctionParam()
-                .setUserName(UserHolder.name())
-                .setIsPublic(true)
-        );
+
+        params.setCustomFunctionDto(new CustomFunctionDto().setUserName(UserHolder.name())
+                .setIsPublic(true));
 
         return this.functionService.query(params, pager)
                 .stream()
@@ -39,8 +40,9 @@ public class DeveloperFunctionController {
                         .setUserName(s.getUserName())
                         .setName(s.getName())
                         .setMark(s.getMark())
-                        .setIsPublic(s.getIsPublic())
                         .setScriptText(s.getScriptText())
+                        .setIsPublic(s.getIsPublic())
+                        .setArguments(s.getArguments())
                         .setCreateTime(s.getCreateTime())
                         .setModifyTime(s.getModifyTime())
                 )
@@ -55,12 +57,14 @@ public class DeveloperFunctionController {
     @PostMapping(value = "", name = "新增脚本")
     void insert(@Notes("脚本名称") @RequestParam String name,
                 @Notes("javascript脚本") @RequestParam String scriptText,
-                @Notes("脚本备注") @RequestParam(required = false) String mark,
+                @Notes("示例参数") String arguments,
+                @Notes("脚本备注") String mark,
                 @Notes("脚本备注") @RequestParam(value = "isPublic", defaultValue = "false") Boolean isPublic) {
 
         functionService.insert(new Function()
                 .setName(name)
                 .setIsPublic(isPublic)
+                .setArguments(arguments)
                 .setUserName(UserHolder.name())
                 .setMark(mark)
                 .setScriptText(scriptText)
@@ -71,15 +75,20 @@ public class DeveloperFunctionController {
     void update(@Notes("主键") @PathVariable("id") Long id,
                 @Notes("脚本名称") @RequestParam String name,
                 @Notes("javascript脚本") @RequestParam String scriptText,
-                @Notes("脚本备注") @RequestParam String mark,
+                @Notes("示例参数") String arguments,
+                @Notes("脚本备注") String mark,
                 @Notes("脚本备注") @RequestParam(value = "isPublic", defaultValue = "false") Boolean isPublic) {
-        functionService.update(new Function()
-                .setId(id)
+        Function function = this.functionService.getById(id);
+        AssertUtils.isTrue(UserHolder.name().equals(function.getUserName()), new NoPermissionException());
+
+        functionService.update(function
                 .setName(name)
+                .setArguments(arguments)
                 .setMark(mark)
                 .setIsPublic(isPublic)
                 .setScriptText(scriptText)
         );
+
     }
 
     @GetMapping(value = "{id}", name = "获取脚本详情")
@@ -89,10 +98,12 @@ public class DeveloperFunctionController {
                         .setId(s.getId())
                         .setName(s.getName())
                         .setMark(s.getMark())
+                        .setArguments(s.getArguments())
                         .setUserName(s.getUserName())
                         .setIsPublic(s.getIsPublic())
                         .setScriptText(s.getScriptText())
                 )
                 .orElse(null);
     }
+
 }

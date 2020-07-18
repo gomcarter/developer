@@ -14,7 +14,6 @@ import java.util.Date;
 @Accessors(chain = true)
 public class EndDto {
 
-
     @Notes("主键")
     private Long id;
 

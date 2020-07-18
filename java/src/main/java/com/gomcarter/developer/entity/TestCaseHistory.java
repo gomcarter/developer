@@ -8,44 +8,52 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
- * @author gomcarter on 2020-01-10 14:40:23
+ * @author 李银 on 2020-07-17 21:38:50
  */
 @Data
 @Accessors(chain = true)
-public class TestCaseItem {
+public class TestCaseHistory {
+
     /**
      * 主键
      */
     @TableId(type = IdType.AUTO)
     private Long id;
+
     /**
-     * 排序值，值相等：则是并行接口；不相等的：小的先执行，大的后执行
+     * 测试用例id
      */
-    private Integer sort;
+    private Long testCaseId;
+
     /**
-     * 具体接口名称
+     * 环境
+     */
+    private String env;
+
+    /**
+     * 用例名称
      */
     private String name;
     /**
-     * 接口hash值，可以是历史版本
+     * 用户名称（谁执行的）
      */
-    private String hash;
+    private String userName;
     /**
-     * 接口更新了，是否取最新接口
+     * 总共执行次数
      */
-    private Boolean autoRefresh;
+    private Integer total;
     /**
-     * 入参处理器，存储javascript脚本，对入参进行赋值，校验等等操作
+     * 成功次数
      */
-    private String paramHandler;
+    private Integer success;
     /**
-     * 结果处理器，存储javascript脚本，对当前接口返回数据进行校验、转换等等操作
+     * 失败次数
      */
-    private String resultHandler;
+    private Integer failed;
     /**
-     * 接口用例外键
+     * 执行结果
      */
-    private Long fkTestCaseId;
+    private String result;
     /**
      *
      */

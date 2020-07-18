@@ -24,10 +24,10 @@ public class DeveloperJavaController {
 
     @PostMapping(value = "", name = "新增java项目")
     void list(@Notes("java项目名称") @RequestParam String name,
-                     @Notes("开发环境域名") @RequestParam String devDomain,
-                     @Notes("测试环境域名") @RequestParam String testDomain,
-                     @Notes("预发环境域名") @RequestParam String prevDomain,
-                     @Notes("线上环境域名") @RequestParam String onlineDomain) {
+              @Notes("开发环境域名") @RequestParam String devDomain,
+              @Notes("测试环境域名") @RequestParam String testDomain,
+              @Notes("预发环境域名") @RequestParam String prevDomain,
+              @Notes("线上环境域名") @RequestParam String onlineDomain) {
         javaService.insert(new Java()
                 .setName(name)
                 .setDevDomain(devDomain)

@@ -1,14 +1,13 @@
 package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.UserDto;
-import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.UserParam;
 import com.gomcarter.developer.service.UserService;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
-import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
+import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -62,9 +61,10 @@ public class DeveloperUserController {
                 String name,
                 String cellphone,
                 String mail,
-                String password) {
+                String password,
+                Integer roleid) {
 
-        this.userService.update(id, name, cellphone, mail, password);
+        this.userService.update(id, name, cellphone, mail, password, roleid);
     }
 
     @PutMapping(value = "password", name = "修改用户信息")
@@ -77,10 +77,11 @@ public class DeveloperUserController {
                 String name,
                 String cellphone,
                 String mail,
+                Integer roleid,
                 @RequestParam String password) {
 
-        AssertUtils.isTrue(UserHolder.admin(), new NoPermissionException());
+        AssertUtils.isTrue(UserHolder.admin(), new CustomException("没有权限"));
 
-        this.userService.insert(username, name, cellphone, mail, password);
+        this.userService.insert(username, name, cellphone, mail, password,roleid);
     }
 }

@@ -18,7 +18,12 @@ public class FunctionDto {
      */
     @Notes("主键")
     private Long id;
-
+    /**
+     * 用户id
+     *
+     */
+    @Notes("用户名")
+    private String userName;
     /**
      * 函数名称
      */
@@ -34,13 +39,14 @@ public class FunctionDto {
      */
     @Notes("脚本备注")
     private String mark;
+
+    @Notes("示例参数")
+    private String arguments;
     /**
-     *
-     */
+     是否公用
+     **/
+    @Notes("是否公用")
     private Boolean isPublic;
-
-    private String userName;
-
     /**
      *
      */

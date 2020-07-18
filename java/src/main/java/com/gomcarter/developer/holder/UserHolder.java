@@ -26,6 +26,10 @@ public class UserHolder {
         return get().getName();
     }
 
+    public static String username() {
+        return get().getName();
+    }
+
     public static void reset() {
         userThreadLocal.remove();
     }

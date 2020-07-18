@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author 李银 on 2020-07-17 21:38:50 -->
+<mapper namespace="com.gomcarter.developer.dao.TestCaseHistoryMapper">
+    <resultMap type="com.gomcarter.developer.entity.TestCaseHistory" id="testCaseHistoryMap">
+        <id column="id" property="id"/>
+            <result column="test_case_id" property="testCaseId"/>
+            <result column="env" property="env"/>
+            <result column="name" property="name"/>
+            <result column="user_name" property="userName"/>
+            <result column="total" property="total"/>
+            <result column="success" property="success"/>
+            <result column="failed" property="failed"/>
+            <result column="result" property="result"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+
+
+    <!-- //@NotReplaceableEnd  -->
+</mapper>

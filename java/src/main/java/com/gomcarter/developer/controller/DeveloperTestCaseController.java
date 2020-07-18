@@ -2,13 +2,13 @@ package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.TestCaseDto;
 import com.gomcarter.developer.entity.TestCase;
-import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.TestCaseParam;
 import com.gomcarter.developer.params.TestCaseQueryParam;
 import com.gomcarter.developer.service.TestCaseService;
 import com.gomcarter.frameworks.base.common.CustomDateUtils;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,7 +28,7 @@ public class DeveloperTestCaseController {
 
     @GetMapping(value = "list", name = "获取测试用例列表")
     List<TestCaseDto> list(TestCaseQueryParam params, DefaultPager pager) {
-        return this.testCaseService.query(params, pager)
+        return this.testCaseService.query(params.setUserName(UserHolder.name()), pager)
                 .stream()
                 .map(s -> new TestCaseDto()
                         .setId(s.getId())
@@ -37,12 +37,13 @@ public class DeveloperTestCaseController {
                         .setMark(s.getMark())
                         .setCreateTime(s.getCreateTime())
                         .setModifyTime(s.getModifyTime())
-                ).collect(Collectors.toList());
+                )
+                .collect(Collectors.toList());
     }
 
     @GetMapping(value = "count", name = "获取测试用例列表总数")
     Integer count(TestCaseQueryParam params) {
-        return this.testCaseService.count(params);
+        return this.testCaseService.count(params.setUserName(UserHolder.name()));
     }
 
     @PostMapping(value = "", name = "新增测试用例")

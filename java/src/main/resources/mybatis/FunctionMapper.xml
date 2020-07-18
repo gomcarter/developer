@@ -7,6 +7,7 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="script_text" property="scriptText"/>
+        <result column="arguments" property="arguments"/>
         <result column="mark" property="mark"/>
         <result column="user_name" property="userName"/>
         <result column="is_public" property="isPublic"/>

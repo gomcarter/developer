@@ -49,7 +49,6 @@ public class FunctionService {
     public <P> List<Function> query(P params, Pageable pager) {
         return  functionMapper.query(params, pager);
     }
-
     public <P> Integer count(P params) {
         return  functionMapper.count(params);
     }

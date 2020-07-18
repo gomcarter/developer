@@ -1,4 +1,4 @@
-package com.gomcarter.developer.params;
+package com.gomcarter.developer.dto;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import com.gomcarter.frameworks.mybatis.annotation.Condition;
@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class CustomFunctionParam {
+public class CustomFunctionDto {
     @Notes("username")
     @Condition(field ="user_name" , type = MatchType.OR)
     private String userName;
@@ -20,4 +20,5 @@ public class CustomFunctionParam {
     @Notes("is_public")
     @Condition(field ="is_public" , type = MatchType.OR)
     private Boolean isPublic;
+
 }
