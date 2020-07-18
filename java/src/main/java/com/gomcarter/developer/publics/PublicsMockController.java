@@ -1,4 +1,4 @@
-package com.gomcarter.developer.controller.publics;
+package com.gomcarter.developer.publics;
 
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.InterfacesVersioned;

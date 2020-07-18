@@ -1,4 +1,4 @@
-package com.gomcarter.developer.controller.publics;
+package com.gomcarter.developer.publics;
 
 import com.gomcarter.developer.entity.SettingOfUser;
 import com.gomcarter.developer.holder.LoginUser;

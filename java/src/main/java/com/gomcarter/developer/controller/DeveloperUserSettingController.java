@@ -1,4 +1,4 @@
-package com.gomcarter.developer.controller.developer;
+package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.SettingOfUserDto;
 import com.gomcarter.developer.holder.UserHolder;

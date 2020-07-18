@@ -1,4 +1,4 @@
-package com.gomcarter.developer.controller.developer;
+package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.EndAuthDto;
 import com.gomcarter.developer.dto.EndDto;

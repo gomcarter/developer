@@ -1,4 +1,4 @@
-package com.gomcarter.developer.controller.developer;
+package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.FunctionDto;
 import com.gomcarter.developer.entity.Function;
