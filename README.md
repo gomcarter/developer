@@ -18,7 +18,8 @@
     write.jdbc.password=root123
 
 **3，启动服务**
-    如需更换端口，请自行修改
+    
+如需更换端口，请自行修改
     
     sh startup.sh
 
