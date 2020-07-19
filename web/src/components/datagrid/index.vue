@@ -318,7 +318,7 @@ export default {
   methods: {
     clearSelections () {
       this.data.forEach(s => {
-        s.$checked = false
+        this.$set(s, '$checked', false)
       })
       Object.entries(this.selected).forEach(s => delete this.selected[s[0]])
       if (this.onSelectionChanged) {
@@ -328,12 +328,12 @@ export default {
     },
     formatData (input) {
       // 清空原来数据
-      this.data.length = 0;
+      this.$set(this, 'data', []);
       // 把新数据加入
       (input || []).forEach(s => {
         if (this.checkable) {
           s.$hash = md5(JSON.stringify(s))
-          s.$checked = !!this.selected[s.$hash]
+          this.$set(s, '$checked', !!this.selected[s.$hash])
         }
         this.data.push(s)
       })
@@ -349,7 +349,7 @@ export default {
                 this.onUnSelected(row)
               }
 
-              s.$checked = false
+              this.$set(s, '$checked', false)
             }
           })
 

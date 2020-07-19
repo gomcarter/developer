@@ -13,16 +13,14 @@
         </el-form-item>
       </el-form>
     </div>
-    <h4 class="title">自定义函数列表</h4>
+    <h4 class="title">自定义参数列表</h4>
     <hr/>
     <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
   </div>
 </template>
-
 <script>
 import { functionCountApi, functionListApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
-
 export default {
   data () {
     return {
@@ -38,11 +36,6 @@ export default {
         handler: this.add
       }],
       columns: [
-        {field: 'name', header: '规则名称', sort: 'name', width: 200},
-        {field: 'script', header: '脚本', sort: 'script', width: 500},
-        {field: 'mark', header: '备注', sort: 'mark', width: 400},
-        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
-        {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
           header: '操作',
@@ -55,7 +48,15 @@ export default {
               }
             }
           ]
-        }
+        },
+        {field: 'id', header: '编号', sort: 'id', width: 100},
+        {field: 'name', header: '规则名称', sort: 'name', width: 200},
+        {field: 'isPublic', header: '是否公用', sort: 'is_public', width: 100, html: true, formatter: (row, index, value) => this.formatIsPublic(row, value)},
+        {field: 'scriptText', header: '脚本', sort: 'scriptText', width: 500},
+        {field: 'userName', header: '创建人', sort: 'user_name', width: 100},
+        {field: 'mark', header: '备注', sort: 'mark', width: 400},
+        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
+        {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ]
     }
   },
@@ -71,6 +72,13 @@ export default {
     },
     add () {
       this.$router.push(`/flow/function/edit`)
+    },
+    formatIsPublic (row, value) {
+      if (value) {
+        return '是 <i title=' + row['userName'] + ' class="el-icon-warning-outline"></i>'
+      } else {
+        return '否'
+      }
     }
   },
   components: {

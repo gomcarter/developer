@@ -3,10 +3,7 @@
     <el-form label-width="3em">
       <el-form-item label="环境：" style="width: 250px">
         <el-select v-model="env">
-          <el-option label="开发" value="devDomain"></el-option>
-          <el-option label="测试" value="testDomain"></el-option>
-          <el-option label="预发" value="prevDomain"></el-option>
-          <el-option label="线上" value="onlineDomain"></el-option>
+          <el-option v-for="(value, key) in ENV_DOMAIN_MAP" :key="key" :label="value" :value="key"></el-option>
         </el-select>
       </el-form-item>
     </el-form>
@@ -18,16 +15,22 @@
       <span class="simple ignore"></span><span>-不执行</span>
     </div>
     <el-container>
-      <el-main class="container" :style="{width: width * 0.6 + 'px', height: height + 'px'}">
-        <div class="flow-container"></div>
+      <el-main class="running-history" :style="{width: '12%', height: height + 'px'}">
+        <div v-for="(history, index) of historyList" :key="index" @click="viewHistory(index)" :class="currentIndex === index ? 'selected' : ''">
+          <span :class="history.success == null && i * 0 ? 'el-icon-loading' : (history.success ? 'el-icon-circle-check' : 'el-icon-circle-close')"></span>
+          <span>{{ `第${index + 1}次运行结果` }}</span>
+        </div>
       </el-main>
-      <el-aside :style="{width: width * 0.4 + 'px', height: height + 'px'}" class="runner-log">
+      <el-aside :style="{width: '58%', height: height + 'px'}" class="runner-container">
+        <div class="flow-container" style="position: relative;"></div>
+      </el-aside>
+      <el-aside :style="{width: '30%', height: height + 'px'}" class="runner-logger">
         <div v-for="(log, index) of logs" :key="index" style="min-height: 20px;">
           <span v-if="log.type === 'json'">
             <v-jsonformatter :json="log.data" :min-height="25"></v-jsonformatter>
           </span>
-          <span v-else-if="log.type === 'error'" style="color: red;">{{ log.data }}</span>
-          <span v-else>{{ log.data }}</span>
+          <span v-else-if="log.type === 'error'" style="color: red;" v-html="log.data"></span>
+          <span v-else v-html="log.data"></span>
         </div>
       </el-aside>
     </el-container>
@@ -36,9 +39,10 @@
 
 <script>
 import G6 from '@antv/g6'
-import { xhr } from '@/config/api/http'
-import { functionListApi, originMockUrl } from '@/config/api/inserv-api'
-import { toQueryString, sleep, constructExecutableDataModel } from '@/config/utils'
+import { originMockUrl, processParams, mockXhr, saveTestCaseHistorytApi } from '@/config/api/inserv-api'
+import { toQueryString, sleep, constructExecutableDataModel, toJsonHtml } from '@/config/utils'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
+import insertCss from 'insert-css'
 
 export default {
   props: {
@@ -61,39 +65,57 @@ export default {
   },
   data () {
     return {
+      i: 0,
+      ENV_DOMAIN_MAP,
       logs: [],
       env: 'testDomain',
+      testCaseId: null,
       workflow: {
         nodes: null,
         edges: null
       },
       presetParams: null,
-      model: []
+      model: [],
+      success: true,
+      currentIndex: 0,
+      historyList: []
     }
   },
   methods: {
-    setData (data) {
-      this.log('========开始========')
-      this.workflow = data.workflow
-      this.presetParams = data.presetParams || []
+    viewHistory (index) {
+      this.currentIndex = index
+      const history = this.historyList[index]
 
       // render
-      this.graph.data(this.workflow)
+      this.graph.data(history.workflow)
       this.graph.render()
 
-      this.log('初始化运行流程：')
-      this.model = constructExecutableDataModel(this.graph)
-      // logs
-      let index = 1
-      this.model.forEach(m => {
-        this.log(index + ' => ' + m.map(mm => `${mm.getModel().label}（$${mm.getModel().id}）`).join('，'))
-        index++
+      this.graph.getNodes().forEach(n => {
+        this.setState(n, history.statesMap[n.getModel().id])
       })
 
-      this.log('运行流程初始化完毕')
-      this.log('')
-      // 初始化预制参数
-      this.initPresetParams()
+      this.$set(this, 'logs', history.logs)
+    },
+    setData (data) {
+      if (data.env) {
+        this.env = data.env
+      }
+
+      if (data.historyList && data.historyList.length > 0) {
+        this.$set(this, 'historyList', data.historyList)
+
+        this.viewHistory(0)
+      } else {
+        this.testCaseId = data.testCaseId
+        this.workflow = data.workflow
+        this.presetParams = data.presetParams || []
+
+        // render
+        this.graph.data(this.workflow)
+        this.graph.render()
+        this.log('初始化完毕，等待执行')
+        this.prepared && this.prepared()
+      }
     },
     registerEdge () {
       // lineDash 的差值，可以在后面提供 util 方法自动计算
@@ -147,6 +169,21 @@ export default {
       }, 'line')
     },
     initGraph () {
+      insertCss(`
+        .g6-tooltip {
+          border: 1px solid #e2e2e2;
+          border-radius: 4px;
+          font-size: 12px;
+          color: #545454;
+          background-color: rgba(255, 255, 255, 0.9);
+          padding: 10px 8px;
+          box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+          overflow: auto;
+          line-height: 24px;
+          max-height: 300px;
+        }
+      `)
+
       // 创建graph
       this.graph = new G6.Graph({
         container: this.$el.querySelectorAll('.flow-container')[0],
@@ -156,7 +193,17 @@ export default {
         // fitView: true,
         // fitViewPadding: 100,
         modes: {
-          default: ['drag-node', 'drag-canvas', 'zoom-canvas']
+          default: ['drag-node', 'drag-canvas', {
+            type: 'tooltip',
+            shouldBegin: (e) => {
+              return !!e.item.getModel().description
+            },
+            formatText: (model) => {
+              return model.description
+            },
+            offset: -1
+          }],
+          zoom: ['zoom-canvas', 'drag-node', 'drag-canvas', 'click-select']
         },
         nodeStateStyles: {
           waiting: {
@@ -166,12 +213,12 @@ export default {
           },
           running: {
             radius: 4,
-            fill: 'yellowgreen',
+            fill: 'green',
             stroke: '#4063ff'
           },
           success: {
             radius: 4,
-            fill: 'green',
+            fill: 'springgreen',
             stroke: '#4063ff'
           },
           failed: {
@@ -186,7 +233,7 @@ export default {
           }
         },
         defaultNode: {
-          shape: 'rect',
+          type: 'rect',
           size: [120, 50],
           label: '新增节点',
           style: {
@@ -196,7 +243,7 @@ export default {
           }
         },
         defaultEdge: {
-          shape: 'running-line',
+          type: 'running-line',
           style: {
             stroke: '#4063ff',
             shadowColor: 'black',
@@ -208,41 +255,41 @@ export default {
           }
         }
       })
+
+      // 阻止右键事件
+      this.graph.on('contextmenu', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+      })
+
+      this.graph.on('keydown', (ev) => {
+        if (ev.key === 'Control') {
+          this.graph.setMode('zoom')
+        }
+      })
+
+      this.graph.on('keyup', (ev) => {
+        this.graph.setMode('default')
+      })
     },
-    initPresetParams () {
-      // 1,拿出固定值
+    async initPresetParams () {
       this.log('初始化预置参数：')
-      this.presetParams.filter(s => s.fix)
-        .forEach(s => {
-          window['$' + s.key] = s.value
-          this.log('$' + s.key + ' => ' + s.value)
-        })
-
-      // 2，拿出非固定值，请求获取到function，再通过function获取到最新的值
-      const functionPresetParams = this.presetParams.filter(s => !s.fix)
-      const functionIdList = functionPresetParams.map(s => s.functionId)
-      if (functionIdList.length > 0) {
-        functionListApi({idList: functionIdList})
-          .then(r => {
-            const map = {}
-            r.forEach(c => {
-              /* eslint-disable */
-              map[c.id] = Function(c.script)()
-            })
-
-            functionPresetParams.forEach(s => {
-              window['$' + s.key] = map[s.functionId]
-              this.log('$' + s.key + ' => ' + window['$' + s.key])
-            })
-            this.log('预置参数初始化完毕')
-            this.log('')
-            this.prepared && this.prepared()
-          })
+      // 处理预置参数
+      if (this.presetParams && this.presetParams.length > 0) {
+        for (let index = 0; index < this.presetParams.length; ++index) {
+          const p = this.presetParams[index]
+          let key = p.key
+          if (!key) {
+            continue
+          }
+          window['$' + key] = await processParams(p)
+          this.log(`$${key} => ${window['$' + key]}`)
+          console.log(`初始化预置参数：$${key}=${window['$' + key]}`, p)
+        }
       } else {
-        this.log('预置参数初始化完毕')
-        this.log('')
-        this.prepared && this.prepared()
+        this.log('没有需要初始化的预置参数')
       }
+      this.log('预置参数初始化完毕')
     },
     clearState (node) {
       node = node == null ? this.graph.getNodes() : (node instanceof Array ? node : [node])
@@ -253,287 +300,279 @@ export default {
         this.graph.setItemState(n, 'success', false)
         this.graph.setItemState(n, 'failed', false)
         this.graph.setItemState(n, 'selected', false)
+        this.graph.setItemState(n, 'ignore', false)
       })
     },
     setState (node, state, bool = true) {
       node = node == null ? this.graph.getNodes() : (node instanceof Array ? node : [node])
+      this.clearState(node)
+
       state = state instanceof Array ? state : [state]
       node.forEach(n => state.forEach(s => this.graph.setItemState(n, s, bool)))
     },
     /**
-     * 默认 mock = false
-     * @param mock
+     * 外部api，保存历史
      */
-    run (mock = false) {
-      this.log('开始执行：')
-      this.clearState()
+    saveHistory () {
+      if (!this.historyList || this.historyList.length === 0) {
+        this.$alert('没有执行结果可保存', '提示', {type: 'error'})
+        return
+      }
+
+      this.$prompt('保存', '', {
+        inputType: 'text',
+        inputPlaceholder: '请输入要保存的名称',
+        inputValidator: (d) => (d || '').trim().length > 0 || '请输入要保存的名称'
+      }).then((d) => {
+        saveTestCaseHistorytApi({
+          testCaseId: this.testCaseId,
+          name: d.value,
+          env: this.env,
+          total: this.historyList.length,
+          success: this.historyList.filter(s => s.success).length,
+          result: JSON.stringify(this.historyList)
+        }).then((res) => {
+          this.$confirm('保存成功！', '提示', {
+            type: 'success',
+            cancelButtonText: '关闭',
+            confirmButtonText: '去查看'
+          }).then(() => {
+            this.$router.push(`/flow/testCase/history/${res.data}`)
+          })
+        })
+      })
+    },
+    /**
+     * 外部api，清空历史
+     */
+    clearHistory () {
+      this.$set(this, 'historyList', [])
+    },
+    /**
+     * 外部api，执行用例
+     * @param times 执行次数
+     * @param mock 是否执行mock数据，默认：false
+     */
+    async run (times, mock = false) {
+      // 清空执行历史
+      this.$set(this, 'historyList', [])
+
+      times = times <= 0 ? 1 : times
+      for (let i = 0; i < times; ++i) {
+        const history = {}
+        this.historyList.push(history)
+        this.currentIndex = this.historyList.length - 1
+        // 滚动条滚到最下面
+        setTimeout(() => {
+          const container = this.$el.querySelector('.running-history')
+          container.scrollTop = container.scrollHeight
+        }, 1)
+
+        await this._run(mock)
+
+        const nodes = JSON.parse(JSON.stringify(this.graph.getNodes().map(s => s.getModel())))
+        const edges = JSON.parse(JSON.stringify(this.graph.getEdges().map(s => s.getModel())))
+        history.workflow = { nodes, edges }
+        history.logs = this.logs.map(s => s)
+        history.success = this.success
+        history.statesMap = {}
+        this.graph.getNodes().forEach(n => {
+          history.statesMap[n.getModel().id] = [...n.getStates()]
+        })
+        this.i = this.i + 1
+      }
+
+      // 通知外部执行完毕
+      this.finished && this.finished()
+    },
+    async _run (mock = false) {
+      this.success = true
+      this.$set(this, 'logs', [])
+
+      this.log('========开始========')
+      this.log('初始化运行流程：')
+      // render
+      this.graph.data(this.workflow)
+      this.graph.render()
+      // 构建model
+      this.model = constructExecutableDataModel(this.graph)
+      // logs
+      let index = 1
+      this.model.forEach(m => {
+        this.log(index + ' => ' + m.map(mm => `${mm.getModel().label}（$${mm.getModel().id}）`).join('，'))
+        index++
+      })
       this.graph.getNodes().forEach(n => {
         n.getModel().data.shouldRun = true
       })
+      this.log('运行流程初始化完毕')
 
+      this.log('')
+      this.log('开始节点执行：')
+
+      // 标记所有节点等待执行
       this.setState(null, 'waiting')
 
-      if (mock !== undefined && mock !== true) {
-        mock = false
-      }
+      // 初始化预制参数
+      await this.initPresetParams()
+      // 开始执行
+      await this.runLevel(0, mock)
 
-      this.runLevel(0, mock)
+      this.log('执行完毕！')
+      this.log('')
     },
-    runLevel (level, mock) {
+    async runLevel (level, mock) {
       if (level >= this.model.length) {
-        this.log('执行完毕！')
-        this.log('')
-
-        this.finished && this.finished()
         return
       }
 
       const toBeRunning = this.model[level]
       const totalCount = toBeRunning.length
-      let count = 0
-      let error = false
 
-      toBeRunning.forEach(async node => {
+      for (let index = 0; index < totalCount; ++index) {
+        const node = toBeRunning[index]
         const model = node.getModel()
         const data = model.data
 
-        // 如果被标记不执行则跳过下游线路
-        if (!data.shouldRun) {
-          this.log(`节点【${model.id}】不执行`)
-          this.setState(node, ['ignore'])
-          count++
-          return
+        this.log('')
+        this.log(`<b>开始执行节点：${model.label}（$${model.id}）</b>`)
+
+        if (this.ignore(node, level)) {
+          continue
         }
 
-        // 上游线
-        const preEdges = node.getEdges().filter(e => e.getTarget() === node)
-        if (level !== 0 && preEdges.filter(e => e.getSource().getModel().data.shouldRun).length === 0) {
-          this.log(`上游节点未存在执行节点，本节点【${model.id}】不执行`)
-          this.setState(node, ['ignore'])
-          // 上游没有一个可执行的，那么本节点也不执行
-          count++
-          return
-        }
-
-        // 下游节点和线
-        const edges = node.getEdges().filter(e => e.getSource() === node)
-        this.setState(edges.concat(node), ['selected', 'running'])
-
+        // 休眠N秒执行
         if (data.sleep > 0) {
           this.log(`休眠${data.sleep}秒之后运行`)
           await sleep(data.sleep * 1000)
           this.log(`休眠结束，开始运行`)
         }
+        // 下游节点和线亮起来
+        const edges = node.getEdges().filter(e => e.getSource() === node)
+        this.setState(edges.concat(node), ['selected', 'running'])
+
+        let message
         // 条件
-        if (model.shape === 'diamond') {
-          // 执行脚本
+        if (model.type === 'diamond') {
           // 有脚本，则按照脚本重新赋值
           try {
-            this.log('条件判断结果：')
+            /* eslint-disable */
             const condition = new Function(data.javascript)() || []
-            this.log('执行路线：' + condition.join(','))
+            this.log('条件判断成功，执行路线：' + condition.join(','))
             // 找出下游不在condition中的线路， 然后把这些线路的终点节点标记不执行
-            edges.filter(e => !(condition.indexOf(e.getModel().id) >= 0)).forEach(e => {
+            edges.filter(e => condition.indexOf(e.getModel().id) < 0)
+              .forEach(e => {
                 const m = e.getTarget().getModel()
                 if (!m.data) {
-                  m.data = { shouldRun : false }
+                  m.data = {shouldRun: false}
                 } else {
                   m.data.shouldRun = false
                 }
-                this.setState([e], ['selected', 'running'], false)
+                this.setState(e.getTarget(), ['ignore'])
+                this.graph.updateItem(e.getTarget(), m)
               })
 
-            // // 入线
-            // const entry = node.getEdges().filter(e => e.getTarget() === node)
-            // edges.filter(e => condition.indexOf(e.getTarget().getModel().id) >= 0)
-            //   .forEach(e => {
-            //     window['$' + e.getModel().id] = window['$' + entry[0].getModel().id]
-            //   })
-            this.setState(edges.concat(node), ['selected', 'running'], false)
-            this.setState(node, ['success'], true)
+            this.clearState(edges)
+            this.setState(node, ['success'])
             this.log('')
-            count++
-
           } catch (e) {
-            this.log(`条件脚本处理出错：${e.message}`, 'error')
-            this.log('')
-
-            this.setState(edges.concat(node), ['selected', 'running'], false)
-            this.setState(node, ['failed'], true)
-            error = true
+            this.error(edges, node, `条件判断失败：${e.toString()}`)
           }
         } else {
-          this.log(`开始执行节点：${model.label}（$${model.id}）`)
-          this.buildXhr(data, mock)
-            .then((d) => {
-              if (d.data.success != false) {
-                // 赋值
-                window['$' + model.id] = d.data
-                this.log(`返回结果：`)
-                this.log(window['$' + model.id], 'json')
-                if (data.javascript) {
-                  // 有脚本，则按照脚本重新赋值
-                  try {
-                    const mapped = new Function(data.javascript);
-                    if (mapped) {
-                      window['$' + model.id] = mapped
-                      this.log('脚本处理后本节点结果：')
-                      this.log(window['$' + model.id], 'json')
-                    } else {
-                      this.log('脚本未对结果做任何处理，本节点结果为')
-                      this.log(window['$' + model.id], 'json')
-                    }
-                  } catch (e) {
-                    this.log(`数据转换脚本处理出错：${e.message}`, 'error')
-                    this.log('')
+          try {
+            let url = mock ? originMockUrl(data.java[this.env], data.url) : (data.java[this.env] + data.url)
+            const paramsName = '$' + model.id
+            const res = await mockXhr(url, data.method, data.parameters, data.headers, data.preParams, data.javascript, paramsName)
 
-                    this.setState(edges.concat(node), ['selected', 'running'], false)
-                    this.setState(node, ['failed'], true)
-                    error = true
-                  }
-                }
+            message = this.appendMessage('', `接口地址：${res.method.toUpperCase()}  ${res.url}`)
+            message = this.appendMessage(message, `header：${res.headers.length > 0 ? res.headers.map(h => h.key + '=' + h.value).join('，') : '无'}`)
+            message = this.appendMessage(message, `接口参数：${toQueryString(res.params)}`)
+            message = this.appendMessage(message, res.body && `body：${res.body}`)
+            message = this.appendMessage(message, '调用结果：')
+            message = this.appendMessage(message, res.result.data, 'json')
 
-                if (!error) {
-                  // 将结果放到输送线上去
-                  edges.forEach(e => {
-                    window['$' + e.getModel().id] = window['$' + model.id]
-                  })
-
-                  this.setState(edges.concat(node), ['selected', 'running'], false)
-                  this.setState(node, ['success'], true)
-                  this.log('')
-                  count++
-                }
+            if (res.success) {
+              if (res.check === false) {
+                // 执行检查点失败
+                this.error(edges, node, this.appendMessage(message, '检查点：执行失败，' + res.message))
               } else {
-                // 我们自己的框架，这段代码有效，别人的未必
-                this.log('执行结果出错：')
-                this.log(d.data, 'json')
-                this.log('')
-
+                // 将结果放到输送线上去
+                edges.forEach(e => {
+                  window['$' + e.getModel().id] = window[paramsName]
+                })
                 this.setState(edges.concat(node), ['selected', 'running'], false)
-                this.setState(node, ['failed'], true)
-                error = true
+                this.setState(node, ['success'], true)
+                model.description = res.check ? this.appendMessage(message, '检查点：执行成功！') : this.appendMessage(message, '检查点：无')
+                this.graph.updateItem(node, model)
               }
-            })
-            .catch((e) => {
-              this.log('执行出错了: ' + e.toString())
-              this.log('')
-              this.setState(edges.concat(node), ['selected', 'running'], false)
-              this.setState(node, ['failed'], true)
-              error = true
-            })
-        }
-      })
-
-      // 等待所有上述执行完毕，进行下次操作
-      const timer = setInterval(() => {
-        if (error) {
-          clearInterval(timer)
-          this.log("执行完毕，执行过程中发生了错误！")
-          this.log('')
-          this.finished && this.finished()
-        }
-
-        if (totalCount <= count) {
-          count = 0
-          clearInterval(timer)
-          // 执行下一层
-          this.runLevel(level + 1, mock)
-        }
-      }, 100)
-    },
-    buildXhr (model, mock) {
-      let params
-      let method = model.method.toLowerCase()
-      let res
-      let obj = {}
-      let url = mock ? originMockUrl(model.java[this.env], model.url) : (model.java[this.env] + model.url)
-      let bodyParams
-      if (model.parameters.length > 0) {
-        model.parameters.forEach(p => {
-          let value = p['defaults']
-          if ((value + '').indexOf('$') >= 0) {
-            try {
-              value = new Function('return ' + p['defaults'])()
-            } catch (e) {
-              this.log(`参数处理失败: ${e.message}`, 'error')
-              this.log('')
-            }
-          }
-
-          if (p.inputType === 'textarea') {
-            bodyParams = value
-          } else if (url.indexOf(`{${p['key']}}`) >= 0) {
-            url = url.replace(`{${p['key']}}`, value)
-          } else {
-            // 同一key的时候，需要合并
-            if (obj[p['key']] === undefined) {
-              obj[p['key']] = value
             } else {
-              obj[p['key']] = [value].concat(obj[p['key']])
+              // 接口调用失败
+              this.error(edges, node, this.appendMessage(message, '接口调用失败：' + res.message))
             }
+          } catch (e) {
+            this.error(edges, node, this.appendMessage(message, `接口调用失败：${e.toString()}`))
           }
-        })
-      }
-
-      if (['put', 'post', 'patch'].indexOf(method) >= 0) {
-        params = obj
-      } else { // get and delete
-        params = {
-          params: obj
         }
       }
 
-      const headers = model.headers.map(h => {
-        let value = h.value
-        try {
-          if (h.value.indexOf('$') === 0) {
-            value = new Function('return ' + h.value)()
-          }
-        } catch (e) {
-          this.log(`header处理失败: ${e.message}`, 'error')
-          this.log('')
-          value = h.value
-        }
-        return {key: h.key, value: value}
-      })
+      await this.runLevel(level + 1, mock)
+    },
+    appendMessage(message, cache, type) {
+      if (!cache) {
+        return message
+      }
 
-      if (bodyParams) {
-        let body
-        let type
-        try {
-          body = JSON.stringify(JSON.parse(bodyParams))
-          type = 'json'
-        } catch (e) {
-          body = bodyParams
-          type = 'raw'
-        }
-        delete obj[bodyParams]
-
-        const u = url + (url.indexOf('?') >= 0 ? '&' : '?') + toQueryString(obj)
-        this.log(`${method.toUpperCase()} ${url}`)
-        headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)
-        this.log(`body：${body}`)
-        res = xhr[method](u, body, {notice: false, type: type, customHeaders: headers})
-      } else if (method === 'post') {
-        this.log(`${method.toUpperCase()} ${url}`)
-        headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)
-        this.log(`参数：${JSON.stringify(obj)}`)
-        res = xhr[method](url, params, {notice: false, customHeaders: headers})
+      if (type === 'json') {
+        this.log(cache, type)
+        cache = `<div class="json-container">${toJsonHtml(cache)}</div>`
       } else {
-        this.log(`${method.toUpperCase()} ${url}`)
-        headers.length && this.log(`header：${headers.map(h => h.key + '=' + h.value).join('，')}`)
-        this.log(`参数：${JSON.stringify(obj)}`)
-        params.customHeaders = headers
-        res = xhr[method](url, params, {notice: false})
+        this.log(cache, type)
       }
-      return res
+      return message + '<p>' + cache + '</p>'
+    },
+    ignore (node, level) {
+      const model = node.getModel()
+      const data = model.data
+
+      // 如果被标记不执行则跳过下游线路
+      if (!data.shouldRun) {
+        const message = `上游阻断，本节点【${model.id}】不执行`
+        model.description = message
+        this.log(message)
+        this.setState(node, ['ignore'])
+        this.graph.updateItem(node, model)
+        return true
+      }
+
+      // 上游节点存在未执行节点, 本节点不执行
+      const preEdges = node.getEdges().filter(e => e.getTarget() === node)
+      if (level !== 0 && preEdges.filter(e => !e.getSource().getModel().data.shouldRun).length > 0) {
+        const message = `上游阻断，本节点【${model.id}】不执行`
+        model.description = message
+        this.log(message)
+        this.setState(node, ['ignore'])
+        data.shouldRun = false
+        this.graph.updateItem(node, model)
+        return true
+      }
+      return false
+    },
+    error (edges, node, message) {
+      this.success = false
+      const model = node.getModel()
+      const data = model.data
+      model.description = message
+      data.shouldRun = false
+      this.clearState(edges, ['selected', 'running'], false)
+      this.setState(node, ['failed'])
+
+      this.graph.updateItem(node, model)
     },
     log (log, type = 'text') {
       this.logs.push({data: log, type: type})
       // 滚动条滚到最下面
       setTimeout(() => {
-        const container = this.$el.querySelector(".runner-log")
+        const container = this.$el.querySelector('.runner-logger')
         container.scrollTop = container.scrollHeight
       }, 1)
     }

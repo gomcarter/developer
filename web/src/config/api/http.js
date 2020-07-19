@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'query-string'
-import {removeBlank} from '@/config/utils'
-import {that} from '../../main.js'
+import { removeBlank } from '@/config/utils'
+import { that } from '../../main.js'
 
 // 表示跨域请求时是否需要使用凭证
 axios.defaults.withCredentials = true
@@ -19,7 +19,9 @@ axios.interceptors.request.use((config) => {
   }
 
   if (customHeaders && customHeaders.length > 0) {
-    customHeaders.filter(n => n.key).forEach(h => { config.headers[h.key] = h.value })
+    customHeaders.filter(n => n.key).forEach(h => {
+      config.headers[h.key] = h.value
+    })
   }
 
   config.paramsSerializer = params => qs.stringify(params)
@@ -50,16 +52,18 @@ axios.interceptors.response.use((response) => {
   if (response.config.notice !== false) {
     // 判断http状态码
     if ([200, 304, 400].indexOf(response.status) === -1) {
-      that.$alert('网络异常！', '提示', {type: 'error'})
+      that.$alert('网络异常！', '提示', { type: 'error' })
     } else if (response.data.code === -401) {
       if (!alerted) {
         alerted = true
-        that.$alert('登录超时', '提示', {type: 'error'}).then(() => that.$router.push('/login'))
+        that.$alert('登录超时', '提示', { type: 'error' }).then(() => that.$router.push('/login'))
 
-        setTimeout(() => { alerted = false }, 5000)
+        setTimeout(() => {
+          alerted = false
+        }, 5000)
       }
-    } else if (!response.data.success) {
-      that.$alert(response.data.message || '请求失败！', '提示', {type: 'error'})
+    } else if (response.data.code !== 0) {
+      that.$alert(response.data.message || '请求失败！', '提示', { type: 'error' })
     }
   }
   return response

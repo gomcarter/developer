@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { interfacesCountApi, transferTocustomerApi, interfacesListApi, endListApi, javaListApi, deleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
+import { cusInterfacesCountApi, transferTocustomerApi, cusInterfacesListApi, endListApi, javaListApi, deleteCusInterfaces, addPackageApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -92,20 +92,11 @@ export default {
         javaId: null,
         endId: null
       },
-      dataUrl: interfacesListApi,
-      countUrl: interfacesCountApi,
+      dataUrl: cusInterfacesListApi,
+      countUrl: cusInterfacesCountApi,
       params: {},
       selected: [],
-      toolbar: [{
-        title: '手动录入接口',
-        icon: 'el-icon-plus',
-        handler: () => this.$router.push('/interfaces/edit')
-      }, {
-        title: '接口打包',
-        icon: 'el-icon-box',
-        disabled: () => this.selected.length === 0,
-        handler: () => this.$refs.packageDialog.open()
-      }],
+      toolbar: [],
       columns: [
         {
           field: 'action',
@@ -118,21 +109,14 @@ export default {
           }, {
             text: '删除',
             handler: (row) => this.delete(row.id)
-          }, {
-            text: '复制',
-            handler: (row) => this.copy(row)
-          }, {
-            text: '收藏',
-            handler: (row) => this.transfer(row)
           }]
         },
         {field: 'id', header: '编号', sort: 'id', width: 80},
-        {field: 'name', header: '接口名称', sort: 'name', width: 200, html: true, formatter: (row, index, value) => '<a href="#/interfaces/view/' + row.id + '" target="_blank">' + value + '</a>'},
+        {field: 'name', header: '接口名称', sort: 'name', width: 200, html: true, formatter: (row, index, value) => '<a href="#/interfaces/view/' + row.interfacesId + '" target="_blank">' + value + '</a>'},
         {field: 'method', header: 'METHOD', sort: 'method', width: 80},
         {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
-        {field: 'controller', header: '控制器', sort: 'controller', width: 180},
         {field: 'url', header: 'URL', sort: 'url', width: 120},
-        {field: 'java.name', header: '后端服务', sort: 'fk_java_id', width: 120},
+        {field: 'java.name', header: '后端服务', sort: 'fk_java_id', width: 160},
         {field: 'end.name', header: '前端项目', sort: 'fk_end_id', width: 160},
         {field: 'modifyTime', header: '更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ],
@@ -151,12 +135,12 @@ export default {
   methods: {
     transfer (row) {
       transferTocustomerApi(row.id).then(() => {
-        this.$success('收藏成功，可以在【接口自动化测试】>【我的接口列表】查看！')
+        this.$success('添加成功！')
         this.search()
       })
     },
     auction (row) {
-      this.$router.push({path: '/test/' + row.id + '/devDomain'})
+      this.$router.push({path: '/test/' + row.interfacesId + '/devDomain'})
     },
     copy (row) {
       const key = row.url.split('/').filter(s => s).map(s => s[0].toUpperCase() + s.substr(1)).join('')
@@ -165,7 +149,7 @@ export default {
     },
     delete (id) {
       this.$confirm('删除将无法恢复，确认删除吗？', '提示', {type: 'warning'}).then(() => {
-        deleteInterfaces(id)
+        deleteCusInterfaces(id)
           .then(() => {
             this.$success('删除成功！')
             this.search()
@@ -176,19 +160,12 @@ export default {
       this.$refs.packageForm.validate((valid) => {
         if (valid) {
           addPackageApi(Object.assign({interfacesIdList: this.selected.map(s => s.id)}, this.form))
-            .then(res => {
+            .then(d => {
+              this.$success(`打包成功！`)
               this.form.name = null
               this.form.mark = null
               this.$refs.dg.clearSelections()
               this.$refs.packageDialog.close()
-
-              this.$confirm('打包成功！', '提示', {
-                type: 'success',
-                cancelButtonText: '关闭',
-                confirmButtonText: '去查看'
-              }).then(() => {
-                this.$router.push(`/package/view/${res}`)
-              })
             })
         }
       })

@@ -23,7 +23,9 @@ export const setCookie = (key, value, opts) => {
     opts = { expires: opts };
   }
 
-  opts = opts || ({});
+  opts = opts || ({
+    expires: 7200
+  });
 
   if (typeof opts.expires === 'number') {
     const date = new Date();

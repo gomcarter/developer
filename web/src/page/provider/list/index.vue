@@ -25,6 +25,7 @@
 <script>
 import { javaCountApi, javaListApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
 
 export default {
   name: 'java',
@@ -43,17 +44,10 @@ export default {
         handler: this.edit
       }],
       columns: [
-        {field: 'id', header: '序号', sort: 'id', width: 100},
-        {field: 'name', header: '模块名称', sort: 'name', width: 100},
-        {field: 'devDomain', header: '开发环境域名', sort: 'dev_domain', width: 200},
-        {field: 'testDomain', header: '测试环境域名', sort: 'test_domain', width: 200},
-        {field: 'prevDomain', header: '预发环境域名', sort: 'prev_domain', width: 200},
-        {field: 'onlineDomain', header: '线上环境域名', sort: 'online_domain', width: 200},
-        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
           header: '操作',
-          width: 230,
+          width: 130,
           actions: [
             {
               text: '编辑',
@@ -62,11 +56,23 @@ export default {
               }
             }
           ]
-        }
+        },
+        {field: 'id', header: '序号', sort: 'id', width: 50},
+        {field: 'name', header: '模块名称', sort: 'name', width: 200},
+        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ]
     }
   },
   mounted () {
+    // 插入环境
+    for (const key in ENV_DOMAIN_MAP) {
+      this.columns.splice(2, 0, {
+        field: key,
+        header: ENV_DOMAIN_MAP[key] + '域名',
+        width: 180
+      })
+    }
+
     if (this.action) {
       this.columns.push({field: 'action', header: '操作', sort: 'id', width: 230, actions: this.action || []})
     }

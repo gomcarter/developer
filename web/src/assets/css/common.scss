@@ -109,9 +109,7 @@ a:hover {
   outline: none;
   cursor: pointer;
 }
-a {
-  color: #409EFF;
-}
+
 
 li {
   list-style: none;
@@ -218,18 +216,52 @@ h6 {
 .pull-right {
   float: right;
 }
-.el-date-editor .el-range-separator{
+
+.el-date-editor .el-range-separator {
   width: 6%;
 }
-.min_width .el-input{
+
+.red {
+  color: red;
+}
+
+.pre {
+  white-space: pre-wrap;
+}
+
+.min_width .el-input, .min_width .el-textarea {
   width: 500px;
 }
-.el-col-6{
+
+.el-col-6 {
   padding-right: 10px;
-  >.el-input{
+
+  > .el-input {
     width: 100%;
   }
 }
-.hidden{
+
+.hidden {
   display: none;
+}
+
+tr.error-row {
+  background-color: rgba(245, 108, 108, 0.3);
+}
+
+tr.warn-row {
+  background-color: rgba(230, 162, 60, 0.3);
+}
+
+.xterm {
+  padding: 10px;
+}
+
+.mark {
+  color: darkgray;
+  font-style: italic;
+}
+
+.v-top {
+  vertical-align: top;
 }

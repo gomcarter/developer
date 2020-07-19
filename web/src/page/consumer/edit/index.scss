@@ -1,9 +1,13 @@
 @charset "utf-8";
 
-.half_min_width{
-  width: 280px;
+.param-value {
+  width: 450px !important;
 }
 
-.hole_min_width{
-  width: 450px;
+.param-key {
+  width: 230px !important;
+}
+
+.param-label {
+  width: 50px !important;
 }

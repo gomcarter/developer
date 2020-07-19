@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-.container {
+.runner-container {
   border-radius: 4px;
   border: 1px solid #DCDFE6;
   padding: 0;
@@ -28,11 +28,11 @@
 }
 
 .running {
-  background: yellowgreen;
+  background: green;
 }
 
 .success {
-  background: green;
+  background: springgreen;
 }
 
 .failed {
@@ -40,5 +40,38 @@
 }
 
 .ignore {
-  background: darkgray;
+  background: lightgray;
+}
+
+.runner-logger {
+}
+
+.running-history {
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 4px;
+  border: 1px solid #DCDFE6;
+
+  div {
+    cursor: pointer;
+    display: block;
+    padding: 10px;
+
+    &:hover {
+      color: red;
+      background: #ccc;
+    }
+  }
+
+  .selected {
+    background: #eee;
+  }
+
+  .el-icon-circle-check {
+    color: green;
+  }
+
+  .el-icon-circle-close {
+    color: red;
+  }
 }

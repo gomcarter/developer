@@ -3,20 +3,31 @@
     <h4 class="title">{{title}}</h4>
     <hr/>
     <el-form :model="form" ref="edit" >
-      <el-form-item label="规则名称:" label-width="8em" :rules="[{ required: true, message: '请输入规则名称', trigger: ['blur', 'change'] }]" prop="name">
-        <el-input v-model="form.name" placeholder="请输入规则名称" />
+      <el-form-item label="参数名称:" label-width="8em" :rules="[{ required: true, message: '请输入规则名称', trigger: ['blur', 'change'] }]" prop="name" class="min_width">
+        <el-input v-model="form.name" placeholder="请输入自定义参数名称"></el-input>
       </el-form-item>
-      <el-form-item label="生成规则脚本:" label-width="8em">
-        <el-input v-model="form.script" type="textarea" rows="10" />
+      <el-form-item label="生成规则脚本:" label-width="8em" class="min_width">
+        <el-input v-model="form.scriptText" type="textarea" rows="10" :placeholder="`示例：随机n-m整数的脚本如下
+var n = +arguments[0]
+var m = +arguments[1]
+return n + Math.floor(Math.random() * (m - n))
+
+注：需在示例参数列输入：n,m（如：200,400）`"></el-input>
       </el-form-item>
-      <el-form-item label="备注:" label-width="8em" prop="mark">
-        <el-input v-model="form.mark" type="textarea" rows="3" />
+      <el-form-item label="示例参数:" label-width="8em" class="min_width">
+        <el-input v-model="form.arguments" placeholder="请输入示例入参，多参数逗号隔开，如：200,400"></el-input>
+      </el-form-item>
+      <el-form-item label="备注:" label-width="8em" prop="mark" class="min_width">
+        <el-input v-model="form.mark" type="textarea" rows="3"></el-input>
+      </el-form-item>
+      <el-form-item label="" label-width="8em">
+      <el-checkbox v-model="form.isPublic" label="是否公用" :checked="form.isPublic"></el-checkbox>
       </el-form-item>
       <el-form-item label="" label-width="8em">
         <el-button @click="action">测试</el-button>
       </el-form-item>
-      <el-form-item label="执行结果:" label-width="8em">
-        <v-jsonformatter v-if="result" :json="result"></v-jsonformatter>
+      <el-form-item label="执行结果:" label-width="8em" style="width: 60%">
+        <v-jsonformatter :json="result"></v-jsonformatter>
       </el-form-item>
       <el-form-item label-width="8em">
         <el-button type="primary" @click="add" icon="el-icon-success">提交</el-button>
@@ -31,12 +42,14 @@ import {addFunctionApi, getFunctionApi, modifyFunctionApi} from '@/config/api/in
 export default {
   data () {
     return {
-      title: '新增自定义函数',
+      title: '新增自定义参数',
       form: {
         id: '',
         name: '',
-        script: '',
-        mark: ''
+        scriptText: '',
+        mark: '',
+        arguments: '',
+        isPublic: false
       },
       result: ''
     }
@@ -45,7 +58,7 @@ export default {
   methods: {
     init () {
       if (this.$route.params.id) {
-        this.title = '编辑自定义函数'
+        this.title = '编辑定义参数'
         getFunctionApi(this.$route.params.id).then((res) => {
           this.form = res
         }).catch((err) => {
@@ -88,7 +101,12 @@ export default {
     action () {
       /* eslint-disable */
       // this.result = eval(this.form.script)
-      this.result = new Function(this.form.script)()
+      try {
+        this.result = new Function((this.form.scriptText || '').replace(/\n/g, ' '))(...(this.form.arguments || '').split(','))
+        console.log('result', this.result)
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
   components: {

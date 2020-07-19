@@ -48,11 +48,12 @@
 }
 
 .datagrid-header-cell {
-  text-align: center;
+  //text-align: center;
   line-height: 1.42857143;
   cursor: pointer;
   padding: 15px;
   white-space: nowrap;
+  text-align: left;
 }
 
 .datagrid-header-check, .datagrid-row-check{
@@ -62,7 +63,7 @@
 }
 
 .datagrid-body {
-  text-align: center;
+  text-align: left;
 }
 
 .datagrid-body-row, .datagrid-body-row-child {

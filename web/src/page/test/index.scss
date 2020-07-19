@@ -1,27 +1,21 @@
 @charset "utf-8";
-.min_width{
-  width: 500px;
-}
-.half_min_width{
-  width: 220px;
+.half_min_width {
+  width: 30%;
 }
 
-.half_max_width{
-  width: 430px;
-}
-
-.hole_min_width{
-  width: 560px;
+.half_max_width {
+  width: 60%;
 }
 
 .left {
   width: 46%;
-  display:  inline-block;
+  display: inline-block;
   vertical-align: top;
+  padding-right: 1%;
 }
 
 .right {
   width: 52%;
-  display:  inline-block;
+  display: inline-block;
   vertical-align: top;
 }

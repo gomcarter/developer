@@ -1,6 +1,8 @@
 <template>
-  <div class="json-container" v-html="formatted" @click="onClicked"
-       :style="{ width: width ? `${width}px`: '100%', height: `${height}px`, 'min-height': `${minHeight}px`}" >
+  <div class="json-container">
+    <div v-html="formatted" @click="onClicked"
+         :style="{ width: width ? `${width}px`: '100%', height: `${height}px`, 'min-height': `${minHeight}px`, 'min-width': `${minWidth}px`}" >
+    </div>
   </div>
 </template>
 
@@ -20,6 +22,10 @@ export default {
   props: {
     json: null,
     minHeight: {
+      type: Number,
+      default: 600
+    },
+    minWidth: {
       type: Number,
       default: 600
     },

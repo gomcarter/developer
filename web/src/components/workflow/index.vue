@@ -11,8 +11,9 @@
 
 <script>
 import G6 from '@antv/g6'
-import { functionListApi, interfacesSimpleListApi, interfacesVersionedSimpleListApi } from '@/config/api/inserv-api'
+import { functionListApi, interfacesVersionedSimpleListApi } from '@/config/api/inserv-api'
 import { constructExecutableDataModel } from '@/config/utils'
+import insertCss from 'insert-css'
 
 export default {
   props: {
@@ -32,8 +33,8 @@ export default {
   data () {
     return {
       interfacesVersionedSimpleListApi,
-      interfacesSimpleListApi,
       functionListApi,
+      selectedItem: null,
       graph: null,
       data: null,
       contextMenu: {
@@ -59,7 +60,7 @@ export default {
           handler: () => {
             // // 在图上新增一个节点
             const node = this.graph.addItem('node', {
-              shape: 'diamond',
+              type: 'diamond',
               size: [120, 50],
               style: {
                 fill: '#fff',
@@ -72,6 +73,7 @@ export default {
             })
 
             this.graph.setItemState(node, 'pending', true)
+            this.selectedItem = node
           }
         }, {
           text: '编辑',
@@ -80,8 +82,7 @@ export default {
         }, {
           text: '删除节点',
           isShow: () => this.contextMenu.event.item != null && this.contextMenu.event.item.getType() === 'node',
-          handler: () => {
-            const item = this.contextMenu.event.item
+          handler: (that, item) => {
             if (item.getStates().indexOf('pending') >= 0) {
               // 未编辑状态可直接删除
               this.graph.removeItem(item)
@@ -109,7 +110,7 @@ export default {
         }, {
           text: '删除连线',
           isShow: () => this.contextMenu.event.item != null && this.contextMenu.event.item.getType() === 'edge',
-          handler: () => this.graph.removeItem(this.contextMenu.event.item)
+          handler: (that, item) => this.graph.removeItem(item)
         }]
       }
     }
@@ -131,6 +132,17 @@ export default {
       }
     },
     render () {
+      insertCss(`
+        .g6-minimap-container {
+          border: 1px solid #e2e2e2;
+        }
+        .g6-minimap-viewport {
+          border: 2px solid rgb(25, 128, 255);
+        }
+      `)
+      const minimap = new G6.Minimap({
+        size: [150, 100]
+      })
       this.graph = new G6.Graph({
         container: this.$el.querySelectorAll('.flow-container')[0],
         width: this.width,
@@ -139,7 +151,8 @@ export default {
         // fitView: true,
         // fitViewPadding: 100,
         modes: {
-          default: ['drag-node', 'drag-canvas', 'zoom-canvas', 'click-select']
+          default: ['drag-node', 'drag-canvas', 'click-select'],
+          zoom: ['zoom-canvas', 'drag-node', 'drag-canvas', 'click-select']
         },
         nodeStateStyles: {
           pending: {
@@ -149,9 +162,10 @@ export default {
           }
         },
         defaultNode: {
-          shape: 'rect',
+          type: 'rect',
           size: [140, 50],
           label: '新增节点',
+          anchorPoints: [],
           style: {
             radius: 4,
             fill: '#fff',
@@ -159,20 +173,22 @@ export default {
           }
         },
         defaultEdge: {
-          shape: 'running-line',
+          type: 'running-line',
           style: {
             stroke: '#4063ff',
             shadowColor: 'black',
             endArrow: {
-              path: 'M 6,0 L -6,-6 L -6,6 Z',
-              d: 6
+              // path: 'M 6,0 L -6,-6 L -6,6 Z',
+              path: 'M 0,0 L 12,6 L 9,0 L 12,-6 Z',
+              fill: '#4063ff'
             },
             lineAppendWidth: 20
           }
-        }
+        },
+        plugins: [ minimap ]
       })
 
-      const data = Object.assign({nodes: [{ id: this.uuid(), shape: 'rect', label: '主节点', x: this.width / 2, y: 100 }]}, this.dataList)
+      const data = Object.assign({nodes: [{ id: this.uuid(), type: 'rect', label: '主节点', x: this.width / 2, y: 100 }]}, this.dataList)
       this.graph.data(data)
       this.graph.render()
 
@@ -182,24 +198,28 @@ export default {
     },
     onMenuClicked (menu) {
       // 处理
-      menu.handler(this)
+      menu.handler(this, this.contextMenu.event.item)
       // 清空事件，关闭菜单
       this.contextMenu.event = null
     },
     addNode (event) {
       // 在图上新增一个节点
       const node = this.graph.addItem('node', {
-        shape: 'rect',
+        type: 'rect',
         x: event.x,
         y: event.y,
         id: this.uuid()
       })
 
       this.graph.setItemState(node, 'pending', true)
+      this.selectedItem = node
     },
     bindEvent () {
       // 右键菜单
       this.graph.on('contextmenu', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+
         // 如果有进行中的连线，删除
         if (this.addingEdge && this.edge) {
           this.graph.removeItem(this.edge)
@@ -236,6 +256,29 @@ export default {
           this.graph.updateItem(this.edge, { target })
         }
       })
+
+      this.graph.on('keydown', (ev) => {
+        if (ev.key === 'Control') {
+          this.graph.setMode('zoom')
+        }
+      })
+      this.graph.on('keyup', (ev) => {
+        this.graph.setMode('default')
+        if (ev.key === 'Delete') {
+          if (this.selectedItem) {
+            // 删除选中物体
+            let index = -1
+            if (this.selectedItem.getType() === 'node') {
+              index = 3
+            } else if (this.selectedItem.getType() === 'edge') {
+              index = 5
+            }
+            if (index >= 0) {
+              this.contextMenu.menu[index].handler(this, this.selectedItem)
+            }
+          }
+        }
+      })
     },
     graphClicked (event) {
       if (event.item == null) {
@@ -251,6 +294,7 @@ export default {
         // 点击边
         this.edgeClicked(event)
       }
+      this.selectedItem = event.item
     },
     edgeClicked (ev) {
       const currentEdge = ev.item
@@ -306,10 +350,11 @@ export default {
       }, 25)
     },
     beginEditNode (event) {
+      this.selectedItem = null
       this.editingNode = event.item
       const model = this.editingNode.getModel()
       const edges = this.editingNode.getEdges()
-      if (model.shape === 'rect') {
+      if (model.type === 'rect') {
         this.$refs.nodeEditor.open(model, edges)
       } else {
         this.$refs.conditionEditor.open(model, edges)
@@ -318,7 +363,7 @@ export default {
     saveNode (node) {
       const model = this.editingNode.getModel()
       let name
-      if (model.shape === 'rect') {
+      if (model.type === 'rect') {
         // 字数太多换行
         name = node.interfaceName || ''
       } else {
@@ -406,7 +451,7 @@ export default {
         message = '流程配置有误，所有节点都应该被串联起来'
       } else {
         // 条件节点必须至少有一个口节点
-        // nodes.filter(n => n.getModel().shape === 'diamond' && n.getEdges().filter(e => e.getTarget()))
+        // nodes.filter(n => n.getModel().type === 'diamond' && n.getEdges().filter(e => e.getTarget()))
         result = true
       }
 
@@ -464,6 +509,6 @@ export default {
 }
 </script>
 
-<style type="text/css" lang="scss">
+<style type="text/css" lang="scss" scoped>
   @import 'index.scss';
 </style>

@@ -75,6 +75,6 @@ export default {
 }
 </script>
 
-<style type="text/css" lang="scss">
+<style type="text/css" lang="scss" scoped>
   @import 'index';
 </style>

@@ -20,29 +20,16 @@
         <div>{{data.end.name}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.end.name}}</div>
       </el-form-item>
-      <el-form-item label="header参数说明：">
-        <div><i style="color:red;">header名：{{data.end.header}}<br>{{data.end.mark}}</i></div>
-        <div class="history" v-if="currentVersioned"><i>header名：{{currentVersioned.end.header}}<br>{{currentVersioned.end.mark}}</i></div>
+      <el-form-item label="系统说明：">
+        <div><i class="pre red">{{data.end.mark}}</i></div>
       </el-form-item>
       <el-form-item label="所属模块：">
         <div>{{data.java.name}}</div>
         <div class="history" v-if="currentVersioned">{{currentVersioned.java.name}}</div>
       </el-form-item>
-      <el-form-item label="开发地址：">
-        <div><a @click="linkTo(data, 'devDomain')" target="_blank">{{`${data.java.devDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="originMockUrl(data.java.devDomain, data.url)" target="_blank">{{originMockUrl(data.java.devDomain, data.url)}}</a></span>
-      </el-form-item>
-      <el-form-item label="测试地址：">
-        <div><a @click="linkTo(data, 'testDomain')" target="_blank">{{`${data.java.testDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="originMockUrl(data.java.testDomain, data.url)" target="_blank">{{originMockUrl(data.java.testDomain, data.url)}}</a></span>
-      </el-form-item>
-      <el-form-item label="预发地址：">
-        <div><a @click="linkTo(data, 'prevDomain')" target="_blank">{{`${data.java.prevDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="originMockUrl(data.java.prevDomain, data.url)" target="_blank">{{originMockUrl(data.java.prevDomain, data.url)}}</a></span>
-      </el-form-item>
-      <el-form-item label="生产地址：">
-        <div><a @click="linkTo(data, 'onlineDomain')" target="_blank">{{`${data.java.onlineDomain}${data.url}`}}</a></div>
-        <span>mock地址：<a :href="originMockUrl(data.java.onlineDomain, data.url)" target="_blank">{{originMockUrl(data.java.onlineDomain, data.url)}}</a></span>
+      <el-form-item v-for="(value, key) in ENV_DOMAIN_MAP" :label="value+ '：'" :key="key">
+        <div><a @click="linkTo(data, key)" target="_blank">{{generateUrl(data.java, key, data.url)}}</a></div>
+        <span>mock地址：<a :href="originMockUrl(data.java[key], data.url)" target="_blank">{{originMockUrl(data.java[key], data.url)}}</a></span>
       </el-form-item>
       <el-form-item label="备用mock地址：">
         <div><a :href="mockUrl(data.hash)" target="_blank">{{mockUrl(data.hash)}}</a></div>
@@ -74,12 +61,12 @@
       <!--<el-form-item label="返回值数据结构：">-->
         <!--<v-jsonformatter :json="returns"></v-jsonformatter>-->
       <!--</el-form-item>-->
-      <el-form-item label="备注：">
+      <el-form-item label="评论：">
         <el-button type="primary" @click="addMark" icon="el-icon-plus">添加备注</el-button>
         <div v-if="marks && marks.length > 0" v-for="(m, i) of marks" v-bind:key="i">
           <span class="user">[{{m.user === username ? '我' : m.user }}]</span>&#12288;
           <span class="date">[{{formatDate(m.createTime)}}]：</span>&#12288;
-          <span class="mark">{{m.mark}}</span>
+          <span class="pre">{{m.mark}}</span>
         </div>
       </el-form-item>
     </el-form>
@@ -88,7 +75,7 @@
               :width="800"
               :ok="claimVersioned">
       <div slot="body">
-        <v-datagrid ref="dg" :loadData="versioned" :checkable="true" :singleCheck="true" :columns="columns" :pageable="false"/>
+        <v-datagrid ref="versionedDg" :loadData="versioned" :checkable="true" :singleCheck="true" :columns="columns" :pageable="false"/>
       </div>
     </v-dialog>
   </div>
@@ -96,14 +83,17 @@
 
 <script>
 import { getInterfacesApi, interfacesVersionedListApi, getInterfaceMarkApi, addInterfaceMarkApi, mockUrl,
-  originMockUrl, publicUrl } from '@/config/api/inserv-api'
+  originMockUrl, publicUrl, generateUrl } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
 import { user } from '@/config/login'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
 
 export default {
   name: 'interfacesDetail',
   data () {
     return {
+      generateUrl,
+      ENV_DOMAIN_MAP,
       publicUrl,
       mockUrl,
       originMockUrl,
@@ -127,7 +117,7 @@ export default {
   },
   methods: {
     claimVersioned () {
-      const current = this.$refs.dg.getSelected()
+      const current = this.$refs.versionedDg.getSelected()
       if (current != null && current.length > 0) {
         this.currentVersioned = current[0]
 

@@ -2,7 +2,10 @@
 import { Notification } from 'element-ui'
 
 export const toJsonHtml = (json) => {
-  const rawed = JSON.stringify(json || {}, null, 4).replace(/</g, '&lt;').replace(/>/g, '&gt;').split(/\n/)
+  if (json == null) {
+    json = 'undefined'
+  }
+  const rawed = JSON.stringify(json, null, 4).replace(/</g, '&lt;').replace(/>/g, '&gt;').split(/\n/)
   const r = ['<span class="kvov arrElem rootKvov">']
   // 当前缩进， 当缩进增加则增加一个blockInner，下面的元素进入此元素自己根据每一行的缩进
   let blockIndex = 0
@@ -303,12 +306,12 @@ export const exitScreen = () => {
           }],
         }
  */
-  // 这里使用function定义函数，是为了保留函数里面的this指针
+  // 这里使用function定义参数，是为了保留函数里面的this指针
 export const transfer = function (opts = {}) {
     opts = opts || {}
     // 跳转到操作成功页面
     this.$router.push(`/transfer/${encodeURIComponent(JSON.stringify(opts))}`)
-  }
+}
 
 /**
  * 对象深刻隆
@@ -475,8 +478,21 @@ export const generateParameters = (parameters) => {
   })
 }
 
+const INPUT_TYPE_MAP = {
+  'Date': 'datetime',
+  'int': 'number',
+  'Integer': 'number',
+  'Long': 'number',
+  'long': 'number',
+  'short': 'number',
+  'Short': 'number',
+  'boolean': 'switch',
+  'Boolean': 'switch'
+}
+
 export const generateChild = (node, key) => {
   const k = (key ? (key + '.') : '') + (node.key || '')
+
   if (node.body) {
     this.bodyParams = k
     return {
@@ -485,16 +501,19 @@ export const generateChild = (node, key) => {
       comment: node.comment,
       defaults: JSON.stringify(generateBodyPlaceholder(node), null, 4),
       type: node.type,
+      body: node.body,
       inputType: 'textarea'
     }
   } else {
     if (node.type === 'List') {
       let that = [{
         key: k,
+        body: node.body,
         notNull: node.notNull,
         comment: node.comment,
         defaults: node.defaults,
-        type: 'text'
+        type: 'text',
+        inputType: (INPUT_TYPE_MAP[node.type] || 'text')
       }]
       if (node.children[0].type === 'Object' || node.children[0].type === 'List') {
         that = that.concat(
@@ -507,10 +526,12 @@ export const generateChild = (node, key) => {
     } else {
       return {
         key: k,
+        body: node.body,
         notNull: node.notNull,
         comment: node.comment,
         defaults: node.defaults,
-        type: node.type
+        type: node.type,
+        inputType: (INPUT_TYPE_MAP[node.type] || 'text')
       }
     }
   }
@@ -603,9 +624,9 @@ export const parseParams = (text) => {
 }
 
 
-export const generateReturns = (node) => {
+export const generateReturns = (node, comment) => {
   if (node.type === 'List') {
-    return [generateReturns(node.children[0])]
+    return [generateReturns(node.children[0], node.comment)]
   } else if (node.type === 'Object') {
     const o = {};
     (node.children || []).forEach(s => {
@@ -617,7 +638,8 @@ export const generateReturns = (node) => {
   } else if (node.type === 'void') {
     return '无'
   } else {
-    return `${node.comment ? node.comment + '； ' : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
+    const c = node.comment || comment;
+    return `${c ? (c + '； ') : ''} 数据类型：${node.type}； ${node.notNull ? '此项一定不为空；' : ''}`
   }
 }
 

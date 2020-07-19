@@ -9,15 +9,14 @@
         <h4 class="title">接口详情</h4>
         <hr/>
         <el-form label-width="9em">
-          <el-form-item label="接口名称：">{{data.name}}<b v-if="data.deprecated" style="color:red">（已废弃）</b></el-form-item>
-          <el-form-item label="访问类型：">{{data.method}}</el-form-item>
+          <el-form-item label="接口名称：">{{data.name}}</el-form-item>
+          <el-form-item label="访问类型：">{{data.method || 'GET'}}</el-form-item>
           <el-form-item label="所属项目：">{{data.end.name}}</el-form-item>
-          <el-form-item label="Header参数：">
-            <i style="color:red;">header名:{{data.end.header}}<br>{{data.end.mark}}</i>
+          <el-form-item label="系统说明：">
+            <div><i class="pre red">{{data.end.mark}}</i></div>
           </el-form-item>
           <el-form-item label="所属模块：">{{data.java.name}}</el-form-item>
-          <el-form-item label="测试地址：">{{`${data.java.testDomain}${data.url}`}}</el-form-item>
-          <el-form-item label="生产地址：">{{`${data.java.onlineDomain}${data.url}`}}</el-form-item>
+          <el-form-item v-for="(value, key) in ENV_DOMAIN_MAP" :label="value+ '：'" :key="key">{{`${data.java[key]}${data.url}`}}</el-form-item>
           <el-form-item label="接口说明：">
             <div v-html="(data.mark || '无')"></div>
           </el-form-item>
@@ -31,7 +30,7 @@
       </div>
     </div>
     <div v-else-if="data && data.id === -1">
-      <div class="container">
+      <div class="customer_container">
         <div class="result-container">
           <span class="el-icon-error failed"></span>
         </div>
@@ -41,7 +40,7 @@
       </div>
     </div>
     <div v-else>
-      <div class="container">
+      <div class="customer_container">
         <div class="result-container">
           <span class="el-icon-loading success"></span>
         </div>
@@ -56,11 +55,13 @@
 <script>
 import { getPublicsInterfacesApi } from '@/config/api/inserv-api'
 import { formatDate, generateReturns } from '@/config/utils'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
 
 export default {
   name: 'publicInterfacesDetail',
   data () {
     return {
+      ENV_DOMAIN_MAP,
       data: null,
       formatDate,
       returns: null,
@@ -95,6 +96,6 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style type="text/css" lang="scss">
+<style type="text/css" lang="scss" scoped>
   @import 'index.scss';
 </style>

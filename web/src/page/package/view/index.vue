@@ -71,6 +71,9 @@ export default {
           html: true,
           actions: [{
             text: (row) => `<a href="#/interfaces/view/${row.id}" target="_blank">查看</a>`
+          }, {
+            text: '复制',
+            handler: (row) => this.copy(row)
           }]
         }
       ]
@@ -78,7 +81,6 @@ export default {
   },
   mounted () {
     this.width = this.$el.clientWidth - 100
-    console.log(this.width)
 
     if (this.$route.params.id) {
       getPackageApi(this.$route.params.id).then((res) => {
@@ -97,6 +99,11 @@ export default {
     }
   },
   methods: {
+    copy (row) {
+      const key = row.url.split('/').filter(s => s).map(s => s[0].toUpperCase() + s.substr(1)).join('')
+      this.$copyText(`,${key[0].toLowerCase() + key.substr(1)}:'${row.url}'`)
+        .then((e) => this.$success('复制成功！'), (e) => this.$success('复制失败！'))
+    },
     editTestCase (testCaseId) {
       this.$router.push(`/flow/testCase/edit/${testCaseId}`)
     },

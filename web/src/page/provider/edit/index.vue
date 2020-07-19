@@ -2,21 +2,16 @@
   <div>
     <h4 class="title">{{title}}</h4>
     <hr/>
-    <el-form :model="form" ref="edit" label-width="8em">
-      <el-form-item label="模块名称:" :rules="[{ required: true, message: '请输入模块名称', trigger: ['blur', 'change'] }]" prop="name">
+    <el-form :model="form" ref="edit" label-width="8em" class="min_width">
+      <el-form-item label="服务名称:" :rules="[{ required: true, message: '请输入模块名称', trigger: ['blur', 'change'] }]" prop="name">
         <el-input v-model="form.name" placeholder="请输入模块名称" />
       </el-form-item>
-      <el-form-item label="开发环境域名:"  :rules="[{ required: true, message: '请输入开发环境域名', trigger: ['blur', 'change'] }]" prop="devDomain">
-        <el-input v-model="form.devDomain" placeholder="请输入开发环境域名" />
-      </el-form-item>
-      <el-form-item label="测试环境域名:"  :rules="[{ required: true, message: '请输入测试环境域名', trigger: ['blur', 'change'] }]" prop="testDomain">
-        <el-input v-model="form.testDomain" placeholder="请输入测试环境域名" />
-      </el-form-item>
-      <el-form-item label="预发环境域名:"  :rules="[{ required: true, message: '请输入预发环境域名', trigger: ['blur', 'change'] }]" prop="prevDomain">
-        <el-input v-model="form.prevDomain" placeholder="请输入预发环境域名" />
-      </el-form-item>
-      <el-form-item label="线上环境域名:"  :rules="[{ required: true, message: '请输入线上环境域名', trigger: ['blur', 'change'] }]" prop="onlineDomain">
-        <el-input v-model="form.onlineDomain" placeholder="请输入线上环境域名" />
+      <el-form-item v-for="(value, key) in ENV_DOMAIN_MAP"
+                    :key="key"
+                    :label="value + '域名:'"
+                    :rules="[{ required: true, message: '请输入' + value + '域名', trigger: ['blur', 'change'] }]"
+                    :prop="key">
+        <el-input v-model="form[key]" :placeholder="'请输入' + value + '域名'" ></el-input>
       </el-form-item>
       <el-form-item >
         <el-button type="primary" @click="add" icon="el-icon-success">提交</el-button>
@@ -28,19 +23,17 @@
 
 <script>
 import { addJavaApi, getJavaApi, updateJavaApi } from '@/config/api/inserv-api'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
 
 export default {
   data () {
     return {
       title: '新增模块',
       form: {
-        name: '',
-        devDomain: '',
-        testDomain: '',
-        prevDomain: '',
-        onlineDomain: '',
-        id: ''
-      }
+        id: '',
+        name: ''
+      },
+      ENV_DOMAIN_MAP
     }
   },
   computed: {},
@@ -53,7 +46,12 @@ export default {
           console.log(err)
         })
       }
-      this.title = this.$route.params.id ? '修改模块' : '新增模块'
+      this.title = this.$route.params.id ? '修改后端服务' : '新增后端服务'
+
+      // 插入环境
+      for (const key in ENV_DOMAIN_MAP) {
+        this.$set(this.form, key, '')
+      }
     },
     add () {
       this.$refs.edit.validate((valid) => {
@@ -89,25 +87,8 @@ export default {
       })
     }
   },
-  watch: {},
-  components: {
-  },
-  beforeCreate () {
-  },
-  cteated () {
-  },
-  beforeMount () {
-  },
   mounted () {
     this.init()
-  },
-  beforeUpdate () {
-  },
-  updated () {
-  },
-  beforeDestroy () {
-  },
-  destroyed () {
   }
 }
 </script>

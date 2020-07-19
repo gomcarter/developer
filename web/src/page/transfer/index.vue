@@ -2,7 +2,7 @@
   <div>
     <h4 class="title">操作结果</h4>
     <hr>
-    <div class="container">
+    <div class="transfer_container">
       <div class="result-container">
         <span v-if="data.result" class="el-icon-success success"></span>
         <span v-else class="el-icon-error failed"></span>

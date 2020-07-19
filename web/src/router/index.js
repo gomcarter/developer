@@ -48,12 +48,7 @@ const router = new Router({
       name: 'packageList',
       component: r => require.ensure([], (require) => { r(require('@/page/package')) }, 'packageList')
     },
-    { // 接口管理---详情
-      path: '/package/edit/:id',
-      name: 'packageEdit',
-      component: r => require.ensure([], (require) => { r(require('@/page/package/edit')) }, 'packageEdit')
-    },
-    { // 接口管理---详情
+    { // 接口管理---打包详情
       path: '/package/view/:id',
       name: 'packageView',
       component: r => require.ensure([], (require) => { r(require('@/page/package/view')) }, 'packageView')
@@ -98,17 +93,17 @@ const router = new Router({
       name: 'testLink',
       component: r => require.ensure([], (require) => { r(require('@/page/test')) }, 'test')
     },
-    { // 流程控制--- 自定义函数列表
+    { // 流程控制--- 自定义参数列表
       path: '/flow/function',
       name: 'function',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/function')) }, 'function')
     },
-    { // 流程控制---自定义函数编辑
+    { // 流程控制---自定义参数编辑
       path: '/flow/function/edit',
       name: 'functionAdd',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/function/edit')) }, 'functionAdd')
     },
-    { // 流程控制---自定义函数编辑
+    { // 流程控制---自定义参数编辑
       path: '/flow/function/edit/:id',
       name: 'functionEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/function/edit')) }, 'functionEdit')
@@ -123,6 +118,11 @@ const router = new Router({
       name: 'testCaseAdd',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/edit')) }, 'testCaseAdd')
     },
+    { // 我的接口测试列表
+      path: '/flow/testapi',
+      name: 'testApi',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testapi')) }, 'testApi')
+    },
     { // 流程控制---用例列表-编辑
       path: '/flow/testCase/edit/:id',
       name: 'testCaseEdit',
@@ -133,17 +133,27 @@ const router = new Router({
       name: 'testCaseRun',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/run')) }, 'testCaseRun')
     },
-    { // 流程控制---用例列表
+    { // 流程控制---用例执行结果列表
+      path: '/flow/testCase/history',
+      name: 'testCaseHistory',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/history')) }, 'testCaseHistory')
+    },
+    { // 流程控制---用例执行结果详情
+      path: '/flow/testCase/history/:id',
+      name: 'testCaseHistoryDetail',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testCase/history/detail')) }, 'testCaseHistoryDetail')
+    },
+    { // 系统管理---用户列表
       path: '/system/user',
       name: 'user',
       component: r => require.ensure([], (require) => { r(require('@/page/system/user')) }, 'user')
     },
-    { // 流程控制---用例列表-新增
+    { // 系统管理---用户列表-新增
       path: '/system/user/edit',
       name: 'userAdd',
       component: r => require.ensure([], (require) => { r(require('@/page/system/user/edit')) }, 'userAdd')
     },
-    { // 流程控制---用例列表-编辑
+    { // 系统管理---用户列表-编辑
       path: '/system/user/edit/:id',
       name: 'userEdit',
       component: r => require.ensure([], (require) => { r(require('@/page/system/user/edit')) }, 'userEdit')

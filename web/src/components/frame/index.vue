@@ -138,11 +138,6 @@ export default {
     initMenu () {
       this.items = [
         {
-          name: '首页',
-          link: '/',
-          selected: false
-        },
-        {
           name: '接口管理',
           open: false,
           subItems: [
@@ -156,8 +151,10 @@ export default {
           name: '接口自动化测试',
           open: false,
           subItems: [
-            {link: '/flow/function', name: '自定义函数', selected: false},
-            {link: '/flow/testCase', name: '用例列表', selected: false}
+            {link: '/flow/function', name: '自定义参数', selected: false},
+            {link: '/flow/testapi', name: '我的接口列表', selected: false},
+            {link: '/flow/testCase', name: '我的用例列表', selected: false},
+            {link: '/flow/testCase/history', name: '用例执行历史', selected: false}
           ]
         },
         {

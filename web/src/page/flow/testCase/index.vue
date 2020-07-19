@@ -38,12 +38,6 @@ export default {
         handler: this.add
       }],
       columns: [
-        {field: 'id', header: '用例id', sort: 'id', width: 200},
-        {field: 'name', header: '用例名称', sort: 'name', width: 200},
-        // {field: 'mark', header: '备注', sort: 'mark', width: 400},
-        {field: 'userName', header: '操作人', sort: 'user_name', width: 200},
-        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
-        {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)},
         {
           field: 'action',
           header: '操作',
@@ -74,7 +68,13 @@ export default {
               }
             }
           ]
-        }
+        },
+        {field: 'id', header: '用例id', sort: 'id', width: 200},
+        {field: 'name', header: '用例名称', sort: 'name', width: 200},
+        // {field: 'mark', header: '备注', sort: 'mark', width: 400},
+        {field: 'userName', header: '操作人', sort: 'user_name', width: 200},
+        {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},
+        {field: 'modifyTime', header: '上次修改时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ]
     }
   },
