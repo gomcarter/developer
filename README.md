@@ -1,108 +1,34 @@
 # developer #
 ### 一、快速开始：
 
-**1，部署配置中心（非必须）**
-
-nacos（默认）：
-
-    参考：https://nacos.io/zh-cn/docs/what-is-nacos.html
-
-    安装完成之后，假设 nacos 地址为：  http://nacos.server:8848   有两种方式，让开发者中心连接到 nacos：
-
-    a，设置环境变量：
-        // 设置 nacos 服务地址
-        export NACOS_SERVER_ADDR=http://nacos.server:8848
-
-    b，设置系统参数：
-        java -jar -Dnacos.server.addr=http://nacos.server:8848  developer-1.0.0.jar &
-
-其他配置中心（需自行下载源码打包）：
-
-    考虑到可能适用其他配置中心，如apollo，diamond，或者使用本地properties配置，可通过下面方式下载源码自行打包
-    只需下载java目录下的代码即可：https://github.com/gomcarter/developer/tree/master/java
-    
-    具体操作如下（以本地模式示例）：
-    1，将pom.xml中 
-        <artifactId>config-center-nacos</artifactId> 修改为：
-        <artifactId>config-center-local</artifactId> —— 本地配置模式
-        <artifactId>config-center-apollo</artifactId> —— apollo
-        <artifactId>config-center-diamond</artifactId> —— diamond
-        当然如果还有其他的配置中心，可自行实现，参照：https://github.com/gomcarter/frameworks/tree/master/config-center-nacos
-
-    2，建一个database.properties将上面（下面第3步：配置数据库连接）内容存放于此，假设此文件就放在resource下
-    3，修改Application.java文件，@EnableMybatis({"DEVELOPER", "MYSQL"}) 修改为 @EnableMybatis("database.properties")
-    4，编译打包即可
-
-
-**2，导入mysql表结构**
+**1，导入mysql表结构**
 
 需要mysql5.7版本及以上，SQL文件：<a href="https://github.com/gomcarter/developer/blob/master/java/developer.sql" target="_blank">戳这里</a>
 
 
-**3，配置数据库连接**
+**2，配置数据库连接**
 
-nacos 的 public 中配置：
+下载压缩包： <a href="https://github.com/gomcarter/developer/releases/download/1.0.6/developer.zip" target="_blank">戳这里</a>
 
-dataId： DEVELOPER
-
-group：  MYSQL
-
-content内容：
+修改database.properties文件:
 
     #主库配置
-    write.jdbc.url=jdbc:mysql://MYSQL_ADDRESS:3306/developer?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&useSSL=false
-    write.jdbc.user=USER
-    write.jdbc.password=PASSWORD
-    write.jdbc.initialSize=1
-    write.jdbc.maxActive=80
-    write.jdbc.minIdle=10
-    write.jdbc.maxWait=60000
-    write.jdbc.testOnBorrow=false
-    write.jdbc.testOnReturn=false
-    write.jdbc.testWhileIdle=true
-    write.jdbc.timeBetweenEvictionRunsMillis=60000
-    write.jdbc.minEvictableIdleTimeMillis=25200000
-    write.jdbc.removeAbandoned=true
-    write.jdbc.removeAbandonedTimeout=1800
-    write.jdbc.logAbandoned=true
-    write.jdbc.filters=mergeStat
+    write.jdbc.url=jdbc:mysql://127.0.0.1:3306/developer?useUnicode=true&characterEncoding=utf8&failOverReadOnly=false&useSSL=false
+    write.jdbc.user=root
+    write.jdbc.password=root123
 
-    #读库配置
-    read.jdbc.initialSize=1
-    read.jdbc.maxActive=80
-    read.jdbc.minIdle=10
-    read.jdbc.maxWait=60000
-    read.jdbc.testOnBorrow=false
-    read.jdbc.testOnReturn=false
-    read.jdbc.testWhileIdle=true
-    read.jdbc.timeBetweenEvictionRunsMillis=60000
-    read.jdbc.minEvictableIdleTimeMillis=25200000
-    read.jdbc.removeAbandoned=true
-    read.jdbc.removeAbandonedTimeout=1800
-    read.jdbc.logAbandoned=true
-    read.jdbc.filters=mergeStat
-
-    #读库链接配置，如果需读写分离，下面可设置为读库链接，不需要就设置和主库一样
-    read.jdbc.url=jdbc:mysql://MYSQL_ADDRESS:3306/developer?useUnicode=true&characterEncoding=utf8&useSSL=false
-    read.jdbc.user=USER
-    read.jdbc.password=PASSWORD
+**3，启动服务**
+    如需更换端口，请自行修改
+    
+    sh startup.sh
 
 
-**4，启动服务**
-
-下载jar包：https://github.com/gomcarter/developer/releases
-
-    java -jar developer-${version}.jar &
-
-    日志文件在：${jar包所在目录}/logs/developer/developer.log
-
-
-**5，使用**
+**4，使用**
 
 其他项目接入使用参考：<a href="https://github.com/gomcarter/frameworks/blob/master/interfaces-starter/README.md" target="_blank">戳这里</a>
 
 
-**6，配置发者中心**
+**5，配置发者中心**
 
 打开开发者中心：http://developer.server:port
 
