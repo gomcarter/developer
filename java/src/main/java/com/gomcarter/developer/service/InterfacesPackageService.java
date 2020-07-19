@@ -64,7 +64,7 @@ public class InterfacesPackageService {
         this.interfacesPackageMapper.deleteById(id);
     }
 
-    public void create(String name, String mark, List<Long> interfacesIdList) {
+    public Long create(String name, String mark, List<Long> interfacesIdList) {
         InterfacesPackage packaged = new InterfacesPackage()
                 .setName(name)
                 .setMark(mark)
@@ -74,6 +74,8 @@ public class InterfacesPackageService {
 
         // 插入行
         this.interfacesPackageItemService.update(packaged.getId(), interfacesIdList);
+
+        return packaged.getId();
     }
 
     public void update(Long id, String name, String mark, List<Long> interfacesIdList) {

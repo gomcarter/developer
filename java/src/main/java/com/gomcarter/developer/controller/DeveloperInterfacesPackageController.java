@@ -80,10 +80,10 @@ public class DeveloperInterfacesPackageController {
     }
 
     @PostMapping(value = "", name = "新建打包")
-    void create(@RequestParam String name,
+    Long create(@RequestParam String name,
                 String mark,
                 @RequestParam("interfacesIdList") List<Long> interfacesIdList) {
-        this.interfacesPackageService.create(name, mark, interfacesIdList);
+        return this.interfacesPackageService.create(name, mark, interfacesIdList);
     }
 
     @PutMapping(value = "{id}", name = "修改打包")
