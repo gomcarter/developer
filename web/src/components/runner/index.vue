@@ -337,7 +337,7 @@ export default {
             cancelButtonText: '关闭',
             confirmButtonText: '去查看'
           }).then(() => {
-            this.$router.push(`/flow/testCase/history/${res.data}`)
+            this.$router.push(`/flow/testCase/history/${res}`)
           })
         })
       })
