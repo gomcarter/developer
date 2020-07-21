@@ -12,7 +12,7 @@
 <script>
 import G6 from '@antv/g6'
 import { functionListApi, interfacesVersionedSimpleListApi } from '@/config/api/inserv-api'
-import { constructExecutableDataModel } from '@/config/utils'
+import { constructExecutableDataModel, generateParameters } from '@/config/utils'
 import insertCss from 'insert-css'
 
 export default {
@@ -34,6 +34,7 @@ export default {
     return {
       interfacesVersionedSimpleListApi,
       functionListApi,
+      alt: false,
       selectedItem: null,
       graph: null,
       data: null,
@@ -159,6 +160,11 @@ export default {
             radius: 4,
             fill: 'orange',
             stroke: '#4063ff'
+          },
+          selected: {
+            radius: 4,
+            fill: '#b3eee9',
+            stroke: '#4063ff'
           }
         },
         defaultNode: {
@@ -188,7 +194,7 @@ export default {
         plugins: [ minimap ]
       })
 
-      const data = Object.assign({nodes: [{ id: this.uuid(), type: 'rect', label: '主节点', x: this.width / 2, y: 100 }]}, this.dataList)
+      const data = Object.assign({nodes: []}, this.dataList)
       this.graph.data(data)
       this.graph.render()
 
@@ -201,6 +207,45 @@ export default {
       menu.handler(this, this.contextMenu.event.item)
       // 清空事件，关闭菜单
       this.contextMenu.event = null
+    },
+    batchAddNodes (interfaces) {
+      const base = this.width / 2 - 200
+      const index = this.graph.getNodes().length
+      for (let i = index; i < interfaces.length + index; ++i) {
+        const face = interfaces[i - index]
+        let name = face.name
+        if (name.length > 16) {
+          name = name.substr(0, 8) + '\r\n' + name.substr(8, 7) + '...'
+        } else if (name.length > 8) {
+          name = name.substr(0, 8) + '\r\n' + name.substr(8, name.length)
+        }
+
+        // load
+        const data = {
+          interfaceId: face.id,
+          interfaceName: name,
+          history: false,
+          hash: face.hash,
+          headers: face.end.header ? JSON.parse(face.end.header) : [],
+          javascript: null,
+          java: face.java,
+          url: face.url,
+          sleep: null,
+          returns: JSON.parse(face.returns),
+          method: face.method,
+          parameters: generateParameters(face.parameters)
+        }
+
+        const id = this.uuid()
+        this.graph.addItem('node', {
+          id: id,
+          type: 'rect',
+          label: '（' + id + '）' + name,
+          x: base + (i % 3) * 190,
+          y: (parseInt(i / 3) + 1) * 100,
+          data
+        })
+      }
     },
     addNode (event) {
       // 在图上新增一个节点
@@ -260,6 +305,9 @@ export default {
       this.graph.on('keydown', (ev) => {
         if (ev.key === 'Control') {
           this.graph.setMode('zoom')
+        } else if (ev.key === 'Alt') {
+          this.alt = true
+          console.log('alt', this.alt)
         }
       })
       this.graph.on('keyup', (ev) => {
@@ -277,6 +325,9 @@ export default {
               this.contextMenu.menu[index].handler(this, this.selectedItem)
             }
           }
+        } else if (ev.key === 'Alt') {
+          this.alt = false
+          console.log('alt', this.alt)
         }
       })
     },
@@ -318,7 +369,6 @@ export default {
       const node = ev.item
       if (this.addingEdge && this.edge) {
         const model = node.getModel()
-        // console.log(node.getEdges().length, this.graph.getEdges().length, this.graph.getEdges())
         // 看两个节点之间是否已经存在连线: 此线的起点和已经存在的线的起点相同，此线起点和已经存在的线的终点相同
         const matched = (node.getEdges().filter(s => s.getSource() === this.edge.getSource() || s.getTarget() === this.edge.getSource()) || []).length > 0
         if (matched) {
@@ -332,6 +382,16 @@ export default {
           this.edge = null
           this.addingEdge = false
         }
+      } else if (this.alt) {
+        // 按下了alt键，那么点击item则增加连线
+        const id = this.uuid()
+        this.edge = this.graph.addItem('edge', {
+          id,
+          label: id,
+          source: node.getModel().id,
+          target: { x: ev.x, y: ev.y }
+        })
+        this.addingEdge = true
       }
 
       // 遍历所有edges关闭动画
@@ -364,12 +424,12 @@ export default {
       const model = this.editingNode.getModel()
       let name
       if (model.type === 'rect') {
-        // 字数太多换行
         name = node.interfaceName || ''
       } else {
         name = node.javascript
       }
 
+      // 字数太多换行
       if (name.length > 16) {
         name = name.substr(0, 8) + '\r\n' + name.substr(8, 7) + '...'
       } else if (name.length > 8) {

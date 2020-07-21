@@ -20,6 +20,7 @@
       <el-form-item>
         <el-button type="info" @click="$router.go(-1)" icon="el-icon-back">返回</el-button>
         <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">提交</el-button>
+        <el-button type="primary" @click="batchImport" icon="el-icon-upload2">批量导入</el-button>
         <el-button type="success" @click="beautify" icon="el-icon-s-grid">美化</el-button>
         <el-button type="success" @click="test" icon="el-icon-magic-stick">测试</el-button>
       </el-form-item>
@@ -36,7 +37,7 @@
 
 <script>
 import { createTestCaseApi, getTestCaseDetailApi, updateTestCaseApi, functionListApi, getPackageApi, interfacesSimpleListApi } from '@/config/api/inserv-api'
-import { getUrlHashParams, generateParameters } from '@/config/utils'
+import { getUrlHashParams } from '@/config/utils'
 
 export default {
   data () {
@@ -123,10 +124,31 @@ export default {
       }
     },
     runTest () {
-      this.$refs.runner.run()
+      this.$refs.runner.run(1)
     },
     beautify () {
       this.$refs.workflow.beautify()
+    },
+    loadMultipleInterfaces (interfacesIdList) {
+      interfacesSimpleListApi({rows: 1000, idList: interfacesIdList})
+        .then((res) => {
+          // 加载接口
+          if (res && res.length > 0) {
+            this.$refs.workflow.batchAddNodes(res)
+          }
+          this.disabled = false
+        })
+    },
+    batchImport () {
+      this.$prompt('批量导入', '', {
+        inputType: 'text',
+        inputPlaceholder: '请输入接口编号，多个编号逗号隔开',
+        inputValidator: (d) => (d || '').trim().length > 0 || '请输入至少一个接口编号'
+      }).then((d) => {
+        const value = d.value.replace(/，/g, ',')
+        this.loadMultipleInterfaces(value.split(',').map(v => +v).filter(v => v))
+      }).catch((d) => {
+      })
     }
   },
   components: {
@@ -137,64 +159,19 @@ export default {
     'v-parameter-input': () => import('@/components/parameter-input')
   },
   mounted () {
+    window.that = this
+
     const { packageId } = getUrlHashParams()
     if (packageId) {
+      this.form.workflow = {}
       this.disabled = true
       this.packageId = packageId
       getPackageApi(packageId)
         .then((res) => {
           this.form.name = res.name
-
-          interfacesSimpleListApi({rows: 1000, idList: res.interfacesIdList})
-            .then((res) => {
-              // 加载接口
-              if (res && res.length > 0) {
-                const nodes = []
-                const base = this.width / 2 - 200
-                for (let i = 0; i < res.length; ++i) {
-                  const face = res[i]
-                  let name = face.name
-                  if (name.length > 16) {
-                    name = name.substr(0, 8) + '\r\n' + name.substr(8, 7) + '...'
-                  } else if (name.length > 8) {
-                    name = name.substr(0, 8) + '\r\n' + name.substr(8, name.length)
-                  }
-
-                  // load
-                  const data = {
-                    interfaceId: face.id,
-                    interfaceName: name,
-                    history: false,
-                    hash: face.hash,
-                    headers: [],
-                    javascript: null,
-                    java: face.java,
-                    url: face.url,
-                    sleep: null,
-                    returns: JSON.parse(face.returns),
-                    method: face.method,
-                    parameters: generateParameters(face.parameters)
-                  }
-
-                  const id = 'g' + i
-                  const node = {
-                    id: id,
-                    type: 'rect',
-                    label: '（' + id + '）' + name,
-                    x: base + (i % 3) * 190,
-                    y: (parseInt(i / 3) + 1) * 100,
-                    data
-                  }
-                  nodes.push(node)
-                }
-                this.form.workflow = {nodes}
-              } else {
-                this.form.workflow = {}
-              }
-
-              this.disabled = false
-            })
-          // this.form.workflow = JSON.parse(res.workflow)
+          setTimeout(() => {
+            this.loadMultipleInterfaces(res.interfacesIdList)
+          }, 800)
         })
     } else if (this.id) {
       this.title = '修改用例'

@@ -59,8 +59,8 @@
 另外可以获取上游节（以及上游的上游）点带来的数据，如：$anotherNode.xx
 在这里写入一些检查点脚本，示例：
 
-assert($this.name == null, '返回名称不能为空！')
-assert($${nodeId}.id == null, '返回id不能为空！')
+assert($this.name != null, '返回名称不能为空！')
+assert($${nodeId}.id != null, '返回id不能为空！')
 assert($${nodeId}.quantity > 0, '数量必须大于等于零！')
 
 如果报错了，那么整个流程将被终止。`" :rows="18" type="textarea" v-model="node.javascript">

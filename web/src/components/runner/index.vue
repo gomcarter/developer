@@ -295,12 +295,7 @@ export default {
       node = node == null ? this.graph.getNodes() : (node instanceof Array ? node : [node])
 
       node.forEach(n => {
-        this.graph.setItemState(n, 'waiting', false)
-        this.graph.setItemState(n, 'running', false)
-        this.graph.setItemState(n, 'success', false)
-        this.graph.setItemState(n, 'failed', false)
-        this.graph.setItemState(n, 'selected', false)
-        this.graph.setItemState(n, 'ignore', false)
+        this.graph.clearItemStates(n, ['waiting', 'running', 'success', 'failed', 'selected', 'ignore'])
       })
     },
     setState (node, state, bool = true) {
@@ -353,7 +348,7 @@ export default {
      * @param times 执行次数
      * @param mock 是否执行mock数据，默认：false
      */
-    async run (times, mock = false) {
+    async run (times = 1, mock = false) {
       // 清空执行历史
       this.$set(this, 'historyList', [])
 
