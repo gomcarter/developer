@@ -1,9 +1,9 @@
 <template>
   <el-form v-if="parameters && parameters.length > 0" class="params-form">
     <el-form-item label="" v-for="(param, index) in parameters" :key="index" v-if="param.type" style="margin-bottom: 22px;">
-      <el-input placeholder="请输入参数名" class="param-key v-top" v-model="param.key">
-      </el-input>
-      <span class="v-top">=</span>
+      <div v-if="param.inputType === 'textarea'" class="param-key v-top el-input text-right">body：</div>
+      <el-input v-else placeholder="请输入参数名" class="param-key v-top" v-model="param.key"></el-input>
+      <span class="v-top" v-if="param.inputType !== 'textarea'">=</span>
       <el-date-picker v-if="($set(param, 'fix', param.fix == null ? true : param.fix)) && param.inputType === 'datetime'"
                       :placeholder="(param.comment || '请输入参数') + (param.notNull ? '，必填项' : '')"
                       v-model="param.defaults"
@@ -17,13 +17,12 @@
                  :name="param.key">
       </el-switch>
       <el-input v-else-if="param.fix"
-                :placeholder="(param.comment || '请输入参数') + (param.notNull ? '，必填项' : '')"
+                :placeholder="(param.comment || '请输入参数值') + (param.notNull ? '，必填项' : '')"
                 class="param-value"
                 :rows="10"
                 :type="param.inputType"
                 v-model="param.defaults"
                 :name="param.key">
-        <template slot="prepend"><span>参数值</span></template>
       </el-input>
       <v-selector v-else class="param-script"
                   :id="'id'" :text="'name'"

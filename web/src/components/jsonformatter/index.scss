@@ -8,7 +8,7 @@
   line-height: 24px;
 }
 
-.json-container #jsonpOpener,#jsonpCloser {
+.json-container #jsonpOpener, #jsonpCloser {
   padding: 4px 0 0 8px;
   color: #000;
   margin-bottom: -6px
@@ -39,16 +39,16 @@
   white-space: nowrap
 }
 
-.json-container .collapsed>.blockInner {
+.json-container .collapsed > .blockInner {
   display: none
 }
 
-.json-container .collapsed>.ell:after {
+.json-container .collapsed > .ell:after {
   content: "…";
   font-weight: bold
 }
 
-.json-container .collapsed>.ell {
+.json-container .collapsed > .ell {
   margin: 0 4px;
   color: #888
 }
@@ -69,7 +69,7 @@
   opacity: 0.15
 }
 
-.json-container .collapsed>.expander {
+.json-container .collapsed > .expander {
   -webkit-transform: rotate(-90deg);
 }
 
@@ -93,7 +93,7 @@
   position: relative;
 }
 
-.json-container #formattedJson,#jsonpOpener,#jsonpCloser {
+.json-container #formattedJson, #jsonpOpener, #jsonpCloser {
   color: #333;
   font: 13px/18px monospace
 }
@@ -121,7 +121,7 @@
 /* 	color: #050 */
 /* } */
 
-.json-container .bl,.nl,.n {
+.json-container .bl, .nl, .n {
   font-weight: bold;
   color: #1A01CC
 }
@@ -137,7 +137,7 @@
   color: #333
 }
 
-.json-container #formattingMsg>svg {
+.json-container #formattingMsg > svg {
   margin: 0 7px;
   position: relative;
   top: 1px
@@ -171,4 +171,9 @@
 .json-boolean, .json-number {
   font-weight: bold;
   color: #1A01CC;
+}
+
+.json-null {
+  font-weight: bold;
+  color: darkgray;
 }

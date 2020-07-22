@@ -28,10 +28,9 @@ export const toJsonHtml = (json) => {
       tt = Object.keys(s)
         .map(key => {
           let value = s[key]
-          return `"${key}": <span class="json-${typeof value}">${JSON.stringify(value)}</span>${hasComma ? ',' : ''}`
+          return `"${key}": <span class="json-${type(value)}">${JSON.stringify(value)}</span>${hasComma ? ',' : ''}`
         })[0]
-    } catch (e) {
-    }
+    } catch (e) {}
 
     tt = tt.replace(/\{/, '<span class="b">{</span>')
       .replace(/\}/, '<span class="b">}</span>')
