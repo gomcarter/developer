@@ -7,14 +7,14 @@
 
 ### 一、快速开始：
 
+下载安装压缩包： <a href="https://github.com/gomcarter/developer/releases/download/1.0.6/developer.zip" target="_blank">戳这里</a>
+
 **1，导入mysql表结构**
 
 需要mysql5.7版本及以上，SQL文件：<a href="https://github.com/gomcarter/developer/blob/master/java/developer.sql" target="_blank">戳这里</a>
 
 
 **2，配置数据库连接**
-
-下载压缩包： <a href="https://github.com/gomcarter/developer/releases/download/1.0.6/developer.zip" target="_blank">戳这里</a>
 
 修改database.properties文件:
 
