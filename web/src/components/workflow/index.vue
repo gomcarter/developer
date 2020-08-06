@@ -286,6 +286,8 @@ export default {
       })
 
       this.graph.on('dblclick', (event) => {
+        event.preventDefault()
+        event.stopPropagation()
         if (event.item == null) {
           this.addNode(event)
         } else if (event.item.getType() === 'node') {
@@ -419,6 +421,7 @@ export default {
       } else {
         this.$refs.conditionEditor.open(model, edges)
       }
+      document.getElementsByTagName('input')[0].focus()
     },
     saveNode (node) {
       const model = this.editingNode.getModel()
@@ -519,8 +522,12 @@ export default {
     },
     // 外部api， 获取数据
     workflow () {
-      const nodes = this.graph.getNodes().map(s => s.getModel())
-      const edges = this.graph.getEdges().map(s => s.getModel())
+      const nodes = this.graph.getNodes().map(s => {
+        const model = s.getModel()
+        delete model['description']
+        return model
+      })
+      const edges = this.graph.getEdges().filter(s => s.getTarget().getModel).map(s => s.getModel())
       return { nodes, edges }
     },
     beautify () {
@@ -559,6 +566,8 @@ export default {
 
     // 初始化menu显示
     this.bindEvent()
+
+    window.that = this
   },
   components: {
     'v-node-editor': () => import('@/components/node-editor'),

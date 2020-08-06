@@ -55,11 +55,11 @@
           <v-jsonformatter v-if="generatedReturns" :json="generatedReturns" :min-height="100"></v-jsonformatter>
         </el-form-item>
         <el-form-item label="检查点:" v-if="node.interfaceId">
-          <el-input :placeholder="`注：本接口的调用结果将存入$${nodeId}和$this中。
+          <el-input :placeholder="`注：本接口的调用结果将存入$${nodeId}和this中。
 另外可以获取上游节（以及上游的上游）点带来的数据，如：$anotherNode.xx
 在这里写入一些检查点脚本，示例：
 
-assert($this.name != null, '返回名称不能为空！')
+assert(this.name != null, '返回名称不能为空！')
 assert($${nodeId}.id != null, '返回id不能为空！')
 assert($${nodeId}.quantity > 0, '数量必须大于等于零！')
 
@@ -117,7 +117,7 @@ export default {
     },
     async getConfiguredParameters (interfacesId, selection) {
       if (!interfacesId) {
-        return
+        return {}
       }
 
       const cus = await getCusInterfacesApi(interfacesId)
@@ -125,7 +125,6 @@ export default {
         selection.parameters = JSON.parse(cus.cusParameters)
         selection.javascript = cus.javascript != null ? JSON.parse(cus.javascript) : null
         selection.preParams = JSON.parse(cus.preParams)
-        console.log(selection.javascript, JSON.stringify(selection.javascript))
       } else {
         selection.parameters = generateParameters(selection.parameters)
       }
@@ -154,7 +153,9 @@ export default {
         this.generatedReturns = null
       }
 
-      this.$set(this.node, 'headers', selection.end.header ? JSON.parse(selection.end.header) : [])
+      if (selection.end) {
+        this.$set(this.node, 'headers', selection.end.header ? JSON.parse(selection.end.header) : [])
+      }
     },
     open (model, edges) {
       const data = model.data || {}

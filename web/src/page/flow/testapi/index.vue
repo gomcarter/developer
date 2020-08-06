@@ -5,7 +5,8 @@
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
         <el-form-item label="编号">
-          <el-input v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
+          <el-input
+            type='number' v-model="filter.interfacesId" placeholder="请输入接口编号" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item label="接口名称">
           <el-input v-model="filter.name" placeholder="请输入接口名称" @keypress.enter.native="search"></el-input>
@@ -17,11 +18,11 @@
           <el-input v-model="filter.url" placeholder="请输入URL" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item label="是否废弃">
-          <v-selector :data="{true: '是', false: '否'}" :onSelectionChanged="(d) => filter.deprecated = (d[0] || {}).id"
+          <v-selector ref="status" :data="{true: '是', false: '否'}" :onSelectionChanged="(d) => filter.deprecated = (d[0] || {}).id"
                       placeholder="请选择是否废弃"></v-selector>
         </el-form-item>
         <el-form-item label="后端服务">
-          <v-selector
+          <v-selector ref="back"
             :id="'id'" :text="'name'"
             :onSelectionChanged="(d) => filter.javaId = (d[0] || {}).id"
             :filterable="true" :remote="true"
@@ -30,7 +31,7 @@
           ></v-selector>
         </el-form-item>
         <el-form-item label="前端项目">
-          <v-selector
+          <v-selector ref="front"
             :id="'id'" :text="'name'"
             :onSelectionChanged="(d) => filter.endId = (d[0] || {}).id"
             :filterable="true" :remote="true"
@@ -44,34 +45,35 @@
         </el-form-item>
       </el-form>
     </div>
-    <h4 class="title">接口列表</h4>
+    <h4 class="title">我的接口列表</h4>
     <hr/>
-    <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params"
-                :checkable="true" :toolbar="toolbar" :onSelectionChanged="onSelectionChanged" />
+    <el-container>
+      <el-main class="favorite-container" :style="{width: '20%'}">
+        <v-tree :datas="favoriteTree" :id="'code'" :onSelectionChanged="onTreeSelectionChanged" :editable="true"
+                :onCreate="onCreate" :onUpdate="onUpdate" :onSortChanged="onSortChanged"/>
+      </el-main>
+      <el-aside :style="{width: '79%'}" class="interfaces-list-container">
+        <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :checkable="true"/>
+      </el-aside>
+    </el-container>
 
-    <v-dialog ref="packageDialog"
-              title="接口打包"
-              :width="1000"
-              :ok="commitPackage">
-      <el-form slot="body" :model="form" label-width="7em" ref="packageForm">
-        <div class="mark margin-bottom20">一个功能（或者需求）的多个接口打包在一起，方便集中管理和查阅</div>
-        <el-form-item prop="name" label="打包名称" required
-                      :rules="[{ required: true, message: '请输入打包名称', trigger: ['blur', 'change'] }]">
-          <el-input v-model="form.name" placeholder="请输入打包名称" ></el-input>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input v-model="form.mark" type="textarea" placeholder="请输入备注" rows="4"></el-input>
-        </el-form-item>
-        <v-datagrid :columns="selectedColumns" :load-data="selected" :pageable="false" :height="400"/>
-        <hr/>
-      </el-form>
+    <v-dialog ref="favoriteBindingDialog"
+              title="绑定收藏夹"
+              :width="450"
+              :ok="bindFavorite">
+      <div slot="body" style="height: 300px; overflow-y: auto">
+        <v-tree :datas="toBeSelectedTree" :id="'code'" ref="favoriteTree"/>
+      </div>
     </v-dialog>
   </div>
 </template>
 
 <script>
-import { cusInterfacesCountApi, transferTocustomerApi, cusInterfacesListApi, endListApi, javaListApi, deleteCusInterfaces, addPackageApi } from '@/config/api/inserv-api'
-import { formatDate, removeBlank } from '@/config/utils'
+/* eslint-disable */
+import { cusInterfacesCountApi, cusInterfacesListApi, endListApi, javaListApi,
+  deleteCusInterfaces, favoriteCreateApi, favoriteUpdateApi, favoriteTreeApi,
+  sortFavoriteApi, bindFavoriteApi } from '@/config/api/inserv-api'
+import { removeBlank } from '@/config/utils'
 
 export default {
   name: 'interfaces',
@@ -84,7 +86,7 @@ export default {
       endListApi,
       javaListApi,
       filter: {
-        id: null,
+        interfacesId: null,
         name: null,
         deprecated: null,
         url: null,
@@ -92,60 +94,82 @@ export default {
         javaId: null,
         endId: null
       },
+      interfacesList: [],
       dataUrl: cusInterfacesListApi,
       countUrl: cusInterfacesCountApi,
+      favoriteTree: null,
+      toBeSelectedTree: null,
       params: {},
-      selected: [],
-      toolbar: [],
+      editingId: null,
       columns: [
         {
           field: 'action',
           header: '操作',
-          width: 160,
+          width: 180,
           html: true,
           actions: [{
-            text: '执行',
-            handler: (row) => this.auction(row)
+            text: (r) => `<a href="#/test/${r.interfacesId}/testDomain" target="_blank">执行</a>`
+          }, {
+            text: '设置',
+            handler: (row) => {
+              this.editingId = row.id
+              favoriteTreeApi()
+                .then(d => {
+                  this.toBeSelectedTree = d || []
+                  this.$refs.favoriteBindingDialog.open()
+                })
+            }
           }, {
             text: '删除',
             handler: (row) => this.delete(row.id)
           }]
         },
-        {field: 'id', header: '编号', sort: 'id', width: 80},
-        {field: 'name', header: '接口名称', sort: 'name', width: 200, html: true, formatter: (row, index, value) => '<a href="#/interfaces/view/' + row.interfacesId + '" target="_blank">' + value + '</a>'},
-        {field: 'method', header: 'METHOD', sort: 'method', width: 80},
-        {field: 'deprecated', header: '废弃', sort: 'deprecated', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
-        {field: 'url', header: 'URL', sort: 'url', width: 120},
-        {field: 'java.name', header: '后端服务', sort: 'fk_java_id', width: 160},
-        {field: 'end.name', header: '前端项目', sort: 'fk_end_id', width: 160},
-        {field: 'modifyTime', header: '更新时间', sort: 'modify_time', width: 200, formatter: (row, index, value) => formatDate(value)}
-      ],
-      selectedColumns: [
-        {field: 'id', header: '编号', width: 80},
-        {field: 'name', header: '接口名称', width: 200},
-        {field: 'url', header: 'URL', width: 350},
-        {field: 'java.name', header: '后端服务', width: 120},
+        {field: 'interfacesId', header: '接口编号', width: 80},
+        {field: 'name', header: '接口名称', width: 200, html: true, formatter: (row, index, value) => '<a href="#/interfaces/view/' + row.interfacesId + '" target="_blank">' + value + '</a>'},
+        {field: 'method', header: 'METHOD', width: 80},
+        {field: 'deprecated', header: '废弃', html: true, width: 80, formatter: (row, index, value) => value ? '是'.fontcolor('red') : '否'},
+        {field: 'url', header: 'URL', width: 120},
+        {field: 'java.name', header: '后端服务', width: 160},
         {field: 'end.name', header: '前端项目', width: 160}
       ]
     }
   },
   mounted () {
-    window.that = this
+    favoriteTreeApi()
+      .then(d => {
+        this.favoriteTree = d || []
+      })
   },
   methods: {
-    transfer (row) {
-      transferTocustomerApi(row.id).then(() => {
-        this.$success('添加成功！')
-        this.search()
-      })
+    bindFavorite () {
+      const favoriteCode = this.$refs.favoriteTree.getSelected()[0]
+
+      bindFavoriteApi(this.editingId, favoriteCode)
+        .then(d => {
+          this.$success('操作成功！')
+          this.$refs.favoriteBindingDialog.close()
+            this.search()
+        })
     },
-    auction (row) {
-      this.$router.push({path: '/test/' + row.interfacesId + '/devDomain'})
+    onTreeSelectionChanged (selected) {
+      // tree只是单选可以, 所以这里使用selecte[0]
+      this.params = Object.assign({}, this.params, {favoriteCode: selected[0]})
     },
-    copy (row) {
-      const key = row.url.split('/').filter(s => s).map(s => s[0].toUpperCase() + s.substr(1)).join('')
-      this.$copyText(`,${key[0].toLowerCase() + key.substr(1)}:'${row.url}'`)
-        .then((e) => this.$success('复制成功！'), (e) => this.$success('复制失败！'))
+    onSortChanged (node, newIndex) {
+      sortFavoriteApi(node.id, newIndex)
+        .then(d => {
+          console.log(d)
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
+    async onCreate (text, parent) {
+       return await favoriteCreateApi(parent ? parent.id : null, text)
+    },
+    async onUpdate (node) {
+      console.log(node)
+      await favoriteUpdateApi(node.id, node.text)
     },
     delete (id) {
       this.$confirm('删除将无法恢复，确认删除吗？', '提示', {type: 'warning'}).then(() => {
@@ -156,35 +180,19 @@ export default {
           })
       })
     },
-    commitPackage () {
-      this.$refs.packageForm.validate((valid) => {
-        if (valid) {
-          addPackageApi(Object.assign({interfacesIdList: this.selected.map(s => s.id)}, this.form))
-            .then(d => {
-              this.$success(`打包成功！`)
-              this.form.name = null
-              this.form.mark = null
-              this.$refs.dg.clearSelections()
-              this.$refs.packageDialog.close()
-            })
-        }
-      })
-    },
-    onSelectionChanged (selected) {
-      this.selected.length = 0;
-      (selected || []).forEach(s => {
-        this.selected.push(s)
-      })
-    },
     search () {
-      this.params = removeBlank(this.filter)
+      this.params = Object.assign({favoriteCode: this.params.favoriteCode}, removeBlank(this.filter))
     },
     clear () {
-      this.params = {}
+      this.params = Object.assign({favoriteCode: this.params.favoriteCode})
       this.filter = {}
+      this.$refs.back.clear()
+      this.$refs.front.clear()
+      this.$refs.status.clear()
     }
   },
   components: {
+    'v-tree': () => import('@/components/tree'),
     'v-datagrid': () => import('@/components/datagrid'),
     'v-selector': () => import('@/components/selector'),
     'v-dialog': () => import('@/components/dialog')
@@ -194,4 +202,34 @@ export default {
 
 <style lang="scss" scoped>
   @import 'index';
+
+  .time {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+
+  .clearfix:after {
+    clear: both
+  }
 </style>

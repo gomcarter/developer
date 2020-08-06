@@ -39,6 +39,15 @@ export const transferTocustomerApi = async (id) => {
 }
 
 /**
+ * @returns 查询接口id是否已经被收藏
+ */
+export const cusInterfacesFavorites = async (interfacesIdList) => {
+  const params = { interfacesIdList }
+  const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/favorites`, { params })
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
  * @author gomcarter 2019-02-13
  * @returns 接口管理
  */
@@ -571,17 +580,41 @@ export const cusInterfacesCountApi = async (params) => {
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
+export const bindFavoriteApi = async (id, favoriteCode) => {
+  const res = await xhr.put(`${INSERV_URL}developer/cusinterfaces/bind/${id}`, {favoriteCode})
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
 export const cusInterfacesListApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/list`, { params })
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
+export const favoriteCreateApi = async (parentId, name) => {
+  const res = await xhr.post(`${INSERV_URL}developer/favorite`, {parentId, name})
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+export const favoriteUpdateApi = async (id, name) => {
+  const res = await xhr.put(`${INSERV_URL}developer/favorite/${id}`, {name})
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+export const favoriteTreeApi = async () => {
+  const res = await xhr.get(`${INSERV_URL}developer/favorite/tree`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+export const sortFavoriteApi = async (id, sort) => {
+  const res = await xhr.put(`${INSERV_URL}developer/favorite/sort/${id}`, {sort})
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
 
 const prepare = async(url, method, parameters, inputHeaders, preParams) => {
   parameters = parameters || []
   preParams = preParams || []
   const result = {
-    method: method.toLowerCase(),
+    method: (method || 'POST').toLowerCase(),
     params: {},
     url: url
   }
@@ -665,9 +698,16 @@ export const processParams = async(p) => {
 
   if (!p.fix && p.functionId) {
     // 如果有functionId还要去拉取function脚本自动生成
-    const fr = await functionListApi({ idList: p.functionId })
+    const fr = await getFunctionApi(p.functionId)
     /* eslint-disable */
-    value = new Function(fr[0].scriptText)(...(p.arguments || '').split(','))
+    const args = (p.arguments || '').split(',').map(s => {
+        try {
+          return new Function(' return ' + s)()
+        } catch(e) {
+          return s
+        }
+      })
+    value = new Function(fr.scriptText)(...args)
   }
 
   return value
@@ -688,12 +728,13 @@ const send = (url, method, params, headers, body) => {
       type = 'raw'
     }
     const u = url + (url.indexOf('?') >= 0 ? '&' : '?') + toQueryString(params)
-    return xhr[method](u, body, { type: type, customHeaders: headers, notice: false })
+    return xhr[method](u, body, { type: type, customHeaders: headers, notice: false, cookie: false })
   } else if (method === 'post') {
-    return xhr[method](url, p, { customHeaders: headers, notice: false })
+    return xhr[method](url, p, { customHeaders: headers, notice: false, cookie: false })
   } else {
     p.customHeaders = headers
     p.notice = false
+    p.cookie = false
     return xhr[method](url, p)
   }
 }
@@ -707,6 +748,7 @@ window.assert = (express, message) => {
   if (!express) {
     throw new Error(message)
   }
+  return express
 }
 
 /**
@@ -735,16 +777,24 @@ export const mockXhr = async(inputUrl, inputMethod, parameters, inputHeaders, pr
       // 赋值
       window[resultName] = result.data
 
+      checkScript = (checkScript || '').trim()
       if (checkScript) {
-        check = true
-        checkScript = checkScript.replace(/\$this/g, resultName)
         // 有检查点，执行检查点
-        try {
-          new Function(checkScript)();
-        } catch (e) {
-          check = false
-          message = e.toString()
-        }
+        check = true
+        const m = []
+        // 多行检查点，依次执行
+        checkScript.split('\n')
+          .forEach(s => {
+            try {
+              new Function(s.replace(/\$this/g, resultName)).call(result.data);
+              m.push(`<p style="color:green">${s}</p>`)
+            } catch (e) {
+              check = false
+              m.push(`<p style="color:red">${s}：${e.toString()}</p>`)
+            }
+          })
+
+        message = m.join('')
       }
     } else {
       message = `${ result.status } - ${ result.statusText }`

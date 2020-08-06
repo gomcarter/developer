@@ -21,7 +21,7 @@ return n + Math.floor(Math.random() * (m - n))
         <el-input v-model="form.mark" type="textarea" rows="3"></el-input>
       </el-form-item>
       <el-form-item label="" label-width="8em">
-      <el-checkbox v-model="form.isPublic" label="是否公用" :checked="form.isPublic"></el-checkbox>
+        <el-checkbox v-model="form.isPublic" label="是否公用" :checked="form.isPublic"></el-checkbox>
       </el-form-item>
       <el-form-item label="" label-width="8em">
         <el-button @click="action">测试</el-button>

@@ -3,7 +3,7 @@ import qs from 'query-string'
 import { removeBlank } from '@/config/utils'
 import { that } from '../../main.js'
 
-// 表示跨域请求时是否需要使用凭证
+// 表示跨域请求时是否带cookie
 axios.defaults.withCredentials = true
 // 超时时间20s
 axios.defaults.timeout = 15000
@@ -22,6 +22,9 @@ axios.interceptors.request.use((config) => {
     customHeaders.filter(n => n.key).forEach(h => {
       config.headers[h.key] = h.value
     })
+  }
+  if (config.cookie === false || (config.params && config.params.cookie === false)) {
+    config.withCredentials = false
   }
 
   config.paramsSerializer = params => qs.stringify(params)

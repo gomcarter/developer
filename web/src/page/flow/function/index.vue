@@ -29,7 +29,8 @@ export default {
       },
       dataUrl: functionListApi,
       countUrl: functionCountApi,
-      params: {},
+      fixParams: { 'customFunctionDto.isPublic': true },
+      params: { 'customFunctionDto.isPublic': true },
       toolbar: [{
         title: '新增',
         icon: 'el-icon-plus',
@@ -64,10 +65,10 @@ export default {
   },
   methods: {
     search () {
-      this.params = removeBlank(this.filter)
+      this.params = Object.assign({}, this.fixParams, removeBlank(this.filter))
     },
     clear () {
-      this.params = {}
+      this.params = Object.assign({}, this.fixParams)
       this.filter = { name: '' }
     },
     add () {

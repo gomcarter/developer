@@ -43,7 +43,12 @@
   background: lightgray;
 }
 
+.warning {
+  background: orange;
+}
+
 .runner-logger {
+  word-break: break-word;
 }
 
 .running-history {

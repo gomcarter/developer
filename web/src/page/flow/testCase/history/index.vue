@@ -5,7 +5,7 @@
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
         <el-form-item label="编号">
-          <el-input v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
+          <el-input type='number' v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item label="环境：">
           <el-select v-model="filter.env">

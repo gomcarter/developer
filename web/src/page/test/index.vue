@@ -37,8 +37,7 @@
         </el-form>
         <h4 class="title">检查点结果</h4>
         <hr/>
-        <span v-if="this.checkResult === false">{{this.checkResultMessage}}</span>
-        <span v-else-if="this.checkResult === true">检查点执行成功</span>
+        <span v-if="checkResult != null" v-html="checkResultMessage"></span>
         <span v-else>未设置检查点</span>
       </div>
       <div class="right">
@@ -71,12 +70,12 @@
         <v-parameter-input :parameters="parameters"></v-parameter-input>
         <h4 class="title">检查点</h4>
         <hr/>
-        <el-input :placeholder="`注：本接口的调用结果将存入$this中。
+        <el-input :placeholder="`注：本接口的调用结果将存入this中。
 在这里写入一些检查点脚本，示例：
 
-assert($this.name == null, '返回名称不能为空！')
-assert($this.data.id == null, '返回id不能为空！')
-assert($this.data.id.quantity > 0, '数量必须大于等于零！')
+assert(this.name != null, '返回名称不能为空！')
+assert(this.data.id != null, '返回id不能为空！')
+assert(this.data.id.quantity > 0, '数量必须大于等于零！')
 
 如果报错了，那么整个流程将被终止。`" :rows="18" type="textarea"  v-model="javascript" >
         </el-input>
@@ -95,7 +94,7 @@ assert($this.data.id.quantity > 0, '数量必须大于等于零！')
 */
 <script>
 import { getCusInterfacesApi, getInterfacesApi, getInterfacesHeadersApi, generateUrl, getPrivatesEndAuthApi, setPrivatesEndAuthApi, saveCusTestApi, mockXhr } from '@/config/api/inserv-api'
-import { generateParameters, fillParamsFromClipboardData } from '@/config/utils'
+import { generateParameters, fillParamsFromClipboardData, generateReturns } from '@/config/utils'
 import { ENV_DOMAIN_MAP } from '@/config/mapping'
 import { store } from '@/config/cache'
 
@@ -103,7 +102,12 @@ export default {
   props: {},
   data () {
     return {
-      ENV_DOMAIN_MAP,
+      ENV_DOMAIN_MAP: (() => {
+        const domain = Object.assign({}, ENV_DOMAIN_MAP)
+        delete domain['onlineDomain']
+        domain['localDomain'] = '本地环境'
+        return domain
+      })(),
       data: {
         id: null,
         hash: null,
@@ -173,7 +177,6 @@ export default {
       fillParamsFromClipboardData(e, this.parameters)
     },
     async init () {
-      this.ENV_DOMAIN_MAP.localDomain = '本地环境'
       this.env = this.$route.params.env || this.env
       const cus = await getCusInterfacesApi(this.$route.params.id)
 
@@ -190,6 +193,8 @@ export default {
       } else {
         this.parameters = generateParameters(this.data.parameters)
       }
+      // 返回数据结构填充
+      this.result = generateReturns(JSON.parse(this.data.returns))
       // 绑定参数粘帖事件
       this.$el.addEventListener('paste', this.paste)
     },
@@ -229,7 +234,7 @@ export default {
     saveCusTestApi () {
       saveCusTestApi(this.data.id, JSON.stringify(this.parameters), JSON.stringify(this.javascript), JSON.stringify(this.preParams))
         .then((r) => {
-          this.$success('保存成功，可以在【接口自动化测试】>【我的接口列表】查看！')
+          this.$success('保存成功！')
         })
     },
     addParams () {

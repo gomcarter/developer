@@ -19,8 +19,8 @@
       </el-form-item>
       <el-form-item>
         <el-button type="info" @click="$router.go(-1)" icon="el-icon-back">返回</el-button>
-        <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">提交</el-button>
-        <el-button type="primary" @click="batchImport" icon="el-icon-upload2">批量导入</el-button>
+        <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">保存</el-button>
+        <el-button type="primary" @click="batchImport" icon="el-icon-upload2">批量导入接口</el-button>
         <el-button type="success" @click="beautify" icon="el-icon-s-grid">美化</el-button>
         <el-button type="success" @click="test" icon="el-icon-magic-stick">测试</el-button>
       </el-form-item>
@@ -38,6 +38,7 @@
 <script>
 import { createTestCaseApi, getTestCaseDetailApi, updateTestCaseApi, functionListApi, getPackageApi, interfacesSimpleListApi } from '@/config/api/inserv-api'
 import { getUrlHashParams } from '@/config/utils'
+import { user } from '@/config/login'
 
 export default {
   data () {
@@ -53,6 +54,7 @@ export default {
         name: null,
         workflow: null
       },
+      owner: true,
       presetParams: []
     }
   },
@@ -73,9 +75,10 @@ export default {
         if (!r.result) {
           this.$message({ message: r.message, type: 'warning' })
         } else {
-          this.$confirm('确定保存？', '提示', { type: 'info' }).then(() => {
+          this.$confirm((this.owner ? '' : '你即将复制并保存此用例到自己的用例列表中，') + '确定保存吗？', '提示', { type: 'info' }).then(() => {
             this.disabled = true
-            if (this.id) {
+            // 有id且是自己的才能保存，否则都是新建
+            if (this.id && this.owner) {
               updateTestCaseApi(this.id, this.generateParams()).then((res) => {
                 this.$transfer({
                   back: '再次编辑',
@@ -90,6 +93,7 @@ export default {
             } else {
               createTestCaseApi(this.generateParams())
                 .then((res) => {
+                  window.history.replaceState(null, document.title, `/#/flow/testCase/edit/${res}`)
                   this.$transfer({
                     back: '继续添加',
                     buttons: [{
@@ -159,7 +163,7 @@ export default {
     'v-parameter-input': () => import('@/components/parameter-input')
   },
   mounted () {
-    window.that = this
+    window.that1 = this
 
     const { packageId } = getUrlHashParams()
     if (packageId) {
@@ -174,11 +178,13 @@ export default {
           }, 800)
         })
     } else if (this.id) {
+      this.owner = false
       this.title = '修改用例'
       getTestCaseDetailApi(this.id).then((res) => {
         this.form.name = res.name
         this.form.workflow = JSON.parse(res.workflow)
         this.presetParams = JSON.parse(res.presetParams)
+        this.owner = res.userName === user()
       }).catch((err) => {
         console.log(err)
       })

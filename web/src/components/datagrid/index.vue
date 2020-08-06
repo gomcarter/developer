@@ -339,6 +339,9 @@ export default {
       })
       this.t += 1
     },
+    render () {
+      this.$set(this, 'data', this.data)
+    },
     onRowCheckChanged (row) {
       if (row.$checked) {
         // 勾中，如果是单选，需要把其他选中的删除
@@ -437,9 +440,9 @@ export default {
           target: this.$el
         })
         this.dataUrl(this.requestParams)
-          .then((res) => {
+          .then(async (res) => {
             loading.close()
-            if (this.onLoadSuccess != null && this.onLoadSuccess(res) === false) {
+            if (await this.onLoadSuccess != null && await this.onLoadSuccess(res) === false) {
               return
             }
             this.formatData(res)

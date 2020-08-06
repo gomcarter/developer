@@ -1,10 +1,30 @@
 /* eslint-disable */
 import { Notification } from 'element-ui'
 
+document.body.addEventListener('click', function(e) {
+  if (e.target.className.indexOf('expander') > -1) {
+    const parent = e.target.parentNode
+    if (parent.className.indexOf('collapsed') > -1) {
+      parent.className = parent.className.replace('collapsed', '').trim()
+    } else {
+      parent.className += ' collapsed'
+    }
+  }
+})
+
 export const toJsonHtml = (json) => {
   if (json == null) {
     json = 'undefined'
   }
+
+  if (typeof json === 'string') {
+    try {
+      json = JSON.parse(json)
+    } catch (ignore) {
+
+    }
+  }
+
   const rawed = JSON.stringify(json, null, 4).replace(/</g, '&lt;').replace(/>/g, '&gt;').split(/\n/)
   const r = ['<span class="kvov arrElem rootKvov">']
   // 当前缩进， 当缩进增加则增加一个blockInner，下面的元素进入此元素自己根据每一行的缩进
@@ -236,6 +256,10 @@ export const formatDate = (date, fmt = 'yyyy-MM-dd hh:mm:ss') => {
   return fmt
 }
 
+Date.prototype.format = function(fmt = 'yyyy-MM-dd hh:mm:ss') {
+  return formatDate(this, fmt)
+}
+
 export const success = (message) => {
   Notification({
     type: 'success',
@@ -404,23 +428,9 @@ export const cancelable = (e) => {
   }
 }
 
-/**
- * 获取图片的全路径
- * 详见官网： http://zimg.buaa.us/documents/
- * @param url ： 图片地址
- * @param params : { w ： 宽度, h ： 高度, q ： 质量的百分比(0-100整数), f : png/jpg（图片格式）, r : 旋转度数(0-360整数) }
- * @return [] | String : 传入的url是一个数组，则返回数组，传入一个string则返回单个url
- */
 export const getPictureUrl = (url, params = {}) => {
-  const paramArray = Object.entries(params)
-  const p = paramArray.length === 0 ? '' : paramArray
-    .map(s => `${s[0]}=${s[1]}`)
-    .reduce((a, b) => `${a}&${b}`)
-
-  if (typeof url === 'string') {
-    return '/' + url + (url.indexOf('?') >= 0 ? '&' : '?') + p
-  }
-  return url.map(v => '/' + v + (v.indexOf('?') >= 0 ? '&' : '?') + p)
+  // 待实现
+  return null
 }
 
 export const fromQueryString = (queryString) => {
@@ -548,14 +558,8 @@ export const generateBodyPlaceholder = (node) => {
     return o
   } else if (node.type === undefined || node.type === 'void') {
     return null
-  } else if (node.type === 'boolean') {
-    return false
-  } else if (node.type === 'Date') {
-    return formatDate(new Date())
-  } else if (node.type === 'Integer') {
-    return 0
   } else {
-    return '改这里'
+    return `${node.comment ? node.comment : ''} - ${node.type}${node.notNull ? ' - 必填' : ''}`
   }
 }
 
@@ -573,6 +577,9 @@ export const fillParamsFromClipboardData = (e, parameters) => {
   const text = (e.clipboardData.getData('text') || '').trim()
   if (text) {
     const params = parseParams(text)
+    if (params === false) {
+      return
+    }
     setTimeout(() => {
       const name = e.target.name
       parameters.forEach(s => {
@@ -592,11 +599,12 @@ export const fillParamsFromClipboardData = (e, parameters) => {
               p.defaults = v
               p.assign = true
             } else {
-              parameters.push({key, defaults: v, assign: true, body: false})
+              parameters.push({key, defaults: v, assign: true, body: false, type: 'text'})
             }
           })
         }
       }
+      console.log(parameters)
     }, 1)
   }
 }
@@ -619,6 +627,8 @@ export const parseParams = (text) => {
     return params
   } else if (/=/.test(text)) {
     return fromQueryString(text)
+  } else {
+    return false
   }
 }
 
@@ -658,7 +668,7 @@ export const constructExecutableDataModel = (graph) => {
   // 遍历节点找到最顶端的节点设置为level 1， 往下一层level 2， 以此类推，把所有节点分层
   // 然后最后执行时就从第一层开始执行，到最后一层。
   const nodes = graph.getNodes()
-  nodes.forEach(n => { n.getModel().mark = 0 })
+  nodes.forEach(n => { n.getModel()._mark = 0 })
   const totalCounts = nodes.length
 
   // 第一层怎么找: 存在任何一个节点只有出没有入的节点
@@ -671,7 +681,7 @@ export const constructExecutableDataModel = (graph) => {
   }
   model.push(currentNodes)
   // 标记节点已经被修改
-  currentNodes.forEach(n => { n.getModel().mark = n.getModel().mark + 1 })
+  currentNodes.forEach(n => { n.getModel()._mark = n.getModel()._mark + 1 })
   // currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
 
   // 第二层开始：入口是上一层的下层节点，而且（如果一个节点存在多个入口，如又是第二层又是第三层，那么要取第三层）
@@ -682,8 +692,8 @@ export const constructExecutableDataModel = (graph) => {
         if (isPreLevelChildren) {
           const target = e.getTarget()
           const targetIsMe = target.getEdges().filter(n => n.getTarget() === target)
-          target.getModel().mark = target.getModel().mark + 1
-          if (targetIsMe.length === target.getModel().mark) {
+          target.getModel()._mark = target.getModel()._mark + 1
+          if (targetIsMe.length === target.getModel()._mark) {
             return true
           }
         }
@@ -693,7 +703,7 @@ export const constructExecutableDataModel = (graph) => {
 
     if (currentNodes.length === 0) {
       // 没有找到则从剩下的node中随便取一个
-      currentNodes = [nodes.filter(n => n.getModel().mark === false)[0]]
+      currentNodes = [nodes.filter(n => n.getModel()._mark === false)[0]]
       count++
     } else {
       count += currentNodes.length

@@ -44,8 +44,8 @@ export default {
           this.name = res.name
           const history = { env: res.env, historyList: JSON.parse(res.result) }
           setTimeout(() => {
-            getTestCaseDetailApi(res.testCaseId).then((res) => {
-              const data = { testCaseId: this.id, workflow: JSON.parse(res.workflow), presetParams: JSON.parse(res.presetParams) || [] }
+            getTestCaseDetailApi(res.testCaseId).then((tc) => {
+              const data = { testCaseId: res.testCaseId, workflow: JSON.parse(tc.workflow), presetParams: JSON.parse(tc.presetParams) || [] }
 
               // 设置模型
               this.$refs.runner.setData(data)

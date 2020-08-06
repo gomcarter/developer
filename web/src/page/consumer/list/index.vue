@@ -71,7 +71,13 @@ export default {
           width: 120,
           actions: [{
             text: (row) => {
-              return row.config ? `<a href="#/interfaces/view/${JSON.parse(row.config).interfaceId}" target="_blank">点击查看</a>` : ''
+              if (row.config) {
+                const c = JSON.parse(row.config)
+                if (c.interfaceId) {
+                  return `<a href="#/interfaces/view/${c.interfaceId}" target="_blank">点击查看</a>`
+                }
+              }
+              return ''
             }
           }]
         },

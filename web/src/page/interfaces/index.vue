@@ -5,7 +5,7 @@
     <div class="filters">
       <el-form :inline="true" :model="filter" label-width="6em">
         <el-form-item label="编号">
-          <el-input v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
+          <el-input type='number' v-model="filter.id" placeholder="请输入编号" @keypress.enter.native="search"></el-input>
         </el-form-item>
         <el-form-item label="接口名称">
           <el-input v-model="filter.name" placeholder="请输入接口名称" @keypress.enter.native="search"></el-input>
@@ -21,7 +21,7 @@
                       placeholder="请选择是否废弃"></v-selector>
         </el-form-item>
         <el-form-item label="后端服务">
-          <v-selector
+          <v-selector ref="back"
             :id="'id'" :text="'name'"
             :onSelectionChanged="(d) => filter.javaId = (d[0] || {}).id"
             :filterable="true" :remote="true"
@@ -30,7 +30,7 @@
           ></v-selector>
         </el-form-item>
         <el-form-item label="前端项目">
-          <v-selector
+          <v-selector ref="front"
             :id="'id'" :text="'name'"
             :onSelectionChanged="(d) => filter.endId = (d[0] || {}).id"
             :filterable="true" :remote="true"
@@ -47,7 +47,7 @@
     <h4 class="title">接口列表</h4>
     <hr/>
     <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params"
-                :checkable="true" :toolbar="toolbar" :onSelectionChanged="onSelectionChanged" />
+                :checkable="true" :toolbar="toolbar" :onSelectionChanged="onSelectionChanged" :onLoadSuccess="onLoadSuccess"/>
 
     <v-dialog ref="packageDialog"
               title="接口打包"
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { interfacesCountApi, transferTocustomerApi, interfacesListApi, endListApi, javaListApi, deleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
+import { interfacesCountApi, transferTocustomerApi, cusInterfacesFavorites, interfacesListApi, endListApi, javaListApi, deleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -106,6 +106,16 @@ export default {
         disabled: () => this.selected.length === 0,
         handler: () => this.$refs.packageDialog.open()
       }],
+      async onLoadSuccess (data) {
+        if (data.length === 0) {
+          return
+        }
+        const favoritesIdList = await cusInterfacesFavorites(data.map(s => s.id))
+        console.log(favoritesIdList)
+        data.forEach(s => {
+          s.transfered = favoritesIdList.indexOf(s.id) >= 0
+        })
+      },
       columns: [
         {
           field: 'action',
@@ -113,8 +123,7 @@ export default {
           width: 160,
           html: true,
           actions: [{
-            text: '执行',
-            handler: (row) => this.auction(row)
+            text: (r) => `<a href="#/test/${r.id}/testDomain" target="_blank">执行</a>`
           }, {
             text: '删除',
             handler: (row) => this.delete(row.id)
@@ -122,7 +131,7 @@ export default {
             text: '复制',
             handler: (row) => this.copy(row)
           }, {
-            text: '收藏',
+            text: (r) => r.transfered ? '' : '收藏',
             handler: (row) => this.transfer(row)
           }]
         },
@@ -150,15 +159,18 @@ export default {
   },
   methods: {
     transfer (row) {
+      if (row.transfered) {
+        return
+      }
+
       transferTocustomerApi(row.id).then(() => {
         this.$success('收藏成功，可以在【接口自动化测试】>【我的接口列表】查看！')
-        this.search()
+        row.transfered = true
+        this.$refs.dg.render()
       })
     },
-    auction (row) {
-      this.$router.push({path: '/test/' + row.id + '/devDomain'})
-    },
     copy (row) {
+      // 复制url为固定格式（沙翼需求），如：/platform/search/productWord/delete => ,platformSearchProductWordDelete:'/platform/search/productWord/delete'
       const key = row.url.split('/').filter(s => s).map(s => s[0].toUpperCase() + s.substr(1)).join('')
       this.$copyText(`,${key[0].toLowerCase() + key.substr(1)}:'${row.url}'`)
         .then((e) => this.$success('复制成功！'), (e) => this.$success('复制失败！'))
@@ -205,6 +217,8 @@ export default {
     clear () {
       this.params = {}
       this.filter = {}
+      this.$refs.back.clear()
+      this.$refs.front.clear()
     }
   },
   components: {

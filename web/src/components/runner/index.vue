@@ -11,7 +11,8 @@
       <span class="simple waiting"></span><span>-等待执行</span>&#12288;
       <span class="simple running"></span><span>-执行中</span>&#12288;
       <span class="simple success"></span><span>-执行成功</span>&#12288;
-      <span class="simple failed"></span><span>-执行失败</span>
+      <span class="simple failed"></span><span>-执行失败</span>&#12288;
+      <span class="simple warning"></span><span>-警告</span>&#12288;
       <span class="simple ignore"></span><span>-不执行</span>
     </div>
     <el-container>
@@ -41,7 +42,7 @@
 import G6 from '@antv/g6'
 import { originMockUrl, processParams, mockXhr, saveTestCaseHistorytApi } from '@/config/api/inserv-api'
 import { toQueryString, sleep, constructExecutableDataModel, toJsonHtml } from '@/config/utils'
-import { ENV_DOMAIN_MAP } from '@/config/mapping'
+import { ENV_DOMAIN_MAP, ENV_DOMAIN_LOG_MAP } from '@/config/mapping'
 import insertCss from 'insert-css'
 
 export default {
@@ -66,7 +67,11 @@ export default {
   data () {
     return {
       i: 0,
-      ENV_DOMAIN_MAP,
+      ENV_DOMAIN_MAP: (() => {
+        const domain = Object.assign({}, ENV_DOMAIN_MAP)
+        delete domain['onlineDomain']
+        return domain
+      })(),
       logs: [],
       env: 'testDomain',
       testCaseId: null,
@@ -78,11 +83,16 @@ export default {
       model: [],
       success: true,
       currentIndex: 0,
-      historyList: []
+      historyList: [],
+      running: false,
+      threshold: 200
     }
   },
   methods: {
     viewHistory (index) {
+      if (this.running) {
+        return
+      }
       this.currentIndex = index
       const history = this.historyList[index]
 
@@ -181,6 +191,7 @@ export default {
           overflow: auto;
           line-height: 24px;
           max-height: 300px;
+          max-width: 450px;
         }
       `)
 
@@ -229,6 +240,11 @@ export default {
           ignore: {
             radius: 4,
             fill: 'darkgray',
+            stroke: '#4063ff'
+          },
+          warning: {
+            radius: 4,
+            fill: 'orange',
             stroke: '#4063ff'
           }
         },
@@ -295,7 +311,7 @@ export default {
       node = node == null ? this.graph.getNodes() : (node instanceof Array ? node : [node])
 
       node.forEach(n => {
-        this.graph.clearItemStates(n, ['waiting', 'running', 'success', 'failed', 'selected', 'ignore'])
+        this.graph.clearItemStates(n, ['waiting', 'running', 'success', 'failed', 'selected', 'ignore', 'warning'])
       })
     },
     setState (node, state, bool = true) {
@@ -349,6 +365,10 @@ export default {
      * @param mock 是否执行mock数据，默认：false
      */
     async run (times = 1, mock = false) {
+      if (this.running) {
+        return
+      }
+      this.running = true
       // 清空执行历史
       this.$set(this, 'historyList', [])
 
@@ -377,6 +397,7 @@ export default {
         this.i = this.i + 1
       }
 
+      this.running = false
       // 通知外部执行完毕
       this.finished && this.finished()
     },
@@ -436,15 +457,15 @@ export default {
           continue
         }
 
+        // 下游节点和线亮起来
+        const edges = node.getEdges().filter(e => e.getSource() === node)
+        this.setState(edges.concat(node), ['selected', 'running'])
         // 休眠N秒执行
         if (data.sleep > 0) {
           this.log(`休眠${data.sleep}秒之后运行`)
           await sleep(data.sleep * 1000)
           this.log(`休眠结束，开始运行`)
         }
-        // 下游节点和线亮起来
-        const edges = node.getEdges().filter(e => e.getSource() === node)
-        this.setState(edges.concat(node), ['selected', 'running'])
 
         let message
         // 条件
@@ -453,7 +474,7 @@ export default {
           try {
             /* eslint-disable */
             const condition = new Function(data.javascript)() || []
-            this.log('条件判断成功，执行路线：' + condition.join(','))
+            const log = '条件判断成功，执行路线：' + condition.join(',')
             // 找出下游不在condition中的线路， 然后把这些线路的终点节点标记不执行
             edges.filter(e => condition.indexOf(e.getModel().id) < 0)
               .forEach(e => {
@@ -469,6 +490,9 @@ export default {
 
             this.clearState(edges)
             this.setState(node, ['success'])
+            model.description = log
+            this.graph.updateItem(node, model)
+            this.log(log)
             this.log('')
           } catch (e) {
             this.error(edges, node, `条件判断失败：${e.toString()}`)
@@ -477,35 +501,49 @@ export default {
           try {
             let url = mock ? originMockUrl(data.java[this.env], data.url) : (data.java[this.env] + data.url)
             const paramsName = '$' + model.id
+            const start = Date.now()
             const res = await mockXhr(url, data.method, data.parameters, data.headers, data.preParams, data.javascript, paramsName)
+            const end = Date.now()
 
-            message = this.appendMessage('', `接口地址：${res.method.toUpperCase()}  ${res.url}`)
-            message = this.appendMessage(message, `header：${res.headers.length > 0 ? res.headers.map(h => h.key + '=' + h.value).join('，') : '无'}`)
-            message = this.appendMessage(message, `接口参数：${toQueryString(res.params)}`)
-            message = this.appendMessage(message, res.body && `body：${res.body}`)
-            message = this.appendMessage(message, '调用结果：')
+            message = this.appendMessage('', `<b>接口地址：</b>${res.method.toUpperCase()}  ${res.url}`)
+            message = this.appendMessage(message, `<b>header：</b>${res.headers.length > 0 ? res.headers.map(h => h.key + '=' + h.value).join('，') : '无'}`)
+            message = this.appendMessage(message, `<b>接口参数：</b>${toQueryString(res.params)}`)
+            if (res.body) {
+              message = this.appendMessage(message, `<b>body：</b>`)
+              message = this.appendMessage(message, res.body, 'json')
+            }
+            message = this.appendMessage(message, `<span style="color: ${end - start > this.threshold ? 'red' : ''}"><b>耗时：</b>${end - start}ms</span>`)
+            let log = ''
+            if (data.java.alias) {
+              log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
+            }
+            message = this.appendMessage(message, `<b>调用结果：</b>${log}`)
             message = this.appendMessage(message, res.result.data, 'json')
 
             if (res.success) {
               if (res.check === false) {
                 // 执行检查点失败
-                this.error(edges, node, this.appendMessage(message, '检查点：执行失败，' + res.message))
+                this.error(edges, node, this.appendMessage(message, '<b>检查点</b>：' + res.message))
               } else {
                 // 将结果放到输送线上去
                 edges.forEach(e => {
                   window['$' + e.getModel().id] = window[paramsName]
                 })
-                this.setState(edges.concat(node), ['selected', 'running'], false)
-                this.setState(node, ['success'], true)
-                model.description = res.check ? this.appendMessage(message, '检查点：执行成功！') : this.appendMessage(message, '检查点：无')
+                this.clearState(edges.concat(node))
+                if (end - start > this.threshold) {
+                  this.setState(node, ['warning'], true)
+                } else {
+                  this.setState(node, ['success'], true)
+                }
+                model.description = res.check ? this.appendMessage(message, '<b>检查点</b>：' + res.message) : this.appendMessage(message, '<b>检查点</b>：无')
                 this.graph.updateItem(node, model)
               }
             } else {
               // 接口调用失败
-              this.error(edges, node, this.appendMessage(message, '接口调用失败：' + res.message))
+              this.error(edges, node, this.appendMessage(message, '<b>接口调用失败：</b>' + res.message))
             }
           } catch (e) {
-            this.error(edges, node, this.appendMessage(message, `接口调用失败：${e.toString()}`))
+            this.error(edges, node, this.appendMessage(message, `<b>接口调用失败：</b>${e.toString()}`))
           }
         }
       }

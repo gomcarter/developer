@@ -4,7 +4,10 @@
     <hr/>
     <el-form :model="form" ref="edit" label-width="8em" class="min_width">
       <el-form-item label="服务名称:" :rules="[{ required: true, message: '请输入模块名称', trigger: ['blur', 'change'] }]" prop="name">
-        <el-input v-model="form.name" placeholder="请输入模块名称" />
+        <el-input v-model="form.name" placeholder="请输入模块名称"></el-input>
+      </el-form-item>
+      <el-form-item label="应用别名:" :rules="[{ required: true, message: '请输入应用别名', trigger: ['blur', 'change'] }]" prop="alias">
+        <el-input v-model="form.alias" placeholder="请输入应用别名"></el-input>
       </el-form-item>
       <el-form-item v-for="(value, key) in ENV_DOMAIN_MAP"
                     :key="key"
@@ -31,7 +34,8 @@ export default {
       title: '新增模块',
       form: {
         id: '',
-        name: ''
+        name: '',
+        alias: ''
       },
       ENV_DOMAIN_MAP
     }

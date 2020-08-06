@@ -1,6 +1,6 @@
 <template>
   <div class="json-container">
-    <div v-html="formatted" @click="onClicked"
+    <div v-html="formatted"
          :style="{ width: width ? `${width}px`: '100%', height: `${height}px`, 'min-height': `${minHeight}px`, 'min-width': `${minWidth}px`}" >
     </div>
   </div>
@@ -50,16 +50,6 @@ export default {
     this.init()
   },
   methods: {
-    onClicked (e) {
-      if (e.target.className.indexOf('expander') > -1) {
-        const parent = e.target.parentNode
-        if (parent.className.indexOf('collapsed') > -1) {
-          parent.className = parent.className.replace('collapsed', '').trim()
-        } else {
-          parent.className += ' collapsed'
-        }
-      }
-    },
     init () {
       this.formatted = toJsonHtml(this.json)
     }

@@ -100,6 +100,7 @@ export default {
   },
   methods: {
     copy (row) {
+      // 复制url为固定格式（沙翼需求），如：/platform/search/productWord/delete => ,platformSearchProductWordDelete:'/platform/search/productWord/delete'
       const key = row.url.split('/').filter(s => s).map(s => s[0].toUpperCase() + s.substr(1)).join('')
       this.$copyText(`,${key[0].toLowerCase() + key.substr(1)}:'${row.url}'`)
         .then((e) => this.$success('复制成功！'), (e) => this.$success('复制失败！'))

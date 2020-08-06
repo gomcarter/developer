@@ -28,7 +28,7 @@
                   :id="'id'" :text="'name'"
                   :onSelectionChanged="(d) => param.functionId = (d[0] || {}).id"
                   :filterable="true" :remote="true"
-                  placeholder="请输选择一个自定义参数，输入名称进行搜索"
+                  placeholder="请选择自定义参数，或输入名称进行搜索"
                   :load="[param.functionId]"
                   :url="functionListApi"
       ></v-selector>

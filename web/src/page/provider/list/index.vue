@@ -59,6 +59,7 @@ export default {
         },
         {field: 'id', header: '序号', sort: 'id', width: 50},
         {field: 'name', header: '模块名称', sort: 'name', width: 200},
+        {field: 'alias', header: '应用名', sort: 'alias', width: 200},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)}
       ]
     }
@@ -66,7 +67,7 @@ export default {
   mounted () {
     // 插入环境
     for (const key in ENV_DOMAIN_MAP) {
-      this.columns.splice(2, 0, {
+      this.columns.splice(4, 0, {
         field: key,
         header: ENV_DOMAIN_MAP[key] + '域名',
         width: 180

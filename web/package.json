@@ -1,8 +1,8 @@
 {
   "name": "developer",
   "version": "1.0.0",
-  "description": "开发者之家",
-  "author": "nqey <shincyou@hotmail.com>",
+  "description": "开发者中心",
+  "author": "gomcarger <gomcarter@vip.qq.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -16,6 +16,7 @@
     "crypto-js": "^4.0.0",
     "element-ui": "^2.9.1",
     "insert-css": "^2.0.0",
+    "jquery": "^3.5.1",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.15",
     "moment": "^2.25.3",
@@ -24,6 +25,7 @@
     "vue-clipboard2": "^0.2.1",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^3.0.1",
+    "vuedraggable": "^2.24.0",
     "xterm": "^4.7.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.4.0"
