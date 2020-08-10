@@ -1,14 +1,13 @@
 package com.gomcarter.developer.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.gomcarter.developer.dao.UserMapper;
 import com.gomcarter.developer.entity.User;
-import com.gomcarter.frameworks.base.common.AssertUtils;
-import com.gomcarter.frameworks.base.exception.CustomException;
-import com.gomcarter.frameworks.base.pager.Pageable;
 import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.utils.PasswordUtils;
+import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.exception.CustomException;
+import com.gomcarter.frameworks.base.exception.NoPermissionException;
+import com.gomcarter.frameworks.base.pager.Pageable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.util.List;
  * @author gomcarter on 2020-03-02 10:16:26
  */
 @Service
-public class UserService  extends ServiceImpl<UserMapper, User> implements IService<User> {
+public class UserService {
 
     @Resource
     private UserMapper userMapper;
@@ -50,10 +49,6 @@ public class UserService  extends ServiceImpl<UserMapper, User> implements IServ
 
     public User getById(Long id) {
         return userMapper.getById(id);
-    }
-
-    public User getByUserName(String username) {
-        return userMapper.getByUsername(username);
     }
 
     public List<User> getByIdList(Collection<Long> idList) {
@@ -92,10 +87,7 @@ public class UserService  extends ServiceImpl<UserMapper, User> implements IServ
         return PasswordUtils.validate(password, user.getRandom(), user.getPassword());
     }
 
-
-
-
-    public void insert(String username, String name, String cellphone, String mail, String password,Integer roleid) {
+    public void insert(String username, String name, String cellphone, String mail, String password) {
         AssertUtils.notNull(username, new CustomException("账号不能为空！"));
         AssertUtils.isNull(this.userMapper.getByUsername(username), new CustomException("该账号已经存在：" + username));
 
@@ -106,7 +98,6 @@ public class UserService  extends ServiceImpl<UserMapper, User> implements IServ
         User user = new User()
                 .setUsername(username)
                 .setName(name)
-                .setRoleId(roleid)
                 .setRandom(random)
                 .setCellphone(cellphone)
                 .setMail(mail)
@@ -115,12 +106,12 @@ public class UserService  extends ServiceImpl<UserMapper, User> implements IServ
         this.insert(user);
     }
 
-    public void update(Long id, String name, String cellphone, String mail, String password,Integer roleid) {
+    public void update(Long id, String name, String cellphone, String mail, String password) {
         User user = this.userMapper.getById(id);
         AssertUtils.notNull(user, new CustomException("当前账号不存在！"));
         // admin 能修改所有的， 自己能修改自己的 = 要么是admin，要么是自己
         AssertUtils.isTrue(UserHolder.admin() || user.getUsername().equals(UserHolder.name()),
-                new CustomException("没有权限"));
+                new NoPermissionException());
 
         user.setName(name)
                 .setCellphone(cellphone)
@@ -143,7 +134,7 @@ public class UserService  extends ServiceImpl<UserMapper, User> implements IServ
         AssertUtils.isTrue(!this.settingOfUserService.remote(), new CustomException("当前已开启外部登录，修改密码功能被禁用！"));
 
         User user = this.userMapper.getByUsername(username);
-        AssertUtils.notNull(user, new CustomException("没有权限"));
+        AssertUtils.notNull(user, new NoPermissionException());
 
         AssertUtils.isTrue(PasswordUtils.validate(oldPassword, user.getRandom(), user.getPassword()), new CustomException("原密码错误！"));
 
