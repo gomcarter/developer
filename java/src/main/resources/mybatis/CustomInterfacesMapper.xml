@@ -6,88 +6,87 @@
         <id column="id" property="id"/>
         <result column="interfaces_id" property="interfacesId"/>
         <result column="username" property="username"/>
+        <result column="cus_parameters" property="cusParameters"/>
+        <result column="pre_params" property="preParams"/>
+        <result column="javascript" property="javascript"/>
+        <result column="favorite_code" property="favoriteCode"/>
         <result column="create_time" property="createTime"/>
         <result column="modify_time" property="modifyTime"/>
-        <result column="name" property="name"/>
-        <result column="url" property="url"/>
-        <result column="method" property="method"/>
-        <result column="deprecated" property="deprecated"/>
-        <result column="mark" property="mark"/>
-        <result column="returns" property="returns"/>
-        <result column="parameters" property="parameters"/>
-        <result column="fk_java_id" property="fkJavaId"/>
-        <result column="fk_end_id" property="fkEndId"/>
-        <result column="hash" property="hash"/>
-        <result column="cus_parameters" property="cusParameters"/>
-        <result column="javascript" property="javascript"/>
     </resultMap>
 
     <select id="getByInterfacesId" resultMap="customInterfacesMap">
         select * from custom_interfaces where interfaces_id = #{interfacesId} and username =#{username}
     </select>
 
-    <select id="getList" resultMap="customInterfacesMap">
-        <include refid="getList"/>
+    <select id="getList" resultType="com.gomcarter.developer.dto.CustomInterfacesDetailDto">
+        SELECT
+        a.hash,
+        a.name,
+        a.controller,
+        a.url,
+        a.method,
+        a.deprecated,
+        a.mark,
+        a.returns,
+        a.parameters,
+        a.fk_java_id as javaId,
+        a.fk_end_id as endId,
+        b.id,
+        b.interfaces_id as interfacesId,
+        b.username,
+        b.cus_parameters as cusParameters,
+        b.pre_params as preParams,
+        b.javascript,
+        b.create_time as createTime,
+        b.modify_time as modifyTime
+        <include refid="querySql"/>
+        ORDER BY a.id desc LIMIT #{pager.startNum} , #{pager.pageCount}
     </select>
 
     <select id="getCount" resultType="java.lang.Integer">
-        <include refid="getCount"/>
+        SELECT count(b.id)
+        <include refid="querySql"/>
     </select>
 
+    <sql id="querySql">
+        FROM interfaces a inner JOIN custom_interfaces b ON a.id = b.interfaces_id
+        <where>
+            username=#{param.username}
+            <if test="param.id != null">
+                and b.id = #{param.id}
+            </if>
+            <if test="param.interfacesId != null">
+                and a.id = #{param.interfacesId}
+            </if>
+            <if test="param.name != null">
+                and a.name like concat('%',#{param.name},'%')
+            </if>
+            <if test="param.controller != null">
+                and a.controller like concat('%',#{param.controller},'%')
+            </if>
+            <if test="param.deprecated != null">
+                and a.deprecated = #{param.deprecated}
+            </if>
+            <if test="param.favoriteCode != null">
+                and b.favorite_code LIKE concat(#{param.favoriteCode}, "%")
+            </if>
+            <if test="param.url != null">
+                and a.url = #{param.url}
+            </if>
+            <if test="param.endId != null">
+                and a.fk_end_id = #{param.endId}
+            </if>
+            <if test="param.javaId != null">
+                and a.fk_java_id = #{param.javaId}
+            </if>
+        </where>
+    </sql>
 
-    <sql id="getList">
-        SELECT a.hash,a.name,a.controller,a.url,a.method,a.deprecated,a.mark,a.returns,a.parameters,a.fk_java_id,a.fk_end_id,b.* FROM interfaces a inner JOIN custom_interfaces b ON a.id = b.interfaces_id
-        <where>
-            username=#{param.username}
-            <if test="param.id != null">
-                and b.id = #{param.id}
-            </if>
-            <if test="param.name != null">
-                and a.name = #{param.name}
-            </if>
-            <if test="param.controller != null">
-                and a.controller = #{param.controller}
-            </if>
-            <if test="param.deprecated != null">
-                and a.deprecated = #{param.deprecated}
-            </if>
-            <if test="param.url != null">
-                and a.url = #{param.url}
-            </if>
-            <if test="param.endId != null">
-                and a.fk_end_id = #{param.endId}
-            </if>
-            <if test="param.javaId != null">
-                and a.fk_java_id = #{param.javaId}
-            </if>
-        </where>
-    </sql>
-    <sql id="getCount">
-        SELECT count(b.id) FROM interfaces a inner JOIN custom_interfaces b ON a.id = b.interfaces_id
-        <where>
-            username=#{param.username}
-            <if test="param.id != null">
-                and b.id = #{param.id}
-            </if>
-            <if test="param.name != null">
-                and a.name = #{param.name}
-            </if>
-            <if test="param.controller != null">
-                and a.controller = #{param.controller}
-            </if>
-            <if test="param.deprecated != null">
-                and a.deprecated = #{param.deprecated}
-            </if>
-            <if test="param.url != null">
-                and a.url = #{param.url}
-            </if>
-            <if test="param.endId != null">
-                and a.fk_end_id = #{param.endId}
-            </if>
-            <if test="param.javaId != null">
-                and a.fk_java_id = #{param.javaId}
-            </if>
-        </where>
-    </sql>
+    <select id="getFavoritesIdList" resultType="java.lang.Long">
+        select interfaces_id from custom_interfaces where username = #{username} and interfaces_id in
+        <foreach collection="interfacesIdList" index="" item="interfacesId" open="(" separator="," close=")">
+            #{interfacesId}
+        </foreach>
+    </select>
 
 </mapper>

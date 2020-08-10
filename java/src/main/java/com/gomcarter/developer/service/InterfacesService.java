@@ -109,7 +109,9 @@ public class InterfacesService {
                         .setMethod(api.getMethod())
                         .setName(api.getName())
                         .setReturns(returns)
-                        .setParameters(parameters);
+                        .setReturnsClassName(api.getReturnClassName())
+                        .setParameters(parameters)
+                        .setParametersClassName(api.getParameterClassNames());
 
                 this.insert(interfaces);
                 success++;
@@ -129,7 +131,9 @@ public class InterfacesService {
                         .setMethod(api.getMethod())
                         .setName(api.getName())
                         .setReturns(returns)
+                        .setReturnsClassName(api.getReturnClassName())
                         .setParameters(parameters)
+                        .setParametersClassName(api.getParameterClassNames())
                         .setModifyTime(null)
                 );
 
@@ -214,21 +218,8 @@ public class InterfacesService {
                             .setReturns(s.getReturns())
                             .setParameters(s.getParameters())
                             .setMark(s.getMark())
-                            .setJava(new JavaDto()
-                                    .setId(java.getId())
-                                    .setName(java.getName())
-                                    .setDevDomain(java.getDevDomain())
-                                    .setTestDomain(java.getTestDomain())
-                                    .setPrevDomain(java.getPrevDomain())
-                                    .setOnlineDomain(java.getOnlineDomain())
-                            )
-                            .setEnd(new EndDto()
-                                    .setId(end.getId())
-                                    .setName(end.getName())
-                                    .setPrefix(end.getPrefix())
-                                    .setHeader(end.getHeader())
-                                    .setMark(end.getMark())
-                            )
+                            .setJava(JavaDto.of(java))
+                            .setEnd(EndDto.of(end))
                             .setDeprecated(s.getDeprecated())
                             .setCreateTime(s.getCreateTime())
                             .setModifyTime(s.getModifyTime());

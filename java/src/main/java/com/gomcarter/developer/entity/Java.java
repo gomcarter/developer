@@ -24,6 +24,10 @@ public class Java {
      */
     private String name;
     /**
+     * 应用别名
+     */
+    private String alias;
+    /**
      * 开发环境域名
      */
     private String devDomain;

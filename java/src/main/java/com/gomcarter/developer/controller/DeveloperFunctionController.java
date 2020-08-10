@@ -1,15 +1,14 @@
 package com.gomcarter.developer.controller;
 
-import com.gomcarter.developer.dto.CustomFunctionDto;
 import com.gomcarter.developer.dto.FunctionDto;
 import com.gomcarter.developer.entity.Function;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.FunctionParam;
 import com.gomcarter.developer.service.FunctionService;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,10 +28,6 @@ public class DeveloperFunctionController {
 
     @GetMapping(value = "list", name = "获取脚本列表")
     List<FunctionDto> list(FunctionParam params, DefaultPager pager) {
-
-        params.setCustomFunctionDto(new CustomFunctionDto().setUserName(UserHolder.name())
-                .setIsPublic(true));
-
         return this.functionService.query(params, pager)
                 .stream()
                 .map(s -> new FunctionDto()

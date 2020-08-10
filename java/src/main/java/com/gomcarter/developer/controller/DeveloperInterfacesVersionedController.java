@@ -46,27 +46,18 @@ public class DeveloperInterfacesVersionedController {
         Map<Long, Java> javaMap = javaService.getMapByIdList(versionedList.stream().map(InterfacesVersioned::getFkJavaId).collect(Collectors.toSet()));
 
         return versionedList.stream()
-                .map(s -> {
-                    Java java = javaMap.get(s.getFkJavaId());
-                    return new InterfacesDetailDto()
-                            .setId(s.getId())
-                            .setInterfacesId(s.getFkInterfacesId())
-                            .setName(CustomDateUtils.toString(s.getCreateTime()) + " - " + s.getName())
-                            .setHash(s.getHash())
-                            .setUrl(s.getUrl())
-                            .setMethod(s.getMethod())
-                            .setDeprecated(s.getDeprecated())
-                            .setParameters(s.getParameters())
-                            .setReturns(s.getReturns())
-                            .setJava(new JavaDto()
-                                    .setId(java.getId())
-                                    .setName(java.getName())
-                                    .setDevDomain(java.getDevDomain())
-                                    .setTestDomain(java.getTestDomain())
-                                    .setPrevDomain(java.getPrevDomain())
-                                    .setOnlineDomain(java.getOnlineDomain())
-                            );
-                })
+                .map(s -> new InterfacesDetailDto()
+                        .setId(s.getId())
+                        .setInterfacesId(s.getFkInterfacesId())
+                        .setName(CustomDateUtils.toString(s.getCreateTime()) + " - " + s.getName())
+                        .setHash(s.getHash())
+                        .setUrl(s.getUrl())
+                        .setMethod(s.getMethod())
+                        .setDeprecated(s.getDeprecated())
+                        .setParameters(s.getParameters())
+                        .setReturns(s.getReturns())
+                        .setJava(JavaDto.of(javaMap.get(s.getFkJavaId())))
+                )
                 .collect(Collectors.toList());
     }
 }

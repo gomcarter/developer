@@ -2,13 +2,13 @@ package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.TestCaseDto;
 import com.gomcarter.developer.entity.TestCase;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.TestCaseParam;
 import com.gomcarter.developer.params.TestCaseQueryParam;
 import com.gomcarter.developer.service.TestCaseService;
 import com.gomcarter.frameworks.base.common.CustomDateUtils;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -47,8 +47,8 @@ public class DeveloperTestCaseController {
     }
 
     @PostMapping(value = "", name = "新增测试用例")
-    void insert(@RequestBody TestCaseParam testItem) {
-        testCaseService.create(UserHolder.name(), testItem);
+    Long insert(@RequestBody TestCaseParam testItem) {
+        return testCaseService.create(UserHolder.name(), testItem);
     }
 
     @PostMapping(value = "{id}", name = "修改测试用例")

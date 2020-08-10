@@ -8,13 +8,14 @@ import com.gomcarter.developer.entity.CustomInterfaces;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.CustomInterfacesQueryParam;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
+import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
-import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -59,57 +60,32 @@ public class CustomInterfacesService {
 
     public List<CustomInterfacesDetailDto> list(CustomInterfacesQueryParam param, Pageable pager) {
         param.setUsername(UserHolder.username());
-        List<CustomInterfaces> customInterfacesList = customInterfacesMapper.getList(param, pager);
+        List<CustomInterfacesDetailDto> customInterfacesList = customInterfacesMapper.getList(param, pager);
         if (CollectionUtils.isEmpty(customInterfacesList)) {
             return new ArrayList<>();
         }
 
-        Map<Long, Java> javaMap = this.javaService.getMapByIdList(customInterfacesList.stream().map(CustomInterfaces::getFkJavaId).collect(Collectors.toSet()));
-        Map<Long, End> endMap = endService.getMapByIdList(customInterfacesList.stream().map(CustomInterfaces::getFkEndId).collect(Collectors.toSet()));
+        Map<Long, Java> javaMap = this.javaService.getMapByIdList(
+                customInterfacesList.stream().map(CustomInterfacesDetailDto::getJavaId).collect(Collectors.toSet())
+        );
+        Map<Long, End> endMap = endService.getMapByIdList(
+                customInterfacesList.stream().map(CustomInterfacesDetailDto::getEndId).collect(Collectors.toSet())
+        );
 
         return customInterfacesList.stream()
                 .map(s -> {
-                    Java java = javaMap.get(s.getFkJavaId());
-                    End end = endMap.get(s.getFkEndId());
+                    Java java = javaMap.get(s.getJavaId());
+                    End end = endMap.get(s.getEndId());
 
-                    return new CustomInterfacesDetailDto()
-                            .setId(s.getId())
-                            .setInterfacesId(s.getInterfacesId())
-                            .setController(s.getController())
-                            .setHash(s.getHash())
-                            .setName(s.getName())
-                            .setUsername(s.getUsername())
-                            .setUrl(s.getUrl())
-                            .setParameters(s.getParameters())
-                            .setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName())
-                            .setReturns(s.getReturns())
-                            .setMethod(s.getMethod())
-                            .setMark(s.getMark())
-                            .setJava(new JavaDto()
-                                    .setId(java.getId())
-                                    .setName(java.getName())
-                                    .setDevDomain(java.getDevDomain())
-                                    .setTestDomain(java.getTestDomain())
-                                    .setPrevDomain(java.getPrevDomain())
-                                    .setOnlineDomain(java.getOnlineDomain())
-                            )
-                            .setEnd(new EndDto()
-                                    .setId(end.getId())
-                                    .setName(end.getName())
-                                    .setPrefix(end.getPrefix())
-                                    .setHeader(end.getHeader())
-                                    .setMark(end.getMark())
-                            )
-                            .setDeprecated(s.getDeprecated())
-                            .setCreateTime(s.getCreateTime())
-                            .setModifyTime(s.getModifyTime())
-                            .setCusParameters(s.getCusParameters());
+                    return s.setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName())
+                            .setJava(JavaDto.of(java))
+                            .setEnd(EndDto.of(end));
                 })
                 .collect(Collectors.toList());
     }
 
 
-    public void add(Interfaces interfaces, String parameters, String javascript,String preParams) {
+    public void add(Interfaces interfaces, String parameters, String javascript, String preParams) {
         Long interfacesId = interfaces.getId();
         CustomInterfaces c = customInterfacesMapper.getByInterfacesId(interfacesId, UserHolder.username());
         if (c != null && parameters != null) {
@@ -133,5 +109,18 @@ public class CustomInterfacesService {
     public CustomInterfacesDetailDto detail(Long id) {
         List<CustomInterfacesDetailDto> list = this.list(new CustomInterfacesQueryParam().setInterfacesId(id).setUsername(UserHolder.username()), new DefaultPager(1, 1));
         return CollectionUtils.isEmpty(list) ? null : list.get(0);
+    }
+
+    public List<Long> getFavoritesIdList(List<Long> interfacesIdList) {
+        return this.customInterfacesMapper.getFavoritesIdList(interfacesIdList, UserHolder.username());
+    }
+
+    public void updateFavoriteCode(Long id, String favoriteCode, String username) {
+        CustomInterfaces ci = this.customInterfacesMapper.getById(id);
+        AssertUtils.isTrue(username.equals(ci.getUsername()), new NoPermissionException());
+
+        ci.setFavoriteCode(favoriteCode);
+
+        this.customInterfacesMapper.update(ci);
     }
 }

@@ -1,20 +1,19 @@
 package com.gomcarter.developer.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
 
 /**
- * @author gomcarter on 2020-03-02 10:16:26
+ * @author 李银 on 2020-07-30 11:37:37
  */
 @Data
 @Accessors(chain = true)
-public class User {
+public class Favorite {
 
     /**
      * 主键
@@ -23,32 +22,35 @@ public class User {
     private Long id;
 
     /**
-     * 登录账户名
+     * 对象版本，乐观锁需要可使用
      */
-    private String username;
+    @JsonIgnore
+    private Integer version;
+
     /**
-     * 姓名
+     * 名称
      */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String name;
     /**
-     * 邮箱
+     * 所属者
      */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String mail;
+    private String owner;
     /**
-     * 联系电话
+     * 排序，大的排前面
      */
-    @TableField(updateStrategy = FieldStrategy.IGNORED)
-    private String cellphone;
+    private Integer sort;
     /**
-     * 密码
+     * 编码：0101；01
      */
-    private String password;
+    private String code;
     /**
-     * 随机数
+     * 是否叶子节点
      */
-    private String random;
+    private Boolean isLeaf;
+    /**
+     * 父分类ID
+     */
+    private Long fkFavoriteId;
     /**
      *
      */

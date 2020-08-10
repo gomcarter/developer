@@ -11,7 +11,9 @@
         <result column="deprecated" property="deprecated"/>
         <result column="mark" property="mark"/>
         <result column="returns" property="returns"/>
+        <result column="returns_class_name" property="returnsClassName"/>
         <result column="parameters" property="parameters"/>
+        <result column="parameters_class_name" property="parametersClassName"/>
         <result column="fk_java_id" property="fkJavaId"/>
         <result column="fk_end_id" property="fkEndId"/>
         <result column="create_time" property="createTime"/>

@@ -2,6 +2,8 @@ package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Ignore;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.annotation.Condition;
+import com.gomcarter.frameworks.mybatis.annotation.MatchType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -19,6 +21,7 @@ public class TestCaseHistoryQueryParam {
     private String env;
 
     @Notes("用例名称")
+    @Condition(type = MatchType.LIKE)
     private String name;
 
     @Notes("用户名称（谁执行的）")

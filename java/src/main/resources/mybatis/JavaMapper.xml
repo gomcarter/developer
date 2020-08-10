@@ -5,6 +5,7 @@
     <resultMap type="com.gomcarter.developer.entity.Java" id="javaMap">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
+        <result column="alias" property="alias"/>
         <result column="dev_domain" property="devDomain"/>
         <result column="test_domain" property="testDomain"/>
         <result column="prev_domain" property="prevDomain"/>

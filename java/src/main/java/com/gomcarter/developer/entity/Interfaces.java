@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
- *  Interfaces
+ * Interfaces
  *
  * @author gomcarter
  * @date 2019-06-17 16:41:01
@@ -55,9 +55,17 @@ public class Interfaces {
      */
     private String returns;
     /**
+     * 返回值的参数类型
+     */
+    private String returnsClassName;
+    /**
      * 参数数据结构
      */
     private String parameters;
+    /**
+     * 参数的参数类型
+     */
+    private String parametersClassName;
     /**
      * 数据那个java项目
      */

@@ -1,5 +1,6 @@
 package com.gomcarter.developer.dto;
 
+import com.gomcarter.developer.entity.End;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -34,4 +35,13 @@ public class EndDto {
 
     @Notes("创建时间")
     private Date createTime;
+
+    public static EndDto of(End end) {
+        return new EndDto()
+                .setId(end.getId())
+                .setName(end.getName())
+                .setPrefix(end.getPrefix())
+                .setHeader(end.getHeader())
+                .setMark(end.getMark());
+    }
 }

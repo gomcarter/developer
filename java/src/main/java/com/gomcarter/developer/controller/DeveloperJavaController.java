@@ -24,12 +24,14 @@ public class DeveloperJavaController {
 
     @PostMapping(value = "", name = "新增java项目")
     void list(@Notes("java项目名称") @RequestParam String name,
+              @Notes("alias") @RequestParam String alias,
               @Notes("开发环境域名") @RequestParam String devDomain,
               @Notes("测试环境域名") @RequestParam String testDomain,
               @Notes("预发环境域名") @RequestParam String prevDomain,
               @Notes("线上环境域名") @RequestParam String onlineDomain) {
         javaService.insert(new Java()
                 .setName(name)
+                .setAlias(alias)
                 .setDevDomain(devDomain)
                 .setTestDomain(testDomain)
                 .setPrevDomain(prevDomain)
@@ -39,14 +41,16 @@ public class DeveloperJavaController {
 
     @PutMapping(value = "{id}", name = "修改前端项目")
     void list(@Notes("主键") @PathVariable("id") Long id,
-                     @Notes("项目名称") @RequestParam String name,
-                     @Notes("开发环境域名") @RequestParam String devDomain,
-                     @Notes("测试环境域名") @RequestParam String testDomain,
-                     @Notes("预发环境域名") @RequestParam String prevDomain,
-                     @Notes("线上环境域名") @RequestParam String onlineDomain) {
+              @Notes("项目名称") @RequestParam String name,
+              @Notes("alias") @RequestParam String alias,
+              @Notes("开发环境域名") @RequestParam String devDomain,
+              @Notes("测试环境域名") @RequestParam String testDomain,
+              @Notes("预发环境域名") @RequestParam String prevDomain,
+              @Notes("线上环境域名") @RequestParam String onlineDomain) {
         javaService.update(new Java()
                 .setId(id)
                 .setName(name)
+                .setAlias(alias)
                 .setDevDomain(devDomain)
                 .setTestDomain(testDomain)
                 .setPrevDomain(prevDomain)
@@ -59,23 +63,15 @@ public class DeveloperJavaController {
         return this.list(new JavaQueryParam().setId(id), new DefaultPager()).get(0);
     }
 
-    @GetMapping(value = "list", name = "获取接口地址列表")
+    @GetMapping(value = "list", name = "获取java项目列表")
     List<JavaDto> list(@Notes("查询参数") JavaQueryParam params, @Notes("分页器") DefaultPager pager) {
         return javaService.query(params, pager)
                 .stream()
-                .map(s -> new JavaDto()
-                        .setId(s.getId())
-                        .setName(s.getName())
-                        .setDevDomain(s.getDevDomain())
-                        .setTestDomain(s.getTestDomain())
-                        .setPrevDomain(s.getPrevDomain())
-                        .setOnlineDomain(s.getOnlineDomain())
-                        .setCreateTime(s.getCreateTime())
-                )
+                .map(JavaDto::of)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "count", name = "获取接口地址列表总数")
+    @GetMapping(value = "count", name = "获取java项目列表总数")
     Integer count(@Notes("查询参数") JavaQueryParam params) {
         return javaService.count(params);
     }

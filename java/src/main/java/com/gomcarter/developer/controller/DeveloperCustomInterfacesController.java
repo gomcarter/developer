@@ -2,6 +2,7 @@ package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.CustomInterfacesDetailDto;
 import com.gomcarter.developer.entity.CustomInterfaces;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.CustomInterfacesQueryParam;
 import com.gomcarter.developer.service.CustomInterfacesService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
@@ -39,6 +40,16 @@ public class DeveloperCustomInterfacesController {
     @GetMapping(value = "{id}", name = "获取接口详情")
     CustomInterfaces detail(@Notes("查询参数") @PathVariable Long id) {
         return this.customInterfacesService.getByInterfacesId(id);
+    }
+
+    @GetMapping(value = "favorites", name = "获取收藏ID列表")
+    List<Long> getFavoritesIdList(@Notes("查询参数") @RequestParam("interfacesIdList") List<Long> interfacesIdList) {
+        return this.customInterfacesService.getFavoritesIdList(interfacesIdList);
+    }
+
+    @PutMapping(value = "bind/{id}", name = "接口绑定到收藏夹")
+    void bindFavorite(@PathVariable("id") Long id, String favoriteCode) {
+        this.customInterfacesService.updateFavoriteCode(id, favoriteCode, UserHolder.username());
     }
 
 }

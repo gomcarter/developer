@@ -33,6 +33,9 @@ public class CustomInterfacesQueryParam {
     @Condition(type = MatchType.LIKE)
     private String name;
 
+    @Notes("收藏夹code")
+    private String favoriteCode;
+
     @Notes("控制器")
     @Condition(type = MatchType.LIKE)
     private String controller;

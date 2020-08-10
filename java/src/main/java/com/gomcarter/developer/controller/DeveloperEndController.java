@@ -3,12 +3,12 @@ package com.gomcarter.developer.controller;
 import com.gomcarter.developer.dto.EndAuthDto;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.entity.End;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.EndParam;
 import com.gomcarter.developer.service.EndAuthService;
 import com.gomcarter.developer.service.EndService;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
-import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,11 +31,11 @@ public class DeveloperEndController {
     EndAuthService endAuthService;
 
     @PostMapping(value = "", name = "新增前端项目")
-    void list(@Notes("项目名称") @RequestParam String name,
-              @Notes("对应前缀") @RequestParam String prefix,
-              @Notes("header") @RequestParam String header,
-              @Notes("配置") @RequestParam String config,
-              @Notes("备注") String mark) throws Exception {
+    void create(@Notes("项目名称") @RequestParam String name,
+                @Notes("对应前缀") @RequestParam String prefix,
+                @Notes("header") @RequestParam String header,
+                @Notes("配置") @RequestParam String config,
+                @Notes("备注") String mark) throws Exception {
 
         End end = new End().setName(name)
                 .setPrefix(prefix)
@@ -90,23 +90,15 @@ public class DeveloperEndController {
                 );
     }
 
-    @GetMapping(value = "list", name = "获取接口地址列表")
+    @GetMapping(value = "list", name = "获取前台项目列表")
     List<EndDto> list(@Notes("查询参数") EndParam params, @Notes("分页器") DefaultPager pager) {
         return endService.query(params, pager)
                 .stream()
-                .map(s -> new EndDto()
-                        .setId(s.getId())
-                        .setName(s.getName())
-                        .setPrefix(s.getPrefix())
-                        .setHeader(s.getHeader())
-                        .setMark(s.getMark())
-                        .setConfig(s.getConfig())
-                        .setCreateTime(s.getCreateTime())
-                )
+                .map(EndDto::of)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "count", name = "获取接口地址列表总数")
+    @GetMapping(value = "count", name = "获取前台项目列表总数")
     Integer count(@Notes("查询参数") EndParam params) {
         return endService.count(params);
     }

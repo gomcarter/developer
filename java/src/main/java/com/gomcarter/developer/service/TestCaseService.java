@@ -4,6 +4,8 @@ import com.gomcarter.developer.dao.TestCaseMapper;
 import com.gomcarter.developer.dto.TestCaseDto;
 import com.gomcarter.developer.entity.TestCase;
 import com.gomcarter.developer.params.TestCaseParam;
+import com.gomcarter.frameworks.base.common.AssertUtils;
+import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +70,7 @@ public class TestCaseService {
                 .orElse(null);
     }
 
-    public void create(String userName, TestCaseParam testCaseParam) {
+    public Long create(String userName, TestCaseParam testCaseParam) {
         TestCase testCase = new TestCase()
                 .setName(testCaseParam.getName())
                 .setPresetParams(testCaseParam.getPresetParams())
@@ -81,9 +83,15 @@ public class TestCaseService {
         if (testCaseParam.getPackageId() != null) {
             interfacesPackageService.updateTestCaseId(testCaseParam.getPackageId(), testCase.getId());
         }
+
+        return testCase.getId();
     }
 
     public void update(Long id, String userName, TestCaseParam testCaseParam) {
+        TestCase testCase = this.testCaseMapper.getById(id);
+        // 只能修改自己的
+        AssertUtils.isTrue(userName.equals(testCase.getUserName()), new NoPermissionException());
+
         int affectRows = this.testCaseMapper.update(new TestCase()
                 .setId(id)
                 .setName(testCaseParam.getName())

@@ -1,5 +1,6 @@
 package com.gomcarter.developer.dto;
 
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
 import com.gomcarter.frameworks.mybatis.annotation.Condition;
 import com.gomcarter.frameworks.mybatis.annotation.MatchType;
@@ -21,4 +22,11 @@ public class CustomFunctionDto {
     @Condition(field ="is_public" , type = MatchType.OR)
     private Boolean isPublic;
 
+    public CustomFunctionDto setIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+        if (isPublic) {
+            this.setUserName(UserHolder.name());
+        }
+        return this;
+    }
 }

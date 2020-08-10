@@ -23,7 +23,6 @@ public class CustomInterfacesDetailDto {
     @Notes(value = "用户名", notNull = true)
     private String username;
 
-
     @Notes(value = "接口唯一标识符", notNull = true)
     private String hash;
 
@@ -69,6 +68,15 @@ public class CustomInterfacesDetailDto {
     @Notes(value = "参数", notNull = true)
     private String cusParameters;
 
+    @Notes("数据那个java项目")
+    private Long javaId;
 
+    @Notes("属于哪个前端项目")
+    private Long endId;
 
+    @Notes("检查点")
+    private String javascript;
+
+    @Notes("预置参数")
+    private String preParams;
 }

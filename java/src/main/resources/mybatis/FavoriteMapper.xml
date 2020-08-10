@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- @author 李银 on 2020-07-30 11:37:37 -->
+<mapper namespace="com.gomcarter.developer.dao.FavoriteMapper">
+    <resultMap type="com.gomcarter.developer.entity.Favorite" id="favoriteMap">
+        <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="owner" property="owner"/>
+            <result column="sort" property="sort"/>
+            <result column="code" property="code"/>
+            <result column="is_leaf" property="isLeaf"/>
+            <result column="fk_favorite_id" property="fkFavoriteId"/>
+            <result column="create_time" property="createTime"/>
+            <result column="modify_time" property="modifyTime"/>
+            <result column="version" property="version"/>
+    </resultMap>
+    <!-- //@NotReplaceableStart -->
+    <!-- 重新生成代码时，NotReplaceableStart -> NotReplaceableEnd 中间的内容不会被覆盖 -->
+    <select id="queryByParentIdAndName" resultMap="favoriteMap">
+        SELECT *
+        FROM favorite
+        WHERE `name` = #{name}
+        <if test="parentId != null">
+            AND
+            fk_favorite_id = #{parentId}
+        </if>
+        <if test="parentId == null">
+            AND
+            fk_favorite_id IS NULL
+        </if>
+        <if test="favoriteId != null">
+            AND
+            id != #{favoriteId}
+        </if>
+        ORDER BY id DESC
+    </select>
+
+    <update id="updateSort">
+        UPDATE
+        favorite
+        SET `sort` = `sort` + #{index}
+        WHERE
+         `owner` = #{owner}
+         and `sort` &lt;= #{max}
+         and `sort` &gt;= #{min}
+        <if test="parentId != null">
+            AND fk_favorite_id = #{parentId}
+        </if>
+        <if test="parentId == null">
+            AND fk_favorite_id IS NULL
+        </if>
+    </update>
+
+    <select id="getMaxCode" resultType="java.lang.String">
+        SELECT
+        max(code)
+        FROM favorite
+        <where>
+            `owner` = #{owner}
+            <if test="parentId != null">
+                AND fk_favorite_id = #{parentId}
+            </if>
+            <if test="parentId == null">
+                AND fk_favorite_id IS NULL
+            </if>
+        </where>
+    </select>
+
+    <!-- //@NotReplaceableEnd  -->
+</mapper>
