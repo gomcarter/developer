@@ -32,9 +32,6 @@ public class CustomInterfacesDetailDto {
     @Notes(value = "接口名称", notNull = true)
     private String name;
 
-    @Notes(value = "拼接了端、服务的接口名称", notNull = true)
-    private String complexName;
-
     @Notes(value = "接口地址，域名后面的一截如：http://g.yiayo.com/platform/category中的platform/category", notNull = true)
     private String url;
 
@@ -65,9 +62,6 @@ public class CustomInterfacesDetailDto {
     @Notes(value = "更新时间", notNull = true)
     private Date modifyTime;
 
-    @Notes(value = "参数", notNull = true)
-    private String cusParameters;
-
     @Notes("数据那个java项目")
     private Long javaId;
 
@@ -76,7 +70,4 @@ public class CustomInterfacesDetailDto {
 
     @Notes("检查点")
     private String javascript;
-
-    @Notes("预置参数")
-    private String preParams;
 }

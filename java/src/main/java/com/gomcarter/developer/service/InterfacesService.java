@@ -181,7 +181,11 @@ public class InterfacesService {
     }
 
     public void delete(Long id) {
-        this.interfacesMapper.deleteById(id);
+        this.interfacesMapper.update(this.getById(id).setDeprecated(true));
+    }
+
+    public void delete(List<Long> idList) {
+        idList.forEach(this::delete);
     }
 
     public List<InterfacesDetailDto> list(InterfacesQueryParam param, Pageable pager) {
@@ -199,20 +203,15 @@ public class InterfacesService {
                     Java java = javaMap.get(s.getFkJavaId());
                     End end = endMap.get(s.getFkEndId());
 
-                    String publicId = null;
-                    try {
-                        publicId = BlowfishUtils.encrypt(String.valueOf(s.getId()), s.getHash()) + "|" + s.getHash();
-                    } catch (Exception ignore) {
-                    }
+                    String d = s.getDeprecated() ? "【已废弃】" : "";
 
                     return new InterfacesDetailDto()
                             .setId(s.getId())
-                            .setPublicId(publicId)
                             .setInterfacesId(s.getId())
                             .setController(s.getController())
                             .setHash(s.getHash())
                             .setName(s.getName())
-                            .setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName() + "-【" + s.getUrl() + "】")
+                            .setComplexName(d + "【" + end.getName() + "】【" + java.getName() + "】- " + s.getName() + "-【" + s.getUrl() + "】")
                             .setUrl(s.getUrl())
                             .setMethod(s.getMethod())
                             .setReturns(s.getReturns())
@@ -229,7 +228,14 @@ public class InterfacesService {
 
     public InterfacesDetailDto detail(Long id) {
         List<InterfacesDetailDto> list = this.list(new InterfacesQueryParam().setId(id), new DefaultPager(1, 1));
-        return CollectionUtils.isEmpty(list) ? null : list.get(0);
+        InterfacesDetailDto detail = CollectionUtils.isEmpty(list) ? null : list.get(0);
+
+        try {
+            detail.setPublicId(BlowfishUtils.encrypt(String.valueOf(detail.getId()), detail.getHash()) + "|" + detail.getHash());
+        } catch (Exception ignore) {
+        }
+
+        return detail;
     }
 
     public Map<Long, Interfaces> getMapByIdList(Collection<Long> idList) {

@@ -6,19 +6,18 @@ import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.CustomInterfaces;
 import com.gomcarter.developer.entity.End;
-import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.entity.Java;
 import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.params.CustomInterfacesQueryParam;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
-import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import com.gomcarter.frameworks.base.pager.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +31,10 @@ public class CustomInterfacesService {
     private CustomInterfacesMapper customInterfacesMapper;
 
     @Resource
-    private InterfacesService interfacesService;
-
-    @Resource
     private JavaService javaService;
 
     @Resource
     private EndService endService;
-
-    @Resource
-    private InterfacesVersionedService interfacesVersionedService;
-
 
     public <R> List<CustomInterfaces> query(R params, Pageable pager) {
         return customInterfacesMapper.query(params, pager);
@@ -57,6 +49,9 @@ public class CustomInterfacesService {
         this.customInterfacesMapper.deleteById(id);
     }
 
+    public CustomInterfaces getById(Serializable id) {
+        return this.customInterfacesMapper.getById(id);
+    }
 
     public List<CustomInterfacesDetailDto> list(CustomInterfacesQueryParam param, Pageable pager) {
         param.setUsername(UserHolder.username());
@@ -77,29 +72,24 @@ public class CustomInterfacesService {
                     Java java = javaMap.get(s.getJavaId());
                     End end = endMap.get(s.getEndId());
 
-                    return s.setComplexName("【" + end.getName() + "】【" + java.getName() + "】- " + s.getName())
-                            .setJava(JavaDto.of(java))
+                    return s.setJava(JavaDto.of(java))
                             .setEnd(EndDto.of(end));
                 })
                 .collect(Collectors.toList());
     }
 
-
-    public void add(Interfaces interfaces, String parameters, String javascript, String preParams) {
-        Long interfacesId = interfaces.getId();
+    public CustomInterfaces create(Long interfacesId) {
         CustomInterfaces c = customInterfacesMapper.getByInterfacesId(interfacesId, UserHolder.username());
-        if (c != null && parameters != null) {
-            this.customInterfacesMapper.update(c.setCusParameters(parameters).setJavascript(javascript).setPreParams(preParams));
-        } else {
-            AssertUtils.isNull(c, new CustomException("你已经收藏过了"));
-            CustomInterfaces customInterfaces = new CustomInterfaces()
-                    .setInterfacesId(interfacesId)
-                    .setUsername(UserHolder.username())
-                    .setCusParameters(parameters)
-                    .setJavascript(javascript)
-                    .setPreParams(preParams);
-            this.customInterfacesMapper.insert(customInterfaces);
+        if (c != null) {
+            return c;
         }
+
+        CustomInterfaces customInterfaces = new CustomInterfaces()
+                .setInterfacesId(interfacesId)
+                .setUsername(UserHolder.username());
+
+        this.customInterfacesMapper.insert(customInterfaces);
+        return customInterfaces;
     }
 
     public CustomInterfaces getByInterfacesId(Long interfacesId) {
@@ -115,12 +105,14 @@ public class CustomInterfacesService {
         return this.customInterfacesMapper.getFavoritesIdList(interfacesIdList, UserHolder.username());
     }
 
-    public void updateFavoriteCode(Long id, String favoriteCode, String username) {
-        CustomInterfaces ci = this.customInterfacesMapper.getById(id);
-        AssertUtils.isTrue(username.equals(ci.getUsername()), new NoPermissionException());
+    public void updateFavoriteCode(List<Long> editingIdList, String favoriteCode, String username) {
+        for (Long id : editingIdList) {
+            CustomInterfaces ci = this.customInterfacesMapper.getById(id);
+            AssertUtils.isTrue(username.equals(ci.getUsername()), new NoPermissionException());
 
-        ci.setFavoriteCode(favoriteCode);
+            ci.setFavoriteCode(favoriteCode);
 
-        this.customInterfacesMapper.update(ci);
+            this.customInterfacesMapper.update(ci);
+        }
     }
 }

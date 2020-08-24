@@ -1,9 +1,7 @@
 package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.InterfacesDetailDto;
-import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.developer.params.InterfacesQueryParam;
-import com.gomcarter.developer.service.CustomInterfacesService;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.frameworks.base.common.CustomStringUtils;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
@@ -23,12 +21,14 @@ public class DeveloperInterfacesController {
     @Resource
     InterfacesService interfacesService;
 
-    @Resource
-    CustomInterfacesService customInterfacesService;
-
-    @DeleteMapping(value = "{id}", name = "删除接口")
+    @DeleteMapping(value = "{id}", name = "作废接口")
     void delete(@PathVariable("id") Long id) {
         this.interfacesService.delete(id);
+    }
+
+    @DeleteMapping(value = "batch", name = "批量作废接口")
+    void batchDelete(@RequestParam("idList") List<Long> idList) {
+        this.interfacesService.delete(idList);
     }
 
     @GetMapping(value = "simple/list", name = "获取接口地址列表")
@@ -55,11 +55,4 @@ public class DeveloperInterfacesController {
     Integer count(@Notes("查询参数") InterfacesQueryParam params) {
         return interfacesService.count(params);
     }
-
-    @PostMapping(value ="{id}",name="增加接口地址到自动化接口列表")
-    void transfer(@Notes("查询参数") @RequestParam(name = "id") Long id, String parameters, String javascript, String preParams){
-        Interfaces interfaces = this.interfacesService.getById(id);
-        this.customInterfacesService.add(interfaces,parameters,javascript,preParams);
-    }
-
 }

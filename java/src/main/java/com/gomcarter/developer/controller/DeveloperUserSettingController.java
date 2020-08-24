@@ -1,10 +1,10 @@
 package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.SettingOfUserDto;
+import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.service.SettingOfUserService;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
-import com.gomcarter.developer.holder.UserHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

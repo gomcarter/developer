@@ -6,7 +6,6 @@ import com.gomcarter.developer.params.UserParam;
 import com.gomcarter.developer.service.UserService;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.CollectionUtils;
-import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.exception.NoPermissionException;
 import com.gomcarter.frameworks.base.pager.DefaultPager;
 import org.springframework.web.bind.annotation.*;

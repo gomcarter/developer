@@ -25,6 +25,7 @@ CREATE TABLE `custom_interfaces`
     `cus_parameters` text COMMENT '参数数据结构',
     `javascript`     text,
     `pre_params`     text,
+    `cus_headers`    text,
     `favorite_code`  varchar(20)         DEFAULT NULL COMMENT '收藏夹code',
     `create_time`    timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modify_time`    timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -32,6 +33,22 @@ CREATE TABLE `custom_interfaces`
     UNIQUE KEY `idx_interfaces_id_username` (`interfaces_id`, `username`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='我的接口列表';
+
+CREATE TABLE `custom_interfaces_item`
+(
+    `id`                   bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `name`                 varchar(100)        DEFAULT NULL COMMENT '用例名称',
+    `custom_interfaces_id` bigint(20) NOT NULL COMMENT '收藏接口 id',
+    `cus_parameters`       text COMMENT '参数数据结构',
+    `javascript`           text COMMENT '检查点脚本',
+    `pre_params`           text COMMENT '预置参数',
+    `cus_headers`          text COMMENT '自定义header',
+    `create_time`          timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modify_time`          timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `custom_interfaces_id` (`custom_interfaces_id`)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8 COMMENT ='我的接口列表用例子项';
 
 CREATE TABLE `end`
 (
@@ -83,7 +100,7 @@ CREATE TABLE `interfaces`
 (
     `id`                    bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '主键',
     `hash`                  varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
-    `name`                  varchar(50)           DEFAULT NULL COMMENT '接口名称',
+    `name`                  varchar(255)          DEFAULT NULL COMMENT '接口名称',
     `controller`            varchar(100)          DEFAULT NULL COMMENT '控制器',
     `url`                   varchar(100)          DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.domain.com/end/category中的end/category',
     `method`                varchar(10)           DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
@@ -135,7 +152,7 @@ CREATE TABLE `interfaces_versioned`
     `id`               bigint(20)   NOT NULL AUTO_INCREMENT COMMENT '主键',
     `hash`             varchar(100) NOT NULL COMMENT '认定唯一接口标识符',
     `fk_interfaces_id` bigint(20)   NOT NULL COMMENT '接口 id',
-    `name`             varchar(50)           DEFAULT NULL COMMENT '接口名称',
+    `name`             varchar(255)          DEFAULT NULL COMMENT '接口名称',
     `controller`       varchar(100)          DEFAULT NULL COMMENT '控制器',
     `url`              varchar(100)          DEFAULT NULL COMMENT '接口地址，域名后面的一截如：http://g.domain.com/end/category中的end/category',
     `method`           varchar(10)           DEFAULT NULL COMMENT 'GET, POST, PUT, PATCH, DELETE',
@@ -208,7 +225,6 @@ CREATE TABLE `test_case`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='接口用例测试';
-
 
 CREATE TABLE `test_case_history`
 (

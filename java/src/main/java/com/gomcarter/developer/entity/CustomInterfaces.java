@@ -28,21 +28,6 @@ public class CustomInterfaces {
     private String username;
 
     /**
-     * 参数
-     */
-    private String cusParameters;
-
-    /**
-     * 检查点
-     */
-    private String javascript;
-
-    /**
-     * 预置参数
-     */
-    private String preParams;
-
-    /**
      * 收藏夹code
      */
     @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
