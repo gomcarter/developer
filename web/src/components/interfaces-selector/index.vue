@@ -45,7 +45,7 @@
             <el-form-item v-for="(h, index) of node.headers" v-bind:key="index">
               <el-input placeholder="请输入header名" class="param-key" v-model="h.key"></el-input>
               <span>=</span>
-              <el-input placeholder="$data为返回值，如：$data.token将结果设置到header中" class="param-value" v-model="h.value"></el-input>
+              <el-input placeholder="this为返回值，如：this.data.token将结果设置到header中" class="param-value" v-model="h.value"></el-input>
               <el-button type="danger" icon="el-icon-delete" @click="delHeader(index)" circle size="small"></el-button>
             </el-form-item>
           </el-form>

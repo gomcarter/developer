@@ -70,11 +70,17 @@
 </template>
 
 <script>
-import { interfacesCountApi, transferTocustomerApi, cusInterfacesFavorites, interfacesListApi, endListApi, javaListApi, deleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
+import { interfacesCountApi, addInterfaceToFavoritesApi, queryFavoritesApi, interfacesListApi, endListApi, javaListApi, batchDeleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
   name: 'interfaces',
+  props: {
+    noToolbar: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       form: {
@@ -96,7 +102,7 @@ export default {
       countUrl: interfacesCountApi,
       params: {},
       selected: [],
-      toolbar: [{
+      toolbar: (() => this.noToolbar ? null : [{
         title: '手动录入接口',
         icon: 'el-icon-plus',
         handler: () => this.$router.push('/interfaces/edit')
@@ -105,13 +111,17 @@ export default {
         icon: 'el-icon-box',
         disabled: () => this.selected.length === 0,
         handler: () => this.$refs.packageDialog.open()
-      }],
+      }, {
+        title: '作废',
+        icon: 'el-icon-delete',
+        disabled: () => this.selected.length === 0,
+        handler: this.delete
+      }])(),
       async onLoadSuccess (data) {
         if (data.length === 0) {
           return
         }
-        const favoritesIdList = await cusInterfacesFavorites(data.map(s => s.id))
-        console.log(favoritesIdList)
+        const favoritesIdList = await queryFavoritesApi(data.map(s => s.id))
         data.forEach(s => {
           s.transfered = favoritesIdList.indexOf(s.id) >= 0
         })
@@ -124,9 +134,6 @@ export default {
           html: true,
           actions: [{
             text: (r) => `<a href="#/test/${r.id}/testDomain" target="_blank">执行</a>`
-          }, {
-            text: '删除',
-            handler: (row) => this.delete(row.id)
           }, {
             text: '复制',
             handler: (row) => this.copy(row)
@@ -163,7 +170,7 @@ export default {
         return
       }
 
-      transferTocustomerApi(row.id).then(() => {
+      addInterfaceToFavoritesApi(row.id).then(() => {
         this.$success('收藏成功，可以在【接口自动化测试】>【我的接口列表】查看！')
         row.transfered = true
         this.$refs.dg.render()
@@ -175,11 +182,11 @@ export default {
       this.$copyText(`,${key[0].toLowerCase() + key.substr(1)}:'${row.url}'`)
         .then((e) => this.$success('复制成功！'), (e) => this.$success('复制失败！'))
     },
-    delete (id) {
-      this.$confirm('删除将无法恢复，确认删除吗？', '提示', {type: 'warning'}).then(() => {
-        deleteInterfaces(id)
+    delete () {
+      this.$confirm('确认作废吗？', '提示', {type: 'warning'}).then(() => {
+        batchDeleteInterfaces(this.selected.map(s => s.id))
           .then(() => {
-            this.$success('删除成功！')
+            this.$success('作废成功！')
             this.search()
           })
       })
@@ -191,7 +198,7 @@ export default {
             .then(res => {
               this.form.name = null
               this.form.mark = null
-              this.$refs.dg.clearSelections()
+              this.clearSelections()
               this.$refs.packageDialog.close()
 
               this.$confirm('打包成功！', '提示', {
@@ -210,6 +217,12 @@ export default {
       (selected || []).forEach(s => {
         this.selected.push(s)
       })
+    },
+    getSelections () {
+      return this.selected.map(s => s)
+    },
+    clearSelections () {
+      this.$refs.dg.clearSelections()
     },
     search () {
       this.params = removeBlank(this.filter)

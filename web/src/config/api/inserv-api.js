@@ -2,6 +2,7 @@ import { xhr } from '@/config/api/http'
 import { INSERV_URL } from '@/config/api/env'
 import { store } from '@/config/cache'
 import { toQueryString } from '@/config/utils'
+import md5 from 'js-md5'
 
 export const loginApi = async (params) => {
   const res = await xhr.post(`${INSERV_URL}publics/user/login`, params)
@@ -10,6 +11,11 @@ export const loginApi = async (params) => {
 
 export const deleteInterfaces = async (id) => {
   const res = await xhr.delete(`${INSERV_URL}developer/interfaces/${id}`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+export const batchDeleteInterfaces = async (idList) => {
+  const res = await xhr.delete(`${INSERV_URL}developer/interfaces/batch`, {params: {idList}})
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
@@ -33,15 +39,15 @@ export const interfacesListApi = async (params) => {
 /**
  * @returns 接口转移
  */
-export const transferTocustomerApi = async (id) => {
-  const res = await xhr.post(`${INSERV_URL}developer/interfaces/transfer`, { id })
+export const addInterfaceToFavoritesApi = async (interfacesId) => {
+  const res = await xhr.post(`${INSERV_URL}developer/cusinterfaces`, { interfacesId })
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
 /**
  * @returns 查询接口id是否已经被收藏
  */
-export const cusInterfacesFavorites = async (interfacesIdList) => {
+export const queryFavoritesApi = async (interfacesIdList) => {
   const params = { interfacesIdList }
   const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/favorites`, { params })
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
@@ -62,6 +68,34 @@ export const interfacesSimpleListApi = async (params) => {
  */
 export const getInterfacesApi = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/interfaces/${id}`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-14
+ * @returns 收藏接口用例列表
+ */
+export const getCusInterfacesItemListApi = async (params) => {
+  const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/item/list`, { params })
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-14
+ * @returns 删除接口用例
+ */
+export const deleteCusInterfacesItemApi = async (id) => {
+  const res = await xhr.delete(`${INSERV_URL}developer/cusinterfaces/item/${id}`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author gomcarter 2019-02-14
+ * @returns 接口管理---详情
+ */
+export const getCusInterfacesByInterfacesIdApi = async (interfacesId) => {
+  const params = {interfacesId}
+  const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/`, {params})
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
@@ -99,35 +133,32 @@ export const interfacesVersionedSimpleListApi = async (params) => {
   const res = await xhr.get(`${INSERV_URL}developer/versioned/simple/list`, { params })
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
-
 /**
  * @author 李银 on 2019-06-22 13:24:19
  * @returns 获取接口的headers
  */
-export const getInterfacesHeadersApi = async (env, endId) => {
+export const getInterfacesHeadersApi = async (env, endId, forceUpdate) => {
   const res = await getPrivatesEndAuthApi(endId)
-  if (res && res.config) {
-    const cacheKey = env + '_' + endId
-    let result = store.get(cacheKey)
-    if (result) {
-      return result
+  let config
+  if (res && res.config && (config = JSON.parse(res.config)) && config.java && config.java.id) {
+    const cacheKey = [env, endId, config.java.id, md5(config.url + '_' + JSON.stringify(config.parameters[env]))].join('_')
+    if (!forceUpdate) {
+      let result = store.get(cacheKey)
+      if (result) {
+        return result
+      }
     }
 
-    const config = JSON.parse(res.config)
-    const c = await sendXhr(generateUrl(config.java, env, config.url, config.parameters[env]),
+    const c = await sendXhr(env, generateUrl(config.java, env, config.url, config.parameters[env]),
       config.method, config.parameters[env], config.requestHeaders)
-    const argName = 'end_' + new Date().getTime()
     const headers = config.headers || []
-    window[argName] = c.data.data
-    if (c.data.data) {
-      const reg = new RegExp('\\$data', 'g')
-
-      result = headers.map(h => {
+    if (c.data) {
+      let result = headers.map(h => {
         let value = h.value
         try {
-          if ((value || '').indexOf('$data') >= 0) {
+          if ((value || '').indexOf('this') >= 0) {
             /* eslint-disable */
-            value = new Function('return ' + value.replace(reg, argName))()
+            value = new Function('return ' + value).call(c.data)
           }
         } catch (e) {
           value = h.value
@@ -564,9 +595,13 @@ export const deletePackageApi = async (id) => {
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
+export const addCusInterfacesItemApi = async (interfacesId, name, parameters, javascript, preParams, headers) => {
+  const res = await xhr.post(`${INSERV_URL}developer/cusinterfaces/item`, {interfacesId, name, parameters, javascript, preParams, headers})
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
 
-export const saveCusTestApi = async (id,parameters,javascript,preParams) => {
-  const res = await xhr.post(`${INSERV_URL}developer/interfaces/transfer`, {id ,parameters,javascript,preParams})
+export const saveCusInterfacesItemApi = async (id, parameters, javascript, preParams, headers) => {
+  const res = await xhr.put(`${INSERV_URL}developer/cusinterfaces/item/${id}`, {parameters, javascript, preParams, headers})
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
@@ -580,8 +615,8 @@ export const cusInterfacesCountApi = async (params) => {
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
-export const bindFavoriteApi = async (id, favoriteCode) => {
-  const res = await xhr.put(`${INSERV_URL}developer/cusinterfaces/bind/${id}`, {favoriteCode})
+export const bindFavoriteApi = async (editingIdList, favoriteCode) => {
+  const res = await xhr.put(`${INSERV_URL}developer/cusinterfaces/bind`, {editingIdList,favoriteCode})
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
@@ -610,7 +645,7 @@ export const sortFavoriteApi = async (id, sort) => {
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
-const prepare = async(url, method, parameters, inputHeaders, preParams) => {
+const prepare = async(url, method, parameters, inputHeaders, preParams, env) => {
   parameters = parameters || []
   preParams = preParams || []
   const result = {
@@ -630,7 +665,7 @@ const prepare = async(url, method, parameters, inputHeaders, preParams) => {
       if (!key) {
         continue
       }
-      window['$' + key] = await processParams(p)
+      window['$' + key] = await processParams(p, env)
       console.log(`初始化预置参数：$${key}=${window['$' + key]}`)
     }
   }
@@ -644,7 +679,7 @@ const prepare = async(url, method, parameters, inputHeaders, preParams) => {
       if (!key) {
         continue
       }
-      let value = await processParams(p)
+      let value = await processParams(p, env)
       console.log(`初始化参数：${key}=${value}`)
       if (value == null) {
         continue
@@ -683,7 +718,7 @@ const prepare = async(url, method, parameters, inputHeaders, preParams) => {
 /**
  * 处理预置参数
  */
-export const processParams = async(p) => {
+export const processParams = async(p, env) => {
   let value = p.defaults
   // 如果value里面存在变量引用，则执行脚本
   if (p.fix && (value + '').indexOf('$') >= 0) {
@@ -701,13 +736,20 @@ export const processParams = async(p) => {
     const fr = await getFunctionApi(p.functionId)
     /* eslint-disable */
     const args = (p.arguments || '').split(',').map(s => {
-        try {
-          return new Function(' return ' + s)()
-        } catch(e) {
-          return s
-        }
-      })
-    value = new Function(fr.scriptText)(...args)
+      try {
+        return new Function(' return ' + s)()
+      } catch(e) {
+        return s
+      }
+    })
+    let script = fr.scriptText
+    try {
+      // 获取到当前环境的脚本
+      script = JSON.parse(fr.scriptText)[env]
+    } catch (e) {
+      console.log(env, script)
+    }
+    value = new Function(script)(...args)
   }
 
   return value
@@ -739,8 +781,8 @@ const send = (url, method, params, headers, body) => {
   }
 }
 
-export const sendXhr = async(inputUrl, inputMethod, parameters, inputHeaders) => {
-  let { url, method, params, headers, body } = await prepare(inputUrl, inputMethod, parameters, inputHeaders)
+export const sendXhr = async(env, inputUrl, inputMethod, parameters, inputHeaders) => {
+  let { url, method, params, headers, body } = await prepare(inputUrl, inputMethod, parameters, inputHeaders, null, env)
   return send(url, method, params, headers, body)
 }
 
@@ -761,8 +803,8 @@ window.assert = (express, message) => {
  * @param resultName    接口调用返回值存入window[resultName]中, 可不填写，不填写系统自动生成
  * @param checkScript   检查点脚本，可以不填写，不填写不执行检查点
  */
-export const mockXhr = async(inputUrl, inputMethod, parameters, inputHeaders, preParams, checkScript, resultName) => {
-  let { url, method, params, headers, body } = await prepare(inputUrl, inputMethod, parameters, inputHeaders, preParams)
+export const mockXhr = async(env, inputUrl, inputMethod, parameters, inputHeaders, preParams, checkScript, resultName) => {
+  let { url, method, params, headers, body } = await prepare(inputUrl, inputMethod, parameters, inputHeaders, preParams, env)
 
   let check, message, result, success
   try {
@@ -784,6 +826,7 @@ export const mockXhr = async(inputUrl, inputMethod, parameters, inputHeaders, pr
         const m = []
         // 多行检查点，依次执行
         checkScript.split('\n')
+          .filter(s => s)
           .forEach(s => {
             try {
               new Function(s.replace(/\$this/g, resultName)).call(result.data);

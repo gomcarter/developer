@@ -62,6 +62,10 @@ export default {
     prepared: {
       type: Function,
       default: () => {}
+    },
+    envChanged: {
+      type: Function,
+      default: () => {}
     }
   },
   data () {
@@ -86,6 +90,11 @@ export default {
       historyList: [],
       running: false,
       threshold: 200
+    }
+  },
+  watch: {
+    env (value) {
+      this.envChanged && this.envChanged(value)
     }
   },
   methods: {
@@ -198,7 +207,7 @@ export default {
       // 创建graph
       this.graph = new G6.Graph({
         container: this.$el.querySelectorAll('.flow-container')[0],
-        width: this.width * 0.6,
+        width: this.width * 0.58,
         height: this.height,
         // 是否开启画布自适应。开启后图自动适配画布大小。
         // fitView: true,
@@ -363,8 +372,9 @@ export default {
      * 外部api，执行用例
      * @param times 执行次数
      * @param mock 是否执行mock数据，默认：false
+     * @param fork 是否执行mock数据，默认：false
      */
-    async run (times = 1, mock = false) {
+    async run (times = 1, mock = false, fork = false) {
       if (this.running) {
         return
       }
@@ -383,7 +393,7 @@ export default {
           container.scrollTop = container.scrollHeight
         }, 1)
 
-        await this._run(mock)
+        await this._run(mock, fork)
 
         const nodes = JSON.parse(JSON.stringify(this.graph.getNodes().map(s => s.getModel())))
         const edges = JSON.parse(JSON.stringify(this.graph.getEdges().map(s => s.getModel())))
@@ -401,7 +411,7 @@ export default {
       // 通知外部执行完毕
       this.finished && this.finished()
     },
-    async _run (mock = false) {
+    async _run (mock = false, fork = false) {
       this.success = true
       this.$set(this, 'logs', [])
 
@@ -432,12 +442,12 @@ export default {
       // 初始化预制参数
       await this.initPresetParams()
       // 开始执行
-      await this.runLevel(0, mock)
+      await this.runLevel(0, mock, fork)
 
       this.log('执行完毕！')
       this.log('')
     },
-    async runLevel (level, mock) {
+    async runLevel (level, mock, fork = false) {
       if (level >= this.model.length) {
         return
       }
@@ -467,7 +477,6 @@ export default {
           this.log(`休眠结束，开始运行`)
         }
 
-        let message
         // 条件
         if (model.type === 'diamond') {
           // 有脚本，则按照脚本重新赋值
@@ -502,53 +511,62 @@ export default {
             let url = mock ? originMockUrl(data.java[this.env], data.url) : (data.java[this.env] + data.url)
             const paramsName = '$' + model.id
             const start = Date.now()
-            const res = await mockXhr(url, data.method, data.parameters, data.headers, data.preParams, data.javascript, paramsName)
-            const end = Date.now()
-
-            message = this.appendMessage('', `<b>接口地址：</b>${res.method.toUpperCase()}  ${res.url}`)
-            message = this.appendMessage(message, `<b>header：</b>${res.headers.length > 0 ? res.headers.map(h => h.key + '=' + h.value).join('，') : '无'}`)
-            message = this.appendMessage(message, `<b>接口参数：</b>${toQueryString(res.params)}`)
-            if (res.body) {
-              message = this.appendMessage(message, `<b>body：</b>`)
-              message = this.appendMessage(message, res.body, 'json')
-            }
-            message = this.appendMessage(message, `<span style="color: ${end - start > this.threshold ? 'red' : ''}"><b>耗时：</b>${end - start}ms</span>`)
-            let log = ''
-            if (data.java.alias) {
-              log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
-            }
-            message = this.appendMessage(message, `<b>调用结果：</b>${log}`)
-            message = this.appendMessage(message, res.result.data, 'json')
-
-            if (res.success) {
-              if (res.check === false) {
-                // 执行检查点失败
-                this.error(edges, node, this.appendMessage(message, '<b>检查点</b>：' + res.message))
-              } else {
-                // 将结果放到输送线上去
-                edges.forEach(e => {
-                  window['$' + e.getModel().id] = window[paramsName]
-                })
-                this.clearState(edges.concat(node))
-                if (end - start > this.threshold) {
-                  this.setState(node, ['warning'], true)
-                } else {
-                  this.setState(node, ['success'], true)
-                }
-                model.description = res.check ? this.appendMessage(message, '<b>检查点</b>：' + res.message) : this.appendMessage(message, '<b>检查点</b>：无')
-                this.graph.updateItem(node, model)
-              }
+            if (fork) {
+              mockXhr(this.env, url, data.method, data.parameters, data.headers, data.preParams, data.javascript, paramsName)
+                .then(res => this.deal(data, res, start, node, model, edges, paramsName))
             } else {
-              // 接口调用失败
-              this.error(edges, node, this.appendMessage(message, '<b>接口调用失败：</b>' + res.message))
+              const res = await mockXhr(this.env, url, data.method, data.parameters, data.headers, data.preParams, data.javascript, paramsName)
+              this.deal(data, res, start, node, model, edges, paramsName)
             }
           } catch (e) {
-            this.error(edges, node, this.appendMessage(message, `<b>接口调用失败：</b>${e.toString()}`))
+            this.error(edges, node, this.appendMessage('', `<b>接口调用失败：</b>${e.toString()}`))
           }
         }
       }
 
       await this.runLevel(level + 1, mock)
+    },
+    deal (data, res, start, node, model, edges, paramsName) {
+      let message
+      const end = Date.now()
+
+      message = this.appendMessage('', `<b>接口地址：</b>${res.method.toUpperCase()}  ${res.url}`)
+      message = this.appendMessage(message, `<b>header：</b>${res.headers.length > 0 ? res.headers.map(h => h.key + '=' + h.value).join('，') : '无'}`)
+      message = this.appendMessage(message, `<b>接口参数：</b>${toQueryString(res.params)}`)
+      if (res.body) {
+        message = this.appendMessage(message, `<b>body：</b>`)
+        message = this.appendMessage(message, res.body, 'json')
+      }
+      message = this.appendMessage(message, `<span style="color: ${end - start > this.threshold ? 'red' : ''}"><b>耗时：</b>${end - start}ms</span>`)
+      let log = ''
+      if (data.java.alias) {
+        log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
+      }
+      message = this.appendMessage(message, `<b>调用结果：</b>${log}`)
+      message = this.appendMessage(message, res.result.data, 'json')
+
+      if (res.success) {
+        if (res.check === false) {
+          // 执行检查点失败
+          this.error(edges, node, this.appendMessage(message, '<b>检查点</b>：' + res.message))
+        } else {
+          // 将结果放到输送线上去
+          edges.forEach(e => {
+            window['$' + e.getModel().id] = window[paramsName]
+          })
+          this.clearState(edges.concat(node))
+          if (end - start > this.threshold) {
+            this.setState(node, ['warning'], true)
+          } else {
+            this.setState(node, ['success'], true)
+          }
+          model.description = res.check ? this.appendMessage(message, '<b>检查点</b>：' + res.message) : this.appendMessage(message, '<b>检查点</b>：无')
+          this.graph.updateItem(node, model)
+        }
+      } else {
+        // 接口调用失败
+        this.error(edges, node, this.appendMessage(message, '<b>接口调用失败：</b>' + res.message))
+      }
     },
     appendMessage(message, cache, type) {
       if (!cache) {
@@ -608,6 +626,72 @@ export default {
         const container = this.$el.querySelector('.runner-logger')
         container.scrollTop = container.scrollHeight
       }, 1)
+    },
+    deleteAll () {
+      this.graph.clear()
+    },
+    batchAddNodes (face, items) {
+      const width = this.$el.querySelectorAll('.flow-container')[0].clientWidth
+      const base = width / 2 - 200
+      const index = this.graph.getNodes().length
+      for (let i = index; i < items.length + index; ++i) {
+        const item = items[i - index]
+        let name = item.name
+        if (name.length > 16) {
+          name = name.substr(0, 8) + '\r\n' + name.substr(8, 7) + '...'
+        } else if (name.length > 8) {
+          name = name.substr(0, 8) + '\r\n' + name.substr(8, name.length)
+        }
+
+        // load
+        const data = {
+          interfaceId: face.id,
+          interfaceName: name,
+          history: false,
+          hash: face.hash,
+          headers: item.headers,
+          preParams: item.preParams ? JSON.parse(item.preParams) : [],
+          parameters: item.cusParameters ? JSON.parse(item.cusParameters) : [],
+          javascript: item.javascript ? JSON.parse(item.javascript) : null,
+          java: face.java,
+          url: face.url,
+          sleep: null,
+          returns: JSON.parse(face.returns),
+          method: face.method
+        }
+
+        const id = this.uuid()
+        this.graph.addItem('node', {
+          id: id,
+          type: 'rect',
+          label: '（' + id + '）' + name,
+          x: base + (i % 3) * 190,
+          y: (parseInt(i / 3) + 1) * 100,
+          data
+        })
+
+        const nodes = this.graph.getNodes().map(s => {
+          const model = s.getModel()
+          delete model['description']
+          return model
+        })
+        const edges = this.graph.getEdges().filter(s => s.getTarget().getModel).map(s => s.getModel())
+        this.workflow = { nodes, edges }
+      }
+    },
+    uuid () {
+      const nodes = this.graph.getNodes() || []
+      if (nodes.length === 0) {
+        return 'g0'
+      } else {
+        const sorted = nodes.map(n => n.getModel().id)
+          .filter(s => s !== 'main')
+          .map(s => parseInt(s.replace('g', '')))
+          .concat((this.graph.getEdges() || []).map(n => n.getModel().id).map(s => parseInt(s.replace('g', ''))))
+          .sort((a, b) => a - b)
+        const maxId = sorted[sorted.length - 1] || 0
+        return 'g' + (+maxId + 1)
+      }
     }
   },
   mounted () {

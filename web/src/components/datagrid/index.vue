@@ -238,7 +238,7 @@ export default {
       // 当前页数
       page: 1,
       // 当前页数据条数
-      rows: 20,
+      rows: 10,
       // 根据那个字段排序
       sort: null,
       // 排序方式：ASC-正序，DESC-倒序
@@ -316,6 +316,9 @@ export default {
     }
   },
   methods: {
+    md5 (s) {
+      return md5(s)
+    },
     clearSelections () {
       this.data.forEach(s => {
         this.$set(s, '$checked', false)

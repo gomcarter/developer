@@ -1,7 +1,7 @@
 <template>
   <el-select :multiple="multiple" :filterable="filterable" :remote="remote" :clearable="clearable"
              :placeholder="placeholder || (multiple ? '请输入关键字搜索' : '请选择')" :remote-method="remoteMethod" :loading="loading"
-             @change="onChange" v-model="selected" :remove-tag="onChange" :clear="remoteMethod"
+             @change="onChange" v-model="selected" :remove-tag="onChange" :clear="clearAll"
              class="form-control" style="padding: 0;border: 0;" :disabled="disabledBol">
     <el-option
       v-for="(item, index) of selections"
@@ -201,6 +201,13 @@ export default {
       const load = (this.load || []).filter(d => d != null)
       this._setSelectedAsLoad(load)
     },
+    deleteItem (id) {
+      const target = this.selections.filter(s => s[this.id] === id)[0]
+      const index = this.selections.indexOf(target)
+      if (index >= 0) {
+        this.selections.splice(index, 1)
+      }
+    },
     getSelection () {
       let selected = []
       if (this.multiple) {
@@ -215,6 +222,10 @@ export default {
     },
     clear () {
       this.selected = this.multiple ? [] : null
+    },
+    clearAll () {
+      this.clear()
+      this.remoteMethod()
     },
     remoteMethod (text, loadParams) {
       if (this.remote && this.url) {

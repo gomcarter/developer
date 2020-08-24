@@ -715,3 +715,31 @@ export const constructExecutableDataModel = (graph) => {
 
   return model
 }
+
+// 参数取并集, 以第一个参数为基准，第二个有新增key时，并入第一个参数 //
+export const unionParams = (cusParameters, parameters, push) => {
+  const cusPkey = []
+  const Pkey = []
+  for (const item1 of cusParameters) {
+    if (cusPkey.indexOf(item1['key']) === -1) {
+      cusPkey.push(item1['key'])
+    }
+  }
+  for (const item2 of parameters) {
+    let label = true
+    if (Pkey.indexOf(item2['key']) === -1) {
+      Pkey.push(item2['key'])
+    }
+    if (cusPkey.indexOf(item2['key']) > -1) {
+      label = false
+    }
+    if (label) {
+      if (push) {
+        cusParameters.push(item2)
+      } else {
+        cusParameters.unshift(item2)
+      }
+    }
+  }
+  return cusParameters
+}

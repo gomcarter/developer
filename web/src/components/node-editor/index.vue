@@ -20,6 +20,14 @@
                       :url="interfacesVersionedSimpleListApi" :extraParams="node.interfaceId ? {interfacesId: node.interfaceId} : {interfacesId: -1}"
           ></v-selector>
         </el-form-item>
+        <el-form-item label="已存用例" v-if="customInterfacesId">
+          <v-selector :id="'id'" :text="'name'" :searchKey="'name'"
+                      style="width: 400px;"
+                      :onSelectionChanged="onSelectCusInterfacesItem" placeholder="请选择一个历史保存的用例"
+                      :remote="true" :filterable="true" :url="getCusInterfacesItemListApi"
+                      :extraParams="customInterfacesId ? {customInterfacesId: customInterfacesId, rows: 20} : {customInterfacesId: -1}"
+          ></v-selector>
+        </el-form-item>
         <el-form-item label="访问类型:" v-if="node.interfaceId">
           <div>{{node.method}}</div>
         </el-form-item>
@@ -45,7 +53,6 @@
           </el-form>
         </el-form-item>
         <el-form-item label="预置参数:" v-if="node.interfaceId">
-          <el-button type="primary" icon="el-icon-plus" @click="addPreParams()" circle size="small"></el-button>
           <v-parameter-input :parameters="node.preParams"></v-parameter-input>
         </el-form-item>
         <el-form-item label="接口参数:" v-if="node.interfaceId">
@@ -72,7 +79,8 @@ assert($${nodeId}.quantity > 0, '数量必须大于等于零！')
 </template>
 
 <script>
-import { functionListApi, interfacesSimpleListApi, interfacesVersionedSimpleListApi, getCusInterfacesApi } from '@/config/api/inserv-api'
+import { functionListApi, interfacesSimpleListApi, interfacesVersionedSimpleListApi, getCusInterfacesItemListApi,
+  getCusInterfacesByInterfacesIdApi } from '@/config/api/inserv-api'
 import { generateParameters, fillParamsFromClipboardData, generateReturns } from '@/config/utils'
 
 export default {
@@ -84,6 +92,7 @@ export default {
   },
   data () {
     return {
+      getCusInterfacesItemListApi,
       nodeId: null,
       node: {
         sleep: 0,
@@ -103,10 +112,22 @@ export default {
       generatedReturns: null,
       interfacesVersionedSimpleListApi,
       interfacesSimpleListApi,
-      functionListApi
+      functionListApi,
+      customInterfacesId: null
     }
   },
   methods: {
+    onSelectCusInterfacesItem (selections) {
+      const select = selections[0]
+      if (select) {
+        this.node.parameters = select.cusParameters ? JSON.parse(select.cusParameters) : []
+        this.node.javascript = select.javascript ? JSON.parse(select.javascript) : null
+        this.node.preParams = select.preParams ? JSON.parse(select.preParams) : null
+        if (select.cusHeaders) {
+          this.node.headers = JSON.parse(select.cusHeaders)
+        }
+      }
+    },
     async onSelectInterface (selections) {
       const selection = selections[0] || {}
       this.node.interfaceId = selection.id
@@ -115,20 +136,32 @@ export default {
 
       this.setInterfaces(await this.getConfiguredParameters(selection.id, selection))
     },
+    async loadCusInterfacesItem (interfacesId) {
+      this.customInterfacesId = null
+      if (!interfacesId) {
+        return
+      }
+      // 在已经配置好的中选择一个
+      const cus = await getCusInterfacesByInterfacesIdApi(interfacesId)
+      if (cus) {
+        this.customInterfacesId = cus.id
+        const itemList = await getCusInterfacesItemListApi({customInterfacesId: cus.id})
+        if (itemList.length > 0) {
+          const item = itemList[0]
+          this.node.parameters = item.cusParameters ? JSON.parse(item.cusParameters) : []
+          this.node.javascript = item.javascript ? JSON.parse(item.javascript) : null
+          this.node.preParams = item.preParams ? JSON.parse(item.preParams) : null
+          if (item.cusHeaders) {
+            this.node.headers = JSON.parse(item.cusHeaders)
+          }
+        }
+      }
+    },
     async getConfiguredParameters (interfacesId, selection) {
       if (!interfacesId) {
         return {}
       }
-
-      const cus = await getCusInterfacesApi(interfacesId)
-      if (cus && cus.cusParameters) {
-        selection.parameters = JSON.parse(cus.cusParameters)
-        selection.javascript = cus.javascript != null ? JSON.parse(cus.javascript) : null
-        selection.preParams = JSON.parse(cus.preParams)
-      } else {
-        selection.parameters = generateParameters(selection.parameters)
-      }
-
+      selection.parameters = generateParameters(selection.parameters)
       return selection
     },
     async onSelectHistoryInterface (selections) {
@@ -156,6 +189,8 @@ export default {
       if (selection.end) {
         this.$set(this.node, 'headers', selection.end.header ? JSON.parse(selection.end.header) : [])
       }
+
+      this.loadCusInterfacesItem(selection.id)
     },
     open (model, edges) {
       const data = model.data || {}
@@ -193,9 +228,6 @@ export default {
     },
     paste (e) {
       fillParamsFromClipboardData(e, this.node.parameters)
-    },
-    addPreParams () {
-      this.node.preParams.push({key: '', value: '', type: 'text'})
     },
     addHeader () {
       let obj = {key: '', value: ''}

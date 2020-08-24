@@ -14,7 +14,7 @@
         </el-form-item>
         <el-form-item>
           <div class="mark">设置url需支持POST请求，且登录用户名参数为：username，密码参数为：password；返回数据结果需要如下：</div>
-          <v-jsonformatter :width="600" :json="{code: '0 —— 表示登录成功，其他 —— 表示登录失败', message: '登录失败原因'}" :minHeight="100"></v-jsonformatter>
+          <v-jsonformatter :width="600" :json="{success: 'true/false —— true表示登录成功，false表示登录失败', message: '登录失败原因'}" :minHeight="100"></v-jsonformatter>
           <div class="mark red">注意：如果开启了外部登录，但是登录不成功，您依然可以是使用admin账户登录到本系统</div>
         </el-form-item>
         <el-form-item>
@@ -64,7 +64,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <h4 class="title">自定义函数列表</h4>
+      <h4 class="title">自定义参数列表</h4>
       <hr/>
       <v-datagrid :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar"/>
     </div>

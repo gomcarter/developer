@@ -53,7 +53,7 @@
                 :onCreate="onCreate" :onUpdate="onUpdate" :onSortChanged="onSortChanged"/>
       </el-main>
       <el-aside :style="{width: '79%'}" class="interfaces-list-container">
-        <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :checkable="true"/>
+        <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params" :toolbar="toolbar" :checkable="true"/>
       </el-aside>
     </el-container>
 
@@ -100,7 +100,24 @@ export default {
       favoriteTree: null,
       toBeSelectedTree: null,
       params: {},
-      editingId: null,
+      toolbar: [{
+        title: '设置',
+        icon: 'el-icon-setting',
+        handler: () => {
+          const selections = this.$refs.dg.getSelected()
+          if (selections.length === 0) {
+            this.$alert('请至少选择一个接口', '提示', {type: 'error'})
+            return
+          }
+          this.editingIdList = selections.map(s => s.id)
+          favoriteTreeApi()
+            .then(d => {
+              this.toBeSelectedTree = d || []
+              this.$refs.favoriteBindingDialog.open()
+            })
+        }
+      }],
+      editingIdList: null,
       columns: [
         {
           field: 'action',
@@ -109,16 +126,6 @@ export default {
           html: true,
           actions: [{
             text: (r) => `<a href="#/test/${r.interfacesId}/testDomain" target="_blank">执行</a>`
-          }, {
-            text: '设置',
-            handler: (row) => {
-              this.editingId = row.id
-              favoriteTreeApi()
-                .then(d => {
-                  this.toBeSelectedTree = d || []
-                  this.$refs.favoriteBindingDialog.open()
-                })
-            }
           }, {
             text: '删除',
             handler: (row) => this.delete(row.id)
@@ -144,11 +151,14 @@ export default {
     bindFavorite () {
       const favoriteCode = this.$refs.favoriteTree.getSelected()[0]
 
-      bindFavoriteApi(this.editingId, favoriteCode)
+      bindFavoriteApi(this.editingIdList, favoriteCode)
         .then(d => {
           this.$success('操作成功！')
           this.$refs.favoriteBindingDialog.close()
-            this.search()
+          this.search()
+
+          this.editingIdList.length = 0
+          this.$refs.dg.clearSelections()
         })
     },
     onTreeSelectionChanged (selected) {

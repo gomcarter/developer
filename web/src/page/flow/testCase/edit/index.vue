@@ -10,7 +10,7 @@
       <el-form-item label="预置参数:">
         <el-button type="primary" icon="el-icon-plus" @click="addPresetParams()" circle size="small"></el-button>
         在后续脚本中使用，如设置了参数名为：name=value，使用 $name 即可获得此参数对应的值value，不要重复命名
-        <v-parameter-input :parameters="presetParams"></v-parameter-input>
+        <v-parameter-input :parameters="presetParams" :need-add-params="false"></v-parameter-input>
       </el-form-item>
       <el-form-item label="配置流程:" label-width="8em">
         <div class="testcase_editor_container" :style="{width: width + 2 + 'px'}">
@@ -20,7 +20,7 @@
       <el-form-item>
         <el-button type="info" @click="$router.go(-1)" icon="el-icon-back">返回</el-button>
         <el-button type="primary" @click="save" :icon="disabled?'el-icon-loading':'el-icon-success'" :disabled="disabled">保存</el-button>
-        <el-button type="primary" @click="batchImport" icon="el-icon-upload2">批量导入接口</el-button>
+        <el-button type="primary" @click="openBatchImportDialog" icon="el-icon-upload2">批量导入接口</el-button>
         <el-button type="success" @click="beautify" icon="el-icon-s-grid">美化</el-button>
         <el-button type="success" @click="test" icon="el-icon-magic-stick">测试</el-button>
       </el-form-item>
@@ -30,6 +30,12 @@
               :ok="runTest" :width="1300">
       <div slot="body">
         <v-runner ref='runner' :width="1100" :height="518"></v-runner>
+      </div>
+    </v-dialog>
+
+    <v-dialog ref="chooseInterfacesDialog" title="选择接口" :ok="batchImport" :width="1300">
+      <div slot="body" style="height: 600px; overflow: auto">
+        <v-interfaces-list ref="interfacesList" :no-toolbar="true"></v-interfaces-list>
       </div>
     </v-dialog>
   </div>
@@ -143,24 +149,30 @@ export default {
           this.disabled = false
         })
     },
+    openBatchImportDialog () {
+      this.$refs.chooseInterfacesDialog.open()
+    },
     batchImport () {
-      this.$prompt('批量导入', '', {
-        inputType: 'text',
-        inputPlaceholder: '请输入接口编号，多个编号逗号隔开',
-        inputValidator: (d) => (d || '').trim().length > 0 || '请输入至少一个接口编号'
-      }).then((d) => {
-        const value = d.value.replace(/，/g, ',')
-        this.loadMultipleInterfaces(value.split(',').map(v => +v).filter(v => v))
-      }).catch((d) => {
-      })
+      const selections = this.$refs.interfacesList.getSelections()
+      console.log(selections)
+      if (selections.length === 0) {
+        this.$alert('请至少选择一个接口', '提示', {type: 'error'})
+        return
+      }
+
+      this.$refs.workflow.batchAddNodes(selections)
+      this.$refs.interfacesList.clearSelections()
+      this.$refs.chooseInterfacesDialog.close()
+      // this.$prompt('批量导入', '', {
+      //   inputType: 'text',
+      //   inputPlaceholder: '请输入接口编号，多个编号逗号隔开',
+      //   inputValidator: (d) => (d || '').trim().length > 0 || '请输入至少一个接口编号'
+      // }).then((d) => {
+      //   const value = d.value.replace(/，/g, ',')
+      //   this.loadMultipleInterfaces(value.split(',').map(v => +v).filter(v => v))
+      // }).catch((d) => {
+      // })
     }
-  },
-  components: {
-    'v-runner': () => import('@/components/runner'),
-    'v-dialog': () => import('@/components/dialog'),
-    'v-selector': () => import('@/components/selector'),
-    'v-workflow': () => import('@/components/workflow'),
-    'v-parameter-input': () => import('@/components/parameter-input')
   },
   mounted () {
     window.that1 = this
@@ -191,6 +203,14 @@ export default {
     } else {
       this.$set(this.form, 'workflow', {})
     }
+  },
+  components: {
+    'v-runner': () => import('@/components/runner'),
+    'v-selector': () => import('@/components/selector'),
+    'v-workflow': () => import('@/components/workflow'),
+    'v-parameter-input': () => import('@/components/parameter-input'),
+    'v-dialog': () => import('@/components/dialog'),
+    'v-interfaces-list': () => import('@/page/interfaces')
   }
 }
 </script>

@@ -53,7 +53,7 @@ export default {
         {field: 'id', header: '编号', sort: 'id', width: 100},
         {field: 'name', header: '规则名称', sort: 'name', width: 200},
         {field: 'isPublic', header: '是否公用', sort: 'is_public', width: 100, html: true, formatter: (row, index, value) => this.formatIsPublic(row, value)},
-        {field: 'scriptText', header: '脚本', sort: 'scriptText', width: 500},
+        // {field: 'scriptText', header: '脚本', sort: 'scriptText', width: 500},
         {field: 'userName', header: '创建人', sort: 'user_name', width: 100},
         {field: 'mark', header: '备注', sort: 'mark', width: 400},
         {field: 'createTime', header: '添加时间', sort: 'create_time', width: 200, formatter: (row, index, value) => formatDate(value)},

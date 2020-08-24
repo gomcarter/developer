@@ -541,19 +541,33 @@ export default {
       }
 
       const base = 190
+      const workflow = this.workflow()
+      const nodes = workflow.nodes
+      const map = {}
+      nodes.forEach(s => {
+        map[s.id] = s
+      })
+      console.log(nodes)
       for (let i = 0; i < model.length; i++) {
         const level = model[i]
         const deltaX = (this.width - base * 2) / level.length
         for (let j = 0; j < level.length; j++) {
           const item = level[j]
-          const model = item.getModel()
+          const model = map[item.getModel().id]
           model.x = base + deltaX / 2 + deltaX * j - 60
           model.y = 100 + 150 * i
-          this.graph.updateItem(item, model)
         }
       }
 
+      this.graph.data(workflow)
       this.graph.render()
+      // 如果有未编辑完的节点，标记为pending
+      this.graph.getNodes().forEach(n => {
+        const model = n.getModel()
+        if (!model || !model.data || !model.data.interfaceId) {
+          this.graph.setItemState(n, 'pending', true)
+        }
+      })
     }
   },
   mounted () {

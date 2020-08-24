@@ -44,14 +44,23 @@ export default {
           this.name = res.name
           const history = { env: res.env, historyList: JSON.parse(res.result) }
           setTimeout(() => {
-            getTestCaseDetailApi(res.testCaseId).then((tc) => {
-              const data = { testCaseId: res.testCaseId, workflow: JSON.parse(tc.workflow), presetParams: JSON.parse(tc.presetParams) || [] }
+            if (res.testCaseId) {
+              getTestCaseDetailApi(res.testCaseId).then((tc) => {
+                const data = { testCaseId: res.testCaseId, workflow: JSON.parse(tc.workflow), presetParams: JSON.parse(tc.presetParams) || [] }
+
+                // 设置模型
+                this.$refs.runner.setData(data)
+                // 设置历史
+                this.$refs.runner.setData(history)
+              })
+            } else {
+              const data = { testCaseId: null, workflow: history.historyList[0].workflow }
 
               // 设置模型
               this.$refs.runner.setData(data)
               // 设置历史
               this.$refs.runner.setData(history)
-            })
+            }
           }, 800)
         })
       }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { isLogin, refresh } from '@/config/login'
+import { isLogin } from '@/config/login'
 
 Vue.use(Router)
 
@@ -123,6 +123,11 @@ const router = new Router({
       name: 'testApi',
       component: r => require.ensure([], (require) => { r(require('@/page/flow/testapi')) }, 'testApi')
     },
+    { // 我的接口测试批量执行
+      path: '/flow/testapi/run/:cusInterfacesId',
+      name: 'testApiRun',
+      component: r => require.ensure([], (require) => { r(require('@/page/flow/testapi/run')) }, 'testApiRun')
+    },
     { // 流程控制---用例列表-编辑
       path: '/flow/testCase/edit/:id',
       name: 'testCaseEdit',
@@ -164,6 +169,7 @@ const router = new Router({
       name: 'transferData',
       component: r => require.ensure([], require => r(require('@/page/transfer')), 'transfer')
     },
+    // 中转
     {
       path: '/',
       redirect: '/index'
@@ -179,7 +185,7 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
     // 刷新登录状态
-    refresh()
+    // refresh()
   }
 })
 
