@@ -60,8 +60,7 @@ export default {
     },
     onSelectCusInterfacesItem (selections) {
       this.selections = (selections || []).map(s => s.id)
-      this.$refs.runner.deleteAll()
-      this.$refs.runner.batchAddNodes(this.face, selections)
+      this.loadItems()
     },
     async init () {
       if (this.id) {

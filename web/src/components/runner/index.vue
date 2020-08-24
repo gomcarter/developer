@@ -42,7 +42,7 @@
 import G6 from '@antv/g6'
 import { originMockUrl, processParams, mockXhr, saveTestCaseHistorytApi } from '@/config/api/inserv-api'
 import { toQueryString, sleep, constructExecutableDataModel, toJsonHtml } from '@/config/utils'
-import { ENV_DOMAIN_MAP, ENV_DOMAIN_LOG_MAP } from '@/config/mapping'
+import { ENV_DOMAIN_MAP } from '@/config/mapping'
 import insertCss from 'insert-css'
 
 export default {
