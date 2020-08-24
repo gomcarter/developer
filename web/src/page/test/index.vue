@@ -42,7 +42,7 @@
       <div class="left">
         <h4 class="title" style="display: inline-block;">调用结果</h4>
         <span v-if="end" style="display: inline-block; margin-left: 20px;">
-          <b>耗时：</b>{{ `${end - start}` }}ms；<a :href="`#/logging/list?env=${ENV_DOMAIN_LOG_MAP[env]}&app=${data.java.alias}&start=${start}`" target="_blank">【查看日志】</a>
+          <b>耗时：</b>{{ `${end - start}` }}ms；
         </span>
         <hr/>
         <el-form>

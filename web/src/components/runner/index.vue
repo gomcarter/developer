@@ -540,7 +540,7 @@ export default {
       message = this.appendMessage(message, `<span style="color: ${end - start > this.threshold ? 'red' : ''}"><b>耗时：</b>${end - start}ms</span>`)
       let log = ''
       if (data.java.alias) {
-        log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
+        // log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
       }
       message = this.appendMessage(message, `<b>调用结果：</b>${log}`)
       message = this.appendMessage(message, res.result.data, 'json')
