@@ -260,3 +260,4 @@ CREATE TABLE `user`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='用户表';
 
+insert into user (username, name, password, random) values ('admin','admin','dacfab860b226140f3338df0875b9bf8','56174386');
