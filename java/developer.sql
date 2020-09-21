@@ -128,6 +128,7 @@ CREATE TABLE `interfaces_package`
     `mark`         text COMMENT '详细描述：如返回值说明，接口的一些说明等',
     `test_case_id` bigint(20)          DEFAULT NULL COMMENT '绑定一个test_case id',
     `user_name`    varchar(225)        DEFAULT NULL COMMENT '用户名称（谁建的）',
+    `config`       text COMMENT '接口聚合相关配置',
     `create_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modify_time`  timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
@@ -260,4 +261,5 @@ CREATE TABLE `user`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8 COMMENT ='用户表';
 
-insert into user (username, name, password, random) values ('admin','admin','dacfab860b226140f3338df0875b9bf8','56174386');
+insert into user (username, name, password, random)
+values ('admin', 'admin', 'dacfab860b226140f3338df0875b9bf8', '56174386');
