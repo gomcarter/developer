@@ -1,6 +1,8 @@
 package com.gomcarter.developer.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -43,6 +45,11 @@ public class Java {
      * 线上环境域名
      */
     private String onlineDomain;
+    /**
+     * 返回值包装类
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String wrapper;
     /**
      *
      */

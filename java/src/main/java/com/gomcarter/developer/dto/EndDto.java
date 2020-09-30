@@ -42,6 +42,7 @@ public class EndDto {
                 .setName(end.getName())
                 .setPrefix(end.getPrefix())
                 .setHeader(end.getHeader())
-                .setMark(end.getMark());
+                .setMark(end.getMark())
+                .setCreateTime(end.getCreateTime());
     }
 }

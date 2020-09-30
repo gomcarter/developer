@@ -37,4 +37,13 @@
       select * from interfaces where fk_java_id = #{javaId} and url = #{url} and method = #{method} order by id desc limit 1
     </select>
 
+    <select id="queryInterfacesDistributions" resultType="com.gomcarter.developer.dto.InterfacesDistributionDto">
+        select j.alias as name,
+               count(1) as value
+        from interfaces i
+                 left join java j on i.fk_java_id = j.id
+        where i.deprecated = 0 and (j.name like '%os%' or j.alias like '%os%')
+        group by j.alias;
+    </select>
+
 </mapper>

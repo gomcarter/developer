@@ -2,6 +2,7 @@ package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.CustomInterfacesDetailDto;
 import com.gomcarter.developer.dto.CustomInterfacesItemDto;
+import com.gomcarter.developer.dto.CustomInterfacesTopDto;
 import com.gomcarter.developer.entity.CustomInterfaces;
 import com.gomcarter.developer.entity.CustomInterfacesItem;
 import com.gomcarter.developer.holder.UserHolder;
@@ -109,4 +110,10 @@ public class DeveloperCustomInterfacesController {
     void deleteItem(@PathVariable("id") Long id) {
         this.customInterfacesItemService.delete(id);
     }
+
+    @GetMapping(value = "top", name = "用例活跃度排名")
+    public List<CustomInterfacesTopDto> top() {
+        return this.customInterfacesService.getTop();
+    }
+
 }

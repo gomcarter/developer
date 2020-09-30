@@ -51,6 +51,7 @@ public class DeveloperInterfacesPackageController {
                         .setName(s.getName())
                         .setMark(s.getMark())
                         .setUserName(s.getUserName())
+                        .setConfig(s.getConfig())
                         .setTestCaseId(s.getTestCaseId())
                         .setInterfacesIdList(map.get(s.getId()))
                         .setCreateTime(s.getCreateTime())
@@ -74,11 +75,6 @@ public class DeveloperInterfacesPackageController {
         this.interfacesPackageService.delete(id);
     }
 
-    @DeleteMapping(value = "item/{id}", name = "删除")
-    void deleteItem(@PathVariable("id") Long id) {
-        this.interfacesPackageItemService.delete(id);
-    }
-
     @PostMapping(value = "", name = "新建打包")
     Long create(@RequestParam String name,
                 String mark,
@@ -88,9 +84,8 @@ public class DeveloperInterfacesPackageController {
 
     @PutMapping(value = "{id}", name = "修改打包")
     void update(@PathVariable("id") Long id,
-                @RequestParam String name,
-                String mark,
-                @RequestParam("interfacesIdList") List<Long> interfacesIdList) {
-        this.interfacesPackageService.update(id, name, mark, interfacesIdList);
+                @RequestParam("interfacesIdList") List<Long> interfacesIdList,
+                String config) {
+        this.interfacesPackageService.update(id, interfacesIdList, config);
     }
 }

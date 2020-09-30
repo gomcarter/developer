@@ -32,6 +32,12 @@ public class InterfacesPackage {
     @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String mark;
     /**
+     * 接口聚合相关配置
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String config;
+
+    /**
      * 绑定一个test_case id
      */
     private Long testCaseId;

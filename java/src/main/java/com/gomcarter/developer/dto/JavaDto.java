@@ -36,6 +36,9 @@ public class JavaDto {
     @Notes("线上环境域名")
     private String onlineDomain;
 
+    @Notes("返回值包装类")
+    private String wrapper;
+
     @Notes("创建时间")
     private Date createTime;
 
@@ -47,6 +50,8 @@ public class JavaDto {
                 .setDevDomain(java.getDevDomain())
                 .setTestDomain(java.getTestDomain())
                 .setPrevDomain(java.getPrevDomain())
-                .setOnlineDomain(java.getOnlineDomain());
+                .setOnlineDomain(java.getOnlineDomain())
+                .setWrapper(java.getWrapper())
+                .setCreateTime(java.getCreateTime());
     }
 }

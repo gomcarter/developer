@@ -2,6 +2,7 @@ package com.gomcarter.developer.service;
 
 import com.gomcarter.developer.dao.CustomInterfacesMapper;
 import com.gomcarter.developer.dto.CustomInterfacesDetailDto;
+import com.gomcarter.developer.dto.CustomInterfacesTopDto;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.CustomInterfaces;
@@ -115,4 +116,9 @@ public class CustomInterfacesService {
             this.customInterfacesMapper.update(ci);
         }
     }
+
+    public List<CustomInterfacesTopDto> getTop() {
+        return this.customInterfacesMapper.queryTop();
+    }
+
 }

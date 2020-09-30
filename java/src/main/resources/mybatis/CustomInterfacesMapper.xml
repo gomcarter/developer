@@ -83,4 +83,14 @@
         </foreach>
     </select>
 
+    <select id="queryTop" resultType="com.gomcarter.developer.dto.CustomInterfacesTopDto">
+        select ci.username as name,
+               count(1) as value
+        from custom_interfaces ci
+        where ci.create_time >= subdate(curdate(), interval 30 day)
+        group by ci.username
+        order by value desc
+        limit 5
+    </select>
+
 </mapper>

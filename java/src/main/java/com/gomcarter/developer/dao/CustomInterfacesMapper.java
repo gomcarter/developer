@@ -1,6 +1,7 @@
 package com.gomcarter.developer.dao;
 
 import com.gomcarter.developer.dto.CustomInterfacesDetailDto;
+import com.gomcarter.developer.dto.CustomInterfacesTopDto;
 import com.gomcarter.developer.entity.CustomInterfaces;
 import com.gomcarter.developer.params.CustomInterfacesQueryParam;
 import com.gomcarter.frameworks.base.pager.Pageable;
@@ -19,5 +20,7 @@ public interface CustomInterfacesMapper extends BaseMapper<CustomInterfaces> {
     Integer getCount(@Param("param") CustomInterfacesQueryParam param);
 
     List<Long> getFavoritesIdList(@Param("interfacesIdList") List<Long> interfacesIdList, @Param("username") String username);
+
+    List<CustomInterfacesTopDto> queryTop();
 
 }

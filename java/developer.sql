@@ -181,6 +181,7 @@ CREATE TABLE `java`
     `test_domain`   varchar(100)        DEFAULT NULL COMMENT '测试环境域名',
     `prev_domain`   varchar(100)        DEFAULT NULL COMMENT '预发环境域名',
     `online_domain` varchar(100)        DEFAULT NULL COMMENT '线上环境域名',
+    `wrapper`       text COMMENT '返回值包装类',
     `create_time`   timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modify_time`   timestamp  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),

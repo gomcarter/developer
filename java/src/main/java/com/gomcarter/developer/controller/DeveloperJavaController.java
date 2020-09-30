@@ -28,7 +28,8 @@ public class DeveloperJavaController {
               @Notes("开发环境域名") @RequestParam String devDomain,
               @Notes("测试环境域名") @RequestParam String testDomain,
               @Notes("预发环境域名") @RequestParam String prevDomain,
-              @Notes("线上环境域名") @RequestParam String onlineDomain) {
+              @Notes("线上环境域名") @RequestParam String onlineDomain,
+              @Notes("返回值包装类") String wrapper) {
         javaService.insert(new Java()
                 .setName(name)
                 .setAlias(alias)
@@ -36,6 +37,7 @@ public class DeveloperJavaController {
                 .setTestDomain(testDomain)
                 .setPrevDomain(prevDomain)
                 .setOnlineDomain(onlineDomain)
+                .setWrapper(wrapper)
         );
     }
 
@@ -46,7 +48,8 @@ public class DeveloperJavaController {
               @Notes("开发环境域名") @RequestParam String devDomain,
               @Notes("测试环境域名") @RequestParam String testDomain,
               @Notes("预发环境域名") @RequestParam String prevDomain,
-              @Notes("线上环境域名") @RequestParam String onlineDomain) {
+              @Notes("线上环境域名") @RequestParam String onlineDomain,
+              @Notes("返回值包装类") String wrapper) {
         javaService.update(new Java()
                 .setId(id)
                 .setName(name)
@@ -55,6 +58,7 @@ public class DeveloperJavaController {
                 .setTestDomain(testDomain)
                 .setPrevDomain(prevDomain)
                 .setOnlineDomain(onlineDomain)
+                .setWrapper(wrapper)
         );
     }
 

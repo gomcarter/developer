@@ -1,6 +1,7 @@
 package com.gomcarter.developer.controller;
 
 import com.gomcarter.developer.dto.InterfacesDetailDto;
+import com.gomcarter.developer.dto.InterfacesDistributionDto;
 import com.gomcarter.developer.params.InterfacesQueryParam;
 import com.gomcarter.developer.service.InterfacesService;
 import com.gomcarter.frameworks.base.common.CustomStringUtils;
@@ -55,4 +56,10 @@ public class DeveloperInterfacesController {
     Integer count(@Notes("查询参数") InterfacesQueryParam params) {
         return interfacesService.count(params);
     }
+
+    @GetMapping(value = "distribution", name = "获取接口分布")
+    List<InterfacesDistributionDto> distributions() {
+        return interfacesService.getDistributions();
+    }
+
 }

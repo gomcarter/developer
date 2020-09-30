@@ -1,8 +1,11 @@
 package com.gomcarter.developer.dao;
 
+import com.gomcarter.developer.dto.InterfacesDistributionDto;
 import com.gomcarter.developer.entity.Interfaces;
 import com.gomcarter.frameworks.mybatis.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  *
@@ -15,4 +18,7 @@ public interface InterfacesMapper extends BaseMapper<Interfaces> {
     Interfaces getByUrl(@Param("javaId") Long javaId, @Param("url") String url, @Param("method") String method);
 
     void setDeprecatedByJavaId(@Param("javaId") Long javaId);
+
+    List<InterfacesDistributionDto> queryInterfacesDistributions();
+
 }

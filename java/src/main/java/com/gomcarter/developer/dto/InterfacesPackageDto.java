@@ -19,6 +19,8 @@ public class InterfacesPackageDto {
 
     private String mark;
 
+    private String config;
+
     private Long testCaseId;
 
     private String userName;

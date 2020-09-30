@@ -78,19 +78,16 @@ public class InterfacesPackageService {
         return packaged.getId();
     }
 
-    public void update(Long id, String name, String mark, List<Long> interfacesIdList) {
+    public void updateTestCaseId(Long id, Long testCaseId) {
+        this.update(this.getById(id).setTestCaseId(testCaseId));
+    }
+
+    public void update(Long id, List<Long> interfacesIdList, String config) {
         InterfacesPackage packaged = this.interfacesPackageMapper.getById(id);
         AssertUtils.notNull(packaged, new CustomException("没有权限"));
 
-        packaged.setName(name)
-                .setMark(mark);
-
-        this.interfacesPackageMapper.update(packaged);
+        this.interfacesPackageMapper.update(packaged.setConfig(config));
 
         this.interfacesPackageItemService.update(id, interfacesIdList);
-    }
-
-    public void updateTestCaseId(Long id, Long testCaseId) {
-        this.update(this.getById(id).setTestCaseId(testCaseId));
     }
 }

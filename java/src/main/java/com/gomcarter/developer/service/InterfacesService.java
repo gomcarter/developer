@@ -3,6 +3,7 @@ package com.gomcarter.developer.service;
 import com.gomcarter.developer.dao.InterfacesMapper;
 import com.gomcarter.developer.dto.EndDto;
 import com.gomcarter.developer.dto.InterfacesDetailDto;
+import com.gomcarter.developer.dto.InterfacesDistributionDto;
 import com.gomcarter.developer.dto.JavaDto;
 import com.gomcarter.developer.entity.End;
 import com.gomcarter.developer.entity.Interfaces;
@@ -244,4 +245,9 @@ public class InterfacesService {
         }
         return Streamable.valueOf(this.getByIdList(idList)).uniqueGroupby(Interfaces::getId).collect();
     }
+
+    public List<InterfacesDistributionDto> getDistributions() {
+        return this.interfacesMapper.queryInterfacesDistributions();
+    }
+
 }

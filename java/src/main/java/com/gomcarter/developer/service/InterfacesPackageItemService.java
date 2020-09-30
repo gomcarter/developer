@@ -63,6 +63,10 @@ public class InterfacesPackageItemService {
 
         this.interfacesPackageItemMapper.deleteByPackageId(packageId);
 
+        this.add(packageId, interfacesIdList);
+    }
+
+    public void add(Long packageId, List<Long> interfacesIdList) {
         this.interfacesPackageItemMapper.batchInsert(packageId, interfacesIdList);
     }
 
