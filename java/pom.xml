@@ -5,7 +5,7 @@
 
     <groupId>com.gomcarter.developer</groupId>
     <artifactId>developer</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.8</version>
     <packaging>jar</packaging>
 
     <name>developer</name>
@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <gomcarter.version>2.0.6</gomcarter.version>
+        <gomcarter.version>2.0.7</gomcarter.version>
     </properties>
 
     <profiles>
