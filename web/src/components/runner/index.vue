@@ -39,10 +39,10 @@
 </template>
 
 <script>
-import G6 from '@antv/g6'
 import { originMockUrl, processParams, mockXhr, saveTestCaseHistorytApi } from '@/config/api/inserv-api'
-import { toQueryString, sleep, constructExecutableDataModel, toJsonHtml } from '@/config/utils'
-import { ENV_DOMAIN_MAP } from '@/config/mapping'
+import { toQueryString, sleep, toJsonHtml } from '@/config/utils'
+import { G6 } from '@/config/G6'
+import { ENV_DOMAIN_MAP, ENV_DOMAIN_LOG_MAP } from '@/config/mapping'
 import insertCss from 'insert-css'
 
 export default {
@@ -421,7 +421,7 @@ export default {
       this.graph.data(this.workflow)
       this.graph.render()
       // 构建model
-      this.model = constructExecutableDataModel(this.graph)
+      this.model = G6.constructExecutableDataModel(this.graph)
       // logs
       let index = 1
       this.model.forEach(m => {
@@ -540,7 +540,7 @@ export default {
       message = this.appendMessage(message, `<span style="color: ${end - start > this.threshold ? 'red' : ''}"><b>耗时：</b>${end - start}ms</span>`)
       let log = ''
       if (data.java.alias) {
-        // log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
+        log = `<a href='#/logging/list?env=${ENV_DOMAIN_LOG_MAP[this.env]}&app=${data.java.alias}&start=${start}' target="_blank">【查看日志】</a>`
       }
       message = this.appendMessage(message, `<b>调用结果：</b>${log}`)
       message = this.appendMessage(message, res.result.data, 'json')
@@ -575,7 +575,7 @@ export default {
 
       if (type === 'json') {
         this.log(cache, type)
-        cache = `<div class="json-container">${toJsonHtml(cache)}</div>`
+        cache = `${toJsonHtml(cache)}`
       } else {
         this.log(cache, type)
       }

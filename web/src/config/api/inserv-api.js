@@ -1,7 +1,6 @@
 import { xhr } from '@/config/api/http'
 import { INSERV_URL } from '@/config/api/env'
 import { store } from '@/config/cache'
-import { toQueryString } from '@/config/utils'
 import md5 from 'js-md5'
 
 export const loginApi = async (params) => {
@@ -72,6 +71,15 @@ export const getInterfacesApi = async (id) => {
 }
 
 /**
+ * @author dyingbleed 2020-08-25
+ * @returns 首页--分布
+ */
+export const getInterfacesDistribution = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/interfaces/distribution`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
  * @author gomcarter 2019-02-14
  * @returns 收藏接口用例列表
  */
@@ -105,6 +113,15 @@ export const getCusInterfacesByInterfacesIdApi = async (interfacesId) => {
  */
 export const getCusInterfacesApi = async (id) => {
   const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/${id}`)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
+/**
+ * @author dyingbleed 2020-08-25
+ * @returns 接口管理---活跃度
+ */
+export const getCusInterfacesTop = async (id) => {
+  const res = await xhr.get(`${INSERV_URL}developer/cusinterfaces/top`)
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
@@ -151,6 +168,7 @@ export const getInterfacesHeadersApi = async (env, endId, forceUpdate) => {
 
     const c = await sendXhr(env, generateUrl(config.java, env, config.url, config.parameters[env]),
       config.method, config.parameters[env], config.requestHeaders)
+    console.log('ii', c)
     const headers = config.headers || []
     if (c.data) {
       let result = headers.map(h => {
@@ -158,6 +176,7 @@ export const getInterfacesHeadersApi = async (env, endId, forceUpdate) => {
         try {
           if ((value || '').indexOf('this') >= 0) {
             /* eslint-disable */
+            console.log('value', value)
             value = new Function('return ' + value).call(c.data)
           }
         } catch (e) {
@@ -590,6 +609,11 @@ export const addPackageApi = async (params) => {
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
 }
 
+export const updatePackageApi = async (id, params) => {
+  const res = await xhr.put(`${INSERV_URL}developer/packaged/${id}`, params)
+  return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
+}
+
 export const deletePackageApi = async (id) => {
   const res = await xhr.delete(`${INSERV_URL}developer/packaged/${id}`)
   return res.data.code === 0 ? res.data.data : Promise.reject(new Error(res.data.message))
@@ -755,35 +779,49 @@ export const processParams = async(p, env) => {
   return value
 }
 
-const send = (url, method, params, headers, body) => {
-  let p = params
-  if (['put', 'post', 'patch'].indexOf(method) < 0) {
-    p = { params }
-  }
+const send = async (url, method, params, headers, body) => {
+  const headerMap = {}
+  headers.forEach(h => {
+    headerMap[h.key] = h.value
+  })
+  const res = await xhr.post(`${INSERV_URL}publics/xhr`, {
+    url,
+    method,
+    params: JSON.stringify(params),
+    headers: JSON.stringify(headerMap),
+    body
+  }, { type: 'json', notice: false, cookie: false })
 
-  if (body) {
-    let type
-    try {
-      JSON.parse(body)
-      type = 'json'
-    } catch (e) {
-      type = 'raw'
-    }
-    const u = url + (url.indexOf('?') >= 0 ? '&' : '?') + toQueryString(params)
-    return xhr[method](u, body, { type: type, customHeaders: headers, notice: false, cookie: false })
-  } else if (method === 'post') {
-    return xhr[method](url, p, { customHeaders: headers, notice: false, cookie: false })
-  } else {
-    p.customHeaders = headers
-    p.notice = false
-    p.cookie = false
-    return xhr[method](url, p)
-  }
+  return res.data
+  //
+  // let p = params
+  // if (['put', 'post', 'patch'].indexOf(method) < 0) {
+  //   p = { params }
+  // }
+  //
+  // if (body) {
+  //   let type
+  //   try {
+  //     JSON.parse(body)
+  //     type = 'json'
+  //   } catch (e) {
+  //     type = 'raw'
+  //   }
+  //   const u = url + (url.indexOf('?') >= 0 ? '&' : '?') + toQueryString(params)
+  //   return xhr[method](u, body, { type: type, customHeaders: headers, notice: false, cookie: false })
+  // } else if (method === 'post') {
+  //   return xhr[method](url, p, { customHeaders: headers, notice: false, cookie: false })
+  // } else {
+  //   p.customHeaders = headers
+  //   p.notice = false
+  //   p.cookie = false
+  //   return xhr[method](url, p)
+  // }
 }
 
 export const sendXhr = async(env, inputUrl, inputMethod, parameters, inputHeaders) => {
   let { url, method, params, headers, body } = await prepare(inputUrl, inputMethod, parameters, inputHeaders, null, env)
-  return send(url, method, params, headers, body)
+  return await send(url, method, params, headers, body)
 }
 
 window.assert = (express, message) => {
@@ -810,7 +848,7 @@ export const mockXhr = async(env, inputUrl, inputMethod, parameters, inputHeader
   try {
     result = await send(url, method, params, headers, body)
 
-    success = result.status === 200
+    success = result.code === 0
     // 执行检查点
     if (success) {
       if (!resultName) {

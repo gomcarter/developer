@@ -19,7 +19,7 @@
   line-height: 24px;
 }
 
-.json-container .json-selected{
+.json-container .json-selected {
   background: #aaa;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .json-container .json-key:after {
-  content:"";
+  content: "";
   margin-right: 0.5em;
   font-weight: bold;
   color: black;
@@ -157,4 +157,8 @@
 
 .json-null, .json-undefined {
   color: darkgray;
+}
+
+.json-container .json-comment {
+  color: gray;
 }

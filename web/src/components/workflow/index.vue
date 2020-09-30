@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import G6 from '@antv/g6'
 import { functionListApi, interfacesVersionedSimpleListApi } from '@/config/api/inserv-api'
-import { constructExecutableDataModel, generateParameters } from '@/config/utils'
+import { generateParameters } from '@/config/utils'
+import { G6 } from '@/config/G6'
 import insertCss from 'insert-css'
 
 export default {
@@ -70,7 +70,7 @@ export default {
               label: '判断条件',
               x: this.contextMenu.event.x,
               y: this.contextMenu.event.y,
-              id: this.uuid()
+              id: G6.uuid(this.graph)
             })
 
             this.graph.setItemState(node, 'pending', true)
@@ -99,7 +99,7 @@ export default {
           handler: () => {
             const ev = this.contextMenu.event
             const node = ev.item
-            const id = this.uuid()
+            const id = G6.uuid(this.graph)
             this.edge = this.graph.addItem('edge', {
               id,
               label: id,
@@ -118,20 +118,6 @@ export default {
   },
   computed: {},
   methods: {
-    uuid () {
-      const nodes = this.graph.getNodes() || []
-      if (nodes.length === 0) {
-        return 'g0'
-      } else {
-        const sorted = nodes.map(n => n.getModel().id)
-          .filter(s => s !== 'main')
-          .map(s => parseInt(s.replace('g', '')))
-          .concat((this.graph.getEdges() || []).map(n => n.getModel().id).map(s => parseInt(s.replace('g', ''))))
-          .sort((a, b) => a - b)
-        const maxId = sorted[sorted.length - 1] || 0
-        return 'g' + (+maxId + 1)
-      }
-    },
     render () {
       insertCss(`
         .g6-minimap-container {
@@ -236,7 +222,7 @@ export default {
           parameters: generateParameters(face.parameters)
         }
 
-        const id = this.uuid()
+        const id = G6.uuid(this.graph)
         this.graph.addItem('node', {
           id: id,
           type: 'rect',
@@ -253,7 +239,7 @@ export default {
         type: 'rect',
         x: event.x,
         y: event.y,
-        id: this.uuid()
+        id: G6.uuid(this.graph)
       })
 
       this.graph.setItemState(node, 'pending', true)
@@ -386,7 +372,7 @@ export default {
         }
       } else if (this.alt) {
         // 按下了alt键，那么点击item则增加连线
-        const id = this.uuid()
+        const id = G6.uuid(this.graph)
         this.edge = this.graph.addItem('edge', {
           id,
           label: id,
@@ -446,58 +432,7 @@ export default {
       this.graph.setItemState(this.editingNode, 'pending', false)
       this.editingNode = null
     },
-    registerEdge () {
-      // lineDash 的差值，可以在后面提供 util 方法自动计算
-      const dashArray = [
-        [ 0, 1 ],
-        [ 0, 2 ],
-        [ 1, 2 ],
-        [ 0, 1, 1, 2 ],
-        [ 0, 2, 1, 2 ],
-        [ 1, 2, 1, 2 ],
-        [ 2, 2, 1, 2 ],
-        [ 3, 2, 1, 2 ],
-        [ 4, 2, 1, 2 ]
-      ]
-      const lineDash = [ 4, 2, 1, 2 ]
-      const interval = 9
-      G6.registerEdge('running-line', {
-        setState (name, value, item) {
-          const shape = item.get('keyShape')
-          if (name === 'running') {
-            if (value) {
-              // 后续 G 增加 totalLength 的接口
-              const length = shape.getTotalLength()
-              let totalArray = []
-              for (let i = 0; i < length; i += interval) {
-                totalArray = totalArray.concat(lineDash)
-              }
-              let index = 0
-              shape.animate({
-                onFrame () {
-                  const cfg = {
-                    lineDash: dashArray[index].concat(totalArray)
-                  }
-                  index = (index + 1) % interval
-                  return cfg
-                },
-                repeat: true
-              }, 1)
-            } else {
-              shape.stopAnimate()
-              shape.attr('lineDash', null)
-            }
-          } else if (name === 'selected') {
-            if (value) {
-              shape.attr('shadowBlur', 5)
-            } else {
-              shape.attr('shadowBlur', 0)
-            }
-          }
-        }
-      }, 'line')
-    },
-    isAllConnected () {
+    isAllConnected (nodes, edges) {
       return true
     },
     // 外部api， 验证填写是否正确
@@ -522,45 +457,10 @@ export default {
     },
     // 外部api， 获取数据
     workflow () {
-      const nodes = this.graph.getNodes().map(s => {
-        const model = s.getModel()
-        delete model['description']
-        return model
-      })
-      const edges = this.graph.getEdges().filter(s => s.getTarget().getModel).map(s => s.getModel())
-      return { nodes, edges }
+      return G6.getWorkflow(this.graph)
     },
     beautify () {
-      const model = constructExecutableDataModel(this.graph)
-
-      for (let i = 0; i < model.length; i++) {
-        if (model[i].length > 5) {
-          this.$alert('无法美化！', '提示', {type: 'info'})
-          return
-        }
-      }
-
-      const base = 190
-      const workflow = this.workflow()
-      const nodes = workflow.nodes
-      const map = {}
-      nodes.forEach(s => {
-        map[s.id] = s
-      })
-      console.log(nodes)
-      for (let i = 0; i < model.length; i++) {
-        const level = model[i]
-        const deltaX = (this.width - base * 2) / level.length
-        for (let j = 0; j < level.length; j++) {
-          const item = level[j]
-          const model = map[item.getModel().id]
-          model.x = base + deltaX / 2 + deltaX * j - 60
-          model.y = 100 + 150 * i
-        }
-      }
-
-      this.graph.data(workflow)
-      this.graph.render()
+      G6.beautify(this.graph)
       // 如果有未编辑完的节点，标记为pending
       this.graph.getNodes().forEach(n => {
         const model = n.getModel()
@@ -573,7 +473,7 @@ export default {
   mounted () {
     // 先注册，再初始化，再绑定事件
     // 初始化边动画
-    this.registerEdge()
+    G6.registerRunningLineEdge()
 
     // 初始化数据
     this.render()

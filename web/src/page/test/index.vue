@@ -224,7 +224,7 @@ export default {
       }
 
       // 返回数据结构填充
-      this.result = generateReturns(JSON.parse(this.data.returns))
+      this.result = generateReturns(JSON.parse(this.data.returns), this.data.java.wrapper)
     },
     loadItem (item) {
       this.currentId = item.id

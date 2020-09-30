@@ -110,7 +110,7 @@ export default {
 
       if (selection.returns) {
         this.node.returns = JSON.parse(selection.returns)
-        this.generatedReturns = generateReturns(this.node.returns)
+        this.generatedReturns = generateReturns(this.node.returns, this.node.java.wrapper)
       } else {
         this.node.returns = null
         this.generatedReturns = null
@@ -136,7 +136,7 @@ export default {
 
       if (model.returns) {
         this.node.returns = model.returns
-        this.generatedReturns = generateReturns(this.node.returns)
+        this.generatedReturns = generateReturns(this.node.returns, this.node.java.wrapper)
       } else {
         this.node.returns = null
         this.generatedReturns = null

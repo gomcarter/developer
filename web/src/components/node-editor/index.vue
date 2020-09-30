@@ -180,7 +180,7 @@ export default {
       this.node.preParams = selection.preParams || []
       if (selection.returns) {
         this.node.returns = JSON.parse(selection.returns)
-        this.generatedReturns = generateReturns(this.node.returns)
+        this.generatedReturns = generateReturns(this.node.returns, this.node.java.wrapper)
       } else {
         this.node.returns = null
         this.generatedReturns = null
@@ -211,7 +211,7 @@ export default {
 
       if (data.returns) {
         this.node.returns = data.returns
-        this.generatedReturns = generateReturns(this.node.returns)
+        this.generatedReturns = generateReturns(this.node.returns, this.node.java.wrapper)
       } else {
         this.node.returns = null
         this.generatedReturns = null

@@ -122,7 +122,7 @@ export default {
         this.currentVersioned = current[0]
 
         this.versionedReturns = JSON.parse(this.currentVersioned.returns)
-        this.versionedGeneratedReturns = generateReturns(this.versionedReturns)
+        this.versionedGeneratedReturns = generateReturns(this.versionedReturns, this.data.java.wrapper)
         this.versionedParameters = JSON.parse(this.currentVersioned.parameters)
       } else {
         this.currentVersioned = null
@@ -137,7 +137,7 @@ export default {
       getInterfacesApi(id).then((res) => {
         this.data = res
         this.returns = JSON.parse(this.data.returns)
-        this.generatedReturns = generateReturns(this.returns)
+        this.generatedReturns = generateReturns(this.returns, this.data.java.wrapper)
         this.parameters = JSON.parse(this.data.parameters)
       })
 

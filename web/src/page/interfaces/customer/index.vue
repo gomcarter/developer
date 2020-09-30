@@ -76,7 +76,7 @@ export default {
         if (res) {
           this.data = res
           this.returns = JSON.parse(this.data.returns)
-          this.generatedReturns = generateReturns(this.returns)
+          this.generatedReturns = generateReturns(this.returns, this.data.java.wrapper)
           this.parameters = JSON.parse(this.data.parameters)
         } else {
           this.data = {id: -1}

@@ -117,7 +117,6 @@ export default {
     addHeader () {
       let obj = {key: '', value: ''}
       this.header.push(obj)
-      console.log(this.header)
     },
     delHeader (i) {
       this.header.splice(i, 1)

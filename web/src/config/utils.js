@@ -2,12 +2,12 @@
 import { Notification } from 'element-ui'
 
 document.body.addEventListener('click', function(e) {
-  if (e.target.className.indexOf('expander') > -1) {
+  if (e.target.className.indexOf('html-json-expander') > -1) {
     const parent = e.target.parentNode
-    if (parent.className.indexOf('collapsed') > -1) {
-      parent.className = parent.className.replace('collapsed', '').trim()
+    if (parent.className.indexOf('html-json-collapsed') > -1) {
+      parent.className = parent.className.replace('html-json-collapsed', '').trim()
     } else {
-      parent.className += ' collapsed'
+      parent.className += ' html-json-collapsed'
     }
   }
 })
@@ -26,7 +26,7 @@ export const toJsonHtml = (json) => {
   }
 
   const rawed = JSON.stringify(json, null, 4).replace(/</g, '&lt;').replace(/>/g, '&gt;').split(/\n/)
-  const r = ['<span class="kvov arrElem rootKvov">']
+  const r = ['<span class="html-json-kvov">']
   // 当前缩进， 当缩进增加则增加一个blockInner，下面的元素进入此元素自己根据每一行的缩进
   let blockIndex = 0
 
@@ -52,19 +52,19 @@ export const toJsonHtml = (json) => {
         })[0]
     } catch (e) {}
 
-    tt = tt.replace(/\{/, '<span class="b">{</span>')
-      .replace(/\}/, '<span class="b">}</span>')
-      .replace(/\[/, '<span class="b">[</span>')
-      .replace(/\]/, '<span class="b">]</span>')
+    tt = tt.replace(/\{/, '<span class="html-json-b">{</span>')
+      .replace(/\}/, '<span class="html-json-b">}</span>')
+      .replace(/\[/, '<span class="html-json-b">[</span>')
+      .replace(/\]/, '<span class="html-json-b">]</span>')
 
     // 此行缩进大于当前缩进
     if (bIndex > blockIndex) {
       // 在缩进之前加展开按钮
-      r.push('<span class="expander"></span>')
-      r.push('<span class="ell"></span>')
-      r.push('<span class="blockInner">')
+      r.push('<span class="html-json-expander"></span>')
+      r.push('<span class="html-json-ell"></span>')
+      r.push('<span class="html-json-blockInner">')
 
-      r.push('<span class="kvov objProp">' + tt)
+      r.push('<span class="html-json-kvov">' + tt)
     } else if (bIndex < blockIndex) {
       // 小于缩进
       r.push('</span>')
@@ -72,13 +72,13 @@ export const toJsonHtml = (json) => {
       r.push(tt)
     } else {
       r.push('</span>')
-      r.push('<span class="kvov objProp">' + tt)
+      r.push('<span class="html-json-kvov">' + tt)
     }
     blockIndex = bIndex
   })
 
   r.push('</span>')
-  return r.join('')
+  return `<div class="html-json-container">${r.join('')}</div>`
 }
 
 /**
@@ -633,13 +633,13 @@ export const parseParams = (text) => {
 }
 
 
-export const generateReturns = (node, comment) => {
+const _generateReturns = (node, comment) => {
   if (node.type === 'List') {
-    return [generateReturns(node.children[0], node.comment)]
+    return [_generateReturns(node.children[0], node.comment)]
   } else if (node.type === 'Object') {
     const o = {};
     (node.children || []).forEach(s => {
-      o[s.key] = generateReturns(s)
+      o[s.key] = _generateReturns(s)
     })
     return o
   } else if (node.type === undefined) {
@@ -652,68 +652,39 @@ export const generateReturns = (node, comment) => {
   }
 }
 
+export const generateReturns = (node, wrapper) => {
+  const data = _generateReturns(node, null)
+  if (wrapper) {
+    const result = {}
+    let times = 0
+    const w = JSON.parse(wrapper)
+    w.forEach(s => {
+      if (s.data) {
+        result[s.key] = data
+      } else {
+        result[s.key] = s.value
+      }
+
+      if (data[s.key]) {
+        times ++
+      }
+    })
+    // FIXME：超过一半以上的字段是重合的，则认为接口自己就带了wrapper
+    if (times / w.length > 0.5) {
+      return data
+    }
+    return result
+  }
+  return data
+}
+
+
 export const sleep = (millisecond) => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve()
     }, millisecond)
   })
-}
-
-/**
- * 对节点进行编排，编排成这样 [[node1,node2 ...], [node3,node4...]] 将node分层，方便依次执行这些节点。
- */
-export const constructExecutableDataModel = (graph) => {
-  const model = []
-  // 遍历节点找到最顶端的节点设置为level 1， 往下一层level 2， 以此类推，把所有节点分层
-  // 然后最后执行时就从第一层开始执行，到最后一层。
-  const nodes = graph.getNodes()
-  nodes.forEach(n => { n.getModel()._mark = 0 })
-  const totalCounts = nodes.length
-
-  // 第一层怎么找: 存在任何一个节点只有出没有入的节点
-  let currentNodes = nodes.filter(n => n.getEdges().filter(e => e.getSource() !== n).length === 0)
-  let count = currentNodes.length
-  if (count === 0) {
-    // 如果没有找到首节点，证明产生了回环，那么随便选一个节点作为 currentNodes
-    currentNodes = [nodes[0]]
-    count++
-  }
-  model.push(currentNodes)
-  // 标记节点已经被修改
-  currentNodes.forEach(n => { n.getModel()._mark = n.getModel()._mark + 1 })
-  // currentNodes.forEach(n => console.log(this.model.length + '：', n.getModel().id, n.getModel().label))
-
-  // 第二层开始：入口是上一层的下层节点，而且（如果一个节点存在多个入口，如又是第二层又是第三层，那么要取第三层）
-  while (count < totalCounts) {
-    currentNodes = graph.getEdges()
-      .filter(e => {
-        const isPreLevelChildren = currentNodes.indexOf(e.getSource()) >= 0
-        if (isPreLevelChildren) {
-          const target = e.getTarget()
-          const targetIsMe = target.getEdges().filter(n => n.getTarget() === target)
-          target.getModel()._mark = target.getModel()._mark + 1
-          if (targetIsMe.length === target.getModel()._mark) {
-            return true
-          }
-        }
-        return false
-      })
-      .map(e => e.getTarget())
-
-    if (currentNodes.length === 0) {
-      // 没有找到则从剩下的node中随便取一个
-      currentNodes = [nodes.filter(n => n.getModel()._mark === false)[0]]
-      count++
-    } else {
-      count += currentNodes.length
-    }
-
-    // 表示已处理
-    model.push(currentNodes)
-  }
-
-  return model
 }
 
 // 参数取并集, 以第一个参数为基准，第二个有新增key时，并入第一个参数 //

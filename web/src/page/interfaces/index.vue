@@ -47,17 +47,17 @@
     <h4 class="title">接口列表</h4>
     <hr/>
     <v-datagrid ref="dg" :columns="columns" :data-url="dataUrl" :count-url="countUrl" :params="params"
-                :checkable="true" :toolbar="toolbar" :onSelectionChanged="onSelectionChanged" :onLoadSuccess="onLoadSuccess"/>
+                :checkable="true" :toolbar="toolbar" :onSelectionChanged="onSelectionChanged"/>
 
     <v-dialog ref="packageDialog"
               title="接口打包"
               :width="1000"
               :ok="commitPackage">
       <el-form slot="body" :model="form" label-width="7em" ref="packageForm">
-        <div class="mark margin-bottom20">一个功能（或者需求）的多个接口打包在一起，方便集中管理和查阅</div>
+        <div class="mark margin-bottom20">一个功能（或者一个页面，需求）的多个接口打包在一起，方便集中管理和查阅</div>
         <el-form-item prop="name" label="打包名称" required
-                      :rules="[{ required: true, message: '请输入打包名称', trigger: ['blur', 'change'] }]">
-          <el-input v-model="form.name" placeholder="请输入打包名称" ></el-input>
+                      :rules="[{ required: true, message: '请输入名称', trigger: ['blur', 'change'] }]">
+          <el-input v-model="form.name" placeholder="请输入名称，比如：某某页面接口集合" ></el-input>
         </el-form-item>
         <el-form-item label="备注">
           <el-input v-model="form.mark" type="textarea" placeholder="请输入备注" rows="4"></el-input>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { interfacesCountApi, addInterfaceToFavoritesApi, queryFavoritesApi, interfacesListApi, endListApi, javaListApi, batchDeleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
+import { interfacesCountApi, addInterfaceToFavoritesApi, interfacesListApi, endListApi, javaListApi, batchDeleteInterfaces, addPackageApi } from '@/config/api/inserv-api'
 import { formatDate, removeBlank } from '@/config/utils'
 
 export default {
@@ -117,15 +117,6 @@ export default {
         disabled: () => this.selected.length === 0,
         handler: this.delete
       }])(),
-      async onLoadSuccess (data) {
-        if (data.length === 0) {
-          return
-        }
-        const favoritesIdList = await queryFavoritesApi(data.map(s => s.id))
-        data.forEach(s => {
-          s.transfered = favoritesIdList.indexOf(s.id) >= 0
-        })
-      },
       columns: [
         {
           field: 'action',
@@ -135,11 +126,8 @@ export default {
           actions: [{
             text: (r) => `<a href="#/test/${r.id}/testDomain" target="_blank">执行</a>`
           }, {
-            text: '复制',
+            text: () => '<span title="沙老师需求">复制</span>',
             handler: (row) => this.copy(row)
-          }, {
-            text: (r) => r.transfered ? '' : '收藏',
-            handler: (row) => this.transfer(row)
           }]
         },
         {field: 'id', header: '编号', sort: 'id', width: 80},
