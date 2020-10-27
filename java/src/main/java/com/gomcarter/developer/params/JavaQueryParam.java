@@ -1,6 +1,8 @@
 package com.gomcarter.developer.params;
 
 import com.gomcarter.frameworks.interfaces.annotation.Notes;
+import com.gomcarter.frameworks.mybatis.annotation.Condition;
+import com.gomcarter.frameworks.mybatis.annotation.MatchType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -20,5 +22,6 @@ public class JavaQueryParam {
      * 模块名称
      */
     @Notes("模块名称")
+    @Condition(type = MatchType.LIKE)
     private String name;
 }
