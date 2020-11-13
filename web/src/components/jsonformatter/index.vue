@@ -77,7 +77,6 @@ export default {
     json: 'init'
   },
   mounted () {
-    window.ccc = this
     if (this.formattedData) {
       this.formatted = Object.assign({}, this.formattedData)
     } else {
@@ -99,7 +98,10 @@ export default {
       this.formatted = Object.assign({}, this.formattedData)
     },
     init () {
-      this.formatted = this.format(null, this.json)
+      this.formatted = null
+      setTimeout(() => {
+        this.formatted = this.format(null, this.json)
+      })
     },
     getSelections () {
       return this.selectedKeys

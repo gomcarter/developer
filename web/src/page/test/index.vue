@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content-continer">
     <h4 class="title">
       接口测试: {{data.name}}
       <v-selector :id="'id'" :text="'name'" :searchKey="'name'"
@@ -42,12 +42,12 @@
       <div class="left">
         <h4 class="title" style="display: inline-block;">调用结果</h4>
         <span v-if="end" style="display: inline-block; margin-left: 20px;">
-          <b>耗时：</b>{{ `${end - start}` }}ms；
+          <b>耗时：</b>{{ `${end - start}` }}ms；<a :href="`#/logging/list?env=${ENV_DOMAIN_LOG_MAP[env]}&app=${data.java.alias}&start=${start}`" target="_blank">【查看日志】</a>
         </span>
         <hr/>
         <el-form>
           <el-form-item label="">
-            <v-jsonformatter :json="result" style="max-height: 500px; overflow-x: hidden;"></v-jsonformatter>
+            <v-jsonformatter :json="result" ref="formatter" style="max-height: 500px; overflow-x: hidden;"></v-jsonformatter>
           </el-form-item>
         </el-form>
         <h4 class="title">检查点结果</h4>
@@ -63,7 +63,7 @@
         </h4>
         <hr/>
         <el-form v-if="headers">
-          <el-form-item v-for="(h, index) of headers" v-bind:key="index">
+          <el-form-item v-for="(h,index) of headers" v-bind:key="index">
             <el-input placeholder="请输入headers参数名" class="half_min_width" v-model="h.key">
               <template slot="prepend"><span>参数名</span></template>
             </el-input>
@@ -71,7 +71,7 @@
             <el-input placeholder="请输入headers参数值" class="half_max_width" v-model="h.value">
               <template slot="prepend"><span>参数值</span></template>
             </el-input>
-            <el-button type="danger" icon="el-icon-delete" @click="delHeader(index)" circle size="small"></el-button>
+            <el-button type="danger" icon="el-icon-delete" @click="delHeader(main)" circle size="small"></el-button>
           </el-form-item>
         </el-form>
         <h4 class="title">预置参数
@@ -224,7 +224,7 @@ export default {
       }
 
       // 返回数据结构填充
-      this.result = generateReturns(JSON.parse(this.data.returns), this.data.java.wrapper)
+      this.result = generateReturns(JSON.parse(this.data.returns))
     },
     loadItem (item) {
       this.currentId = item.id
@@ -333,6 +333,6 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style type="text/css" lang="scss" scoped>
+<style lang="scss">
   @import 'index.scss';
 </style>
