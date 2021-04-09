@@ -2,7 +2,7 @@ package com.gomcarter.developer.holder;
 
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.common.BlowfishUtils;
-import com.gomcarter.frameworks.base.common.CookieUtils;
+import com.gomcarter.frameworks.base.common.RequestUtils;
 import com.gomcarter.frameworks.base.exception.NoLoginException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,7 +49,7 @@ public class UserHolder {
      * @return LoginUser
      */
     public static LoginUser auth(HttpServletRequest request) {
-        String token = CookieUtils.getByHeaderOrCookies(request, TOKEN_NAME);
+        String token = RequestUtils.getByHeaderOrCookies(request, TOKEN_NAME);
 
         // 解密
         LoginUser user = decrypt(token);

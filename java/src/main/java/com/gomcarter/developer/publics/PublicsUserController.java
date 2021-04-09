@@ -5,17 +5,24 @@ import com.gomcarter.developer.holder.LoginUser;
 import com.gomcarter.developer.holder.UserHolder;
 import com.gomcarter.developer.service.SettingOfUserService;
 import com.gomcarter.developer.service.UserService;
+import com.gomcarter.developer.utils.DefaultResponseHandler;
 import com.gomcarter.frameworks.base.common.AssertUtils;
 import com.gomcarter.frameworks.base.exception.CustomException;
 import com.gomcarter.frameworks.base.json.JsonData;
-import com.gomcarter.frameworks.httpapi.annotation.Method;
-import com.gomcarter.frameworks.httpapi.api.BaseApi;
+import com.gomcarter.frameworks.config.mapper.JsonMapper;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,24 +52,27 @@ public class PublicsUserController {
 
     private R remoteLogin(String url, String username, String password) throws Exception {
         R r = new R();
-        BaseApi api = new BaseApi() {
-            @Override
-            protected Map<String, String> getUrlRouter() {
-                return new HashMap<String, String>(1, 1) {{
-                    put("url", url);
-                }};
-            }
-        };
-        api.init();
+        RequestConfig defaultRequestConfig = RequestConfig
+                .custom()
+                .setCookieSpec(CookieSpecs.IGNORE_COOKIES)
+                .build();
+        CloseableHttpClient httpClientLocal = HttpClients.custom()
+                .setDefaultRequestConfig(defaultRequestConfig)
+                .build();
 
+
+        URIBuilder uriBuilder = new URIBuilder(URI.create(url));
+        HttpPost post = new HttpPost(uriBuilder.build());
+        String res = httpClientLocal.execute(post, new DefaultResponseHandler());
+        JsonData data = JsonMapper.buildNonNullMapper().fromJson(res, JsonData.class);
+
+        // TODO
         Map<String, Object> params = new HashMap<>(2, 1);
         params.put("username", username);
         params.put("password", password);
-        JsonData data = api.httpExecute(Method.POST, "url", JsonData.class, params, null);
         r.validate = data.getCode() == 0;
         r.message = data.getMessage();
 
-        api.destroy();
         return r;
     }
 

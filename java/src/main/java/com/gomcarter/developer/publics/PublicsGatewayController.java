@@ -65,7 +65,6 @@ public class PublicsGatewayController {
                     .setDefaultRequestConfig(defaultRequestConfig)
                     .build();
         }
-
     }
 
     @GetMapping(value = "{id}", name = "测试登录")

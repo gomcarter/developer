@@ -6,6 +6,7 @@ import com.gomcarter.frameworks.config.mapper.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +38,43 @@ public class PublicsXhrController {
         private static OkHttpClient client;
 
         static {
-            OkHttpClient.Builder builder = new OkHttpClient().newBuilder().addInterceptor(loggingInterceptor);
+            OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+//            .addInterceptor(loggingInterceptor);
             client = builder.build();
         }
     }
 
+    public static void main(String[] args) throws IOException {
+        String s = FileUtils.readFileToString(new File("/Users/liyin/Desktop/d.txt"), "UTF-8");
+        String b = FileUtils.readFileToString(new File("/Users/liyin/Desktop/a.txt"), "UTF-8");
+        System.out.println();
+        String[] a = s.split("\n");
+        String[] c = b.split("\n");
+        for (int i = 0; i < a.length; i++) {
+            String mediaId = a[i];
+            String openid = "\"" + Arrays.stream(c[i].split(", ")).reduce((e, f) -> e + "\",\"" + f) + "\"";
+
+            String body = String.format("{\n" +
+                    "   \"mpnews\":{\n" +
+                    "      \"media_id\":\"%s\"\n" +
+                    "   },\n" +
+                    "   \"touser\":[%s],\n" +
+                    "    \"msgtype\":\"mpnews\",\n" +
+                    "    \"send_ignore_reprint\":0\n" +
+                    "}", mediaId, openid);
+            Request.Builder requestBuilder = new Request.Builder().url(
+                    "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=43_UQ7ga_r1SsZexALVw_M1_TH9FfU77CqVWBZTIaHksRy2zTW_fvCdaEbZhofbR5ev_cFRJQW9kctdySozYlK3zG7WMjC1IeLrmQSk8y2tYr28_jNnPhN_pSS7tyUsMVWwWtCQP_GHLAcHrRgVHWCfADAMBH"
+            );
+            requestBuilder.method("POST", RequestBody.create(StringUtils.defaultIfBlank(body, ""),
+                    MediaType.parse("application/json")));
+
+            OkHttpClient client = Holder.client;
+            ResponseBody response = client.newCall(requestBuilder.build()).execute().body();
+
+            System.out.println("第" + (i + 1) + "个：" + response.string());
+        }
+
+    }
     /**
      * 生成最终使用的url
      *
