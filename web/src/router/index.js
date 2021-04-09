@@ -169,6 +169,12 @@ const router = new Router({
       name: 'transferData',
       component: r => require.ensure([], require => r(require('@/page/transfer')), 'transfer')
     },
+    // sample
+    {
+      path: '/sample',
+      name: 'sample',
+      component: r => require.ensure([], require => r(require('@/page/sample')), 'sample')
+    },
     // 中转
     {
       path: '/',

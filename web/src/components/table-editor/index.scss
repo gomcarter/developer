@@ -1,0 +1,36 @@
+@charset "utf-8";
+
+.function-selector {
+  position: absolute;
+  display: none;
+  width: 200px;
+}
+
+.work-flow-context-menu {
+  position: absolute;
+  list-style-type: none;
+  left: -10000px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #999;
+  user-select: none;
+  min-width: 70px;
+}
+
+.work-flow-context-menu li {
+  cursor: pointer;
+  list-style-type: none;
+  list-style: none;
+  margin-left: 0px;
+  line-height: 30px;
+  padding: 0 10px;
+}
+
+.work-flow-context-menu li:hover {
+  color: #000;
+  background: #eeee;
+  font-weight: bold;
+}
+

@@ -1,10 +1,15 @@
 <template>
   <div class="detail">
-    <h4 class="title">{{title}}（待开发）</h4>
+    <h4 class="title">{{title}}</h4>
     <hr/>
     <el-form :model="form" label-width="9em" ref="edit">
-      <el-form-item label="接口名称:" :rules="[{ required: true, message: '请输入接口名称', trigger: ['blur', 'change'] }]" prop="name">
+      <el-form-item label="接口名称:"
+                    :rules="[{ required: true, message: '请输入接口名称', trigger: ['blur', 'change'] }]" prop="name">
         <el-input v-model="form.name" placeholder="请输入接口名称" ></el-input>
+      </el-form-item>
+      <el-form-item label="URL:"
+                    :rules="[{ required: true, message: '请输入URL', trigger: ['blur', 'change'] }]" prop="url">
+        <el-input v-model="form.url" placeholder="请输入URL" ></el-input>
       </el-form-item>
       <el-form-item label="控制器:">
         <el-input v-model="form.controller" placeholder="请输入控制器" ></el-input>
@@ -14,16 +19,7 @@
                     :onSelectionChanged="(d) => form.method = (d || []).map(s => s.id).join(',')"
                     :multiple="true" placeholder="请选择访问类型"></v-selector>
       </el-form-item>
-      <el-form-item label="所属项目:">
-        <v-selector
-          :id="'id'" :text="'name'"
-          :onSelectionChanged="(d) => form.endId = (d[0] || {}).id"
-          :filterable="true" :remote="true"
-          placeholder="请选择前端项目（可输入名称进行搜索）"
-          :url="endListApi"
-        ></v-selector>
-      </el-form-item>
-      <el-form-item label="所属模块:">
+      <el-form-item label="后端服务:">
         <v-selector
           :id="'id'" :text="'name'"
           :onSelectionChanged="(d) => form.javaId = (d[0] || {}).id"
