@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@antv/g6": "^3.4.8",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
     "element-ui": "^2.9.1",
     "insert-css": "^2.0.0",
