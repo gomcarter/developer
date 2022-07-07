@@ -19,7 +19,7 @@
     "jquery": "^3.5.1",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.15",
-    "moment": "^2.25.3",
+    "moment": "^2.29.4",
     "vue": "^2.5.2",
     "vue-awesome": "^4.0.2",
     "vue-clipboard2": "^0.2.1",
